@@ -1,0 +1,119 @@
+/*******************************************
+ * yys 御魂、觉醒、秘闻 通用函数
+ * @authro Wszl
+ * @date 2017年3月18日13:10:29
+ *******************************************/
+
+Import "yysLib_utils.mql"
+
+
+Dim LEVEL_HEIGHT = Array() //御魂层数选择栏大小 宽 高
+Dim LEVEL_INTERVAL = 0 //御魂层数选择栏间隔高度
+Dim LEVEL_POSITION = Array() //3点 御魂层数选择栏位置，第一个点的坐标为一层顶端位置 判定点
+Dim LEVEL_MAX = 10 //公共level最多层数
+Dim LEVEL_SCREEN_DISPLAY = 0
+/**
+ * 选择指定层数的副本
+ * @param level 指定的层数
+ * @return True|False
+ */
+Function chooseLevel(level)
+	If jumpToTop() = False Then 
+		TracePrint "reset level failed"
+		chooseLevel = False
+		Exit Function
+	End If
+
+	If level <= LEVEL_SCREEN_DISPLAY Then 
+		//处在当前屏幕直接进入
+		TracePrint "join level"
+		Tap LEVEL_POSITION(0), LEVEL_POSITION(1) + ((level -1) * LEVEL_HEIGHT) 
+	ElseIf level <= (userlevelNum - LEVEL_SCREEN_DISPLAY) Then
+		//未处在当前屏幕则进滑动
+		Dim swipeStratX = LEVEL_POSITION(0)
+		Dim swipeStratY = LEVEL_POSITION(1)
+		Dim swipeEndX = LEVEL_POSITION(0)
+		Dim swipeEndY = LEVEL_POSITION(1) - LEVEL_HEIGHT * (level - 1)
+		TracePrint swipeStratX&","&swipeStratY&" to "&swipeEndX&","&swipeEndY
+		yysLib_utils.swipteCustom(swipeStratX, swipeStratY, swipeEndX, swipeEndY, 2000) //每次滑动4个章节
+		//然后进入
+		TracePrint "join level "&level
+		Tap LEVEL_POSITION(0), LEVEL_POSITION(1)
+	Else 
+		//处于最底端则滑动至最底端然后选择章节进入
+		Dim cmpBottomResult = 0
+		Do Until cmpBottomResult > 0
+			Swipe LEVEL_POSITION(0), LEVEL_POSITION(1), LEVEL_POSITION(0), LEVEL_POSITION(1) - ((level -1) * LEVEL_HEIGHT)
+			
+			Delay WAIT_NORMAL
+			
+			LEVEL_BOOTOM_COLOR(2) = GetPixelColor(LEVEL_BOOTOM_COLOR(0), LEVEL_BOOTOM_COLOR(1))
+			LEVEL_BOOTOM_COLOR(5) = GetPixelColor(LEVEL_BOOTOM_COLOR(3), LEVEL_BOOTOM_COLOR(4))
+			LEVEL_BOOTOM_COLOR(8) = GetPixelColor(LEVEL_BOOTOM_COLOR(6), LEVEL_BOOTOM_COLOR(7))
+			//TracePrint LEVEL_BOOTOM_COLOR(2)&","&LEVEL_BOOTOM_COLOR(5)&","&LEVEL_BOOTOM_COLOR(8)
+			
+			cmpBottomResult = CmpColorEx(LEVEL_BOOTOM_COLOR(0)&"|"&LEVEL_BOOTOM_COLOR(1)&"|"&LEVEL_BOOTOM_COLOR(2)&","&LEVEL_BOOTOM_COLOR(3)&"|"&LEVEL_BOOTOM_COLOR(4)&"|"&LEVEL_BOOTOM_COLOR(5)&","&LEVEL_BOOTOM_COLOR(6)&"|"&LEVEL_BOOTOM_COLOR(7)&"|"&LEVEL_BOOTOM_COLOR(8), 0.9)
+		Loop
+		
+		TracePrint "join level"
+		Dim templevel = level - ( userlevelNum - 3)
+		//TracePrint templevel
+		Tap LEVEL_POSITION(0), LEVEL_POSITION(1) + (level_BOTTOM_HEADER_HEIGHT + templevel * LEVEL_HEIGHT)
+	End If
+End Function
+
+/**
+ * 将当前的层数列表重置至最低层
+ * @return True|False
+ */
+Function jumpToTop
+	Dim cmpLevelResult = 0
+	TracePrint "swipe level to top"
+	Do Until cmpLevelResult  > 0
+		//未处于最顶点，滑动至顶点
+		Swipe LEVEL_POSITION(0), LEVEL_POSITION(1), LEVEL_POSITION(0), LEVEL_POSITION(1) + (LEVEL_HEIGHT * 4) //每次滑动4个level
+		
+		Delay yysLib_utils.WAIT_LONG
+		
+		cmpLevelResult = CmpColorEx(LEVEL_POSITION(0) & "|" & LEVEL_POSITION(1) & "|" & LEVEL_POSITION(2) & "," & LEVEL_POSITION(3) & "|" & LEVEL_POSITION(4) & "|" & LEVEL_POSITION(5) & "," & LEVEL_POSITION(6) & "|" & LEVEL_POSITION(7) & "|" & LEVEL_POSITION(8), 0.9)
+	Loop
+End Function
+
+/**
+ * 将当前的层数列表重置至最高层
+ * @return True|False
+ */
+Function jumpToBottom
+	Dim LEVEL_BOOTOM_COLOR = Array(1161,547,"000000",1172,553,"000000",1180,562,"000000") //章节最下的判断点 三点  三点的颜色值为无效值,应获取当前屏幕的值填入，再使用	
+	
+	Dim cmpBottomResult = 0
+	Do Until cmpBottomResult > 0
+		Swipe LEVEL_POSITION(0), LEVEL_POSITION(1), LEVEL_POSITION(0), LEVEL_POSITION(1) - ((LEVEL_MAX -1) * LEVEL_HEIGHT)
+		
+		Delay WAIT_NORMAL
+		
+		LEVEL_BOOTOM_COLOR(2) = GetPixelColor(LEVEL_BOOTOM_COLOR(0), LEVEL_BOOTOM_COLOR(1))
+		LEVEL_BOOTOM_COLOR(5) = GetPixelColor(LEVEL_BOOTOM_COLOR(3), LEVEL_BOOTOM_COLOR(4))
+		LEVEL_BOOTOM_COLOR(8) = GetPixelColor(LEVEL_BOOTOM_COLOR(6), LEVEL_BOOTOM_COLOR(7))
+		//TracePrint CHAPTER_BOOTOM_COLOR(2)&","&CHAPTER_BOOTOM_COLOR(5)&","&CHAPTER_BOOTOM_COLOR(8)
+		
+		cmpBottomResult = CmpColorEx(LEVEL_BOOTOM_COLOR(0)&"|"&LEVEL_BOOTOM_COLOR(1)&"|"&LEVEL_BOOTOM_COLOR(2)&","&LEVEL_BOOTOM_COLOR(3)&"|"&LEVEL_BOOTOM_COLOR(4)&"|"&LEVEL_BOOTOM_COLOR(5)&","&LEVEL_BOOTOM_COLOR(6)&"|"&LEVEL_BOOTOM_COLOR(7)&"|"&LEVEL_BOOTOM_COLOR(8), 0.9)
+	Loop
+	
+End Function
+
+
+/**
+ * 当前场景是否为场景奖励scene
+ * @return True|False
+ */
+Function isSceneReward
+	Dim SCENE_REWARD = Array() //10点
+	
+	Dim cmpResult = CmpColorEx( SCENE_REWARD(0) & "|" & SCENE_REWARD(1) & "|" & SCENE_REWARD(2) & "," & SCENE_REWARD(3) & "|" & SCENE_REWARD(4) & "|" & SCENE_REWARD(5) & "," & SCENE_REWARD(6) & "|" & SCENE_REWARD(7) & "|" & SCENE_REWARD(8) & "," & SCENE_REWARD(9) & "|" & SCENE_REWARD(10) & "|" & SCENE_REWARD(11) & "," & SCENE_REWARD(12) & "|" & SCENE_REWARD(13) & "|" & SCENE_REWARD(14) & "," & SCENE_REWARD(15) & "|" & SCENE_REWARD(16) & "|" & SCENE_REWARD(17) & "," & SCENE_REWARD(18) & "|" & SCENE_REWARD(19) & "|" & SCENE_REWARD(20) & "," & SCENE_REWARD(21) & "|" & SCENE_REWARD(22) & "|" & SCENE_REWARD(23) & "," & SCENE_REWARD(24) & "|" & SCENE_REWARD(25) & "|" & SCENE_REWARD(26) & "," & SCENE_REWARD(27) & "|" & SCENE_REWARD(28) & "|" & SCENE_REWARD(29), 0.9)
+	If cmpResult = 1 Then 
+        isSceneReward = True
+    Else 
+        isSceneReward = False
+    End If
+End Function

@@ -1,0 +1,358 @@
+/***************************
+ * 结界突破相关API
+ * @author Wszl
+ * @date 2017年4月2日02:53:20
+ ***************************/
+ 
+ Import "yysLib_fight.mql"
+ Import "yysLib_utils.mql"
+ 
+ //Test
+ //TracePrint isEnchantmentChooseScene(0)
+ //EndScript
+/**
+ * 判断当前scene是否为 choose enchantment scene
+ * @param mode Int 0 个人结界 1 寮结界
+ * @return True|False
+ */
+Function isEnchantmentChooseScene(mode)
+	Dim PERSON_ENCHANTMENT = Array(583,47,"B8C9CF",649,46,"C9DBE1",233,637,"5AB2F7",1106,632,"2E20D6",628,47,"C4D6DC") //个人结界判定点 5点
+	Dim ENCHANTMENT = Array(583,48,"D8EAF0",649,46,"C9DBE1",1204,299,"E2F3F3",1166,556,"2F4050",411,128,"B5C3CE") //寮结界判定点 5点
+
+	If mode = 0 Then 
+		//person enchantment
+    	Dim cmpResult = CmpColorEx(PERSON_ENCHANTMENT(0)&"|"&PERSON_ENCHANTMENT(1)&"|"&PERSON_ENCHANTMENT(2)&","&PERSON_ENCHANTMENT(3)&"|"&PERSON_ENCHANTMENT(4)&"|"&PERSON_ENCHANTMENT(5)&","&PERSON_ENCHANTMENT(6)&"|"&PERSON_ENCHANTMENT(7)&"|"&PERSON_ENCHANTMENT(8)&","&PERSON_ENCHANTMENT(9)&"|"&PERSON_ENCHANTMENT(10)&"|"&PERSON_ENCHANTMENT(11)&","&PERSON_ENCHANTMENT(12)&"|"&PERSON_ENCHANTMENT(13)&"|"&PERSON_ENCHANTMENT(14), 0.9)
+    	If cmpResult = 1 Then 
+        	isEnchantmentChooseScene = True
+    	Else 
+        	isEnchantmentChooseScene = False
+    	End If
+	ElseIf mode = 1 Then
+		//org enchantment
+		cmpResult = CmpColorEx(ENCHANTMENT(0)&"|"&ENCHANTMENT(1)&"|"&ENCHANTMENT(2)&","&ENCHANTMENT(3)&"|"&ENCHANTMENT(4)&"|"&ENCHANTMENT(5)&","&ENCHANTMENT(6)&"|"&ENCHANTMENT(7)&"|"&ENCHANTMENT(8)&","&ENCHANTMENT(9)&"|"&ENCHANTMENT(10)&"|"&ENCHANTMENT(11)&","&ENCHANTMENT(12)&"|"&ENCHANTMENT(13)&"|"&ENCHANTMENT(14), 0.9)
+    	If cmpResult = 1 Then 
+        	isEnchantmentChooseScene = True
+    	Else 
+        	isEnchantmentChooseScene = False
+    	End If
+	Else 
+		//unknow enchantment mode
+		TracePrint "unknow enchantment mode by "&mode
+		isEnchantmentChooseScene = False
+	End If
+End Function
+
+
+/**
+ * 判断当前scene是否为 choose enchantment scene
+ * @return True|False
+ */
+Function isEnchantmentChooseSceneUni
+	Dim result = isEnchantmentChooseScene(0)
+	result = result Or isEnchantmentChooseScene(1)
+	
+	If result = False Then 
+		isEnchantmentChooseSceneUni = False
+	Else 
+		isEnchantmentChooseSceneUni = True
+	End If
+End Function
+
+//Test
+Dim result = chooseEnchantment(2, False, 0)
+TracePrint result
+Tap result(0), result(1)
+EndScript
+/**
+ * 根据参数选择适当的挑战结节的对象
+ * @param level Int 挑战的对象的最大级别，1-7
+ * @param again boolean 是否重复挑战战败对象
+ * @param mode  Int 挑战模式，0 个人结节，1 寮结界
+ * @return True|False
+ */
+Function chooseEnchantment(level, again, mode)
+	Dim ENCHANTMENT = Array(0, 0, "59748E", -320,-1, "738A9C", -3,-3, "B4D1E5", 0,-103, "738A9C", -292,-60, "3A4F70") //结界判定点 5点 第一点仅颜色值有效，其余坐标为偏移值 第一点应为图标左上角点
+	Dim ENCHANTMENT_FIGHTED = Array(0,0, "187DC6", -16,24, "18185A", -8,29, "212C52", 15,32,"29186B", 14,4, "0B0D34") //挑战过的结界判定点 5 点 同上 该判定点选择坐标，应该比上述判定点选择范围小
+	Dim ENCHANTMENT_FAILED = Array(0,0, "3A4858", 1,-11, "4BA7D1", 28,22, "47A5D1", 20,-4, "2D3B4D", 33,-4, "3939AF") //挑战失败的结界判定点 同上 同上
+	Dim ENCHANTMENT_LEVEL_0 = Array(0,0, "B5C3D6", -3,18, "B5C7D6", -184,62, "767D82", -145,61, "8CA3B6", -190,53, "9AA2A8") //零级结界判定 //等级判定点选择，不应选择低等级特有的判定点，即，5级判定应该可以适用于5、6两级
+	Dim ENCHANTMENT_LEVEL_1 = Array(0,0, "B5C3D6", -2,18, "B5C7D6", 86,26, "979EA4", 98,17, "424F94", 100,36, "2C3C87") //一级结界判定
+	Dim ENCHANTMENT_LEVEL_2 = Array(0,0, "ADC3D6", -3,24, "B5C7D6", -147,64, "757C81", -154,56, "A1A8AD", -109,61, "8CA3B6") //二级结界判定
+	Dim ENCHANTMENT_LEVEL_3 = Array(0,0, "B5C7D6", -5,91, "B5C7D6", -107,145, "787F84", -114,139, "A8AFB5", -67,141, "8CA3B6") //三级结界判定
+	Dim ENCHANTMENT_LEVEL_4 = Array(0,0, "B5C7D6", 1,15, "B5CBDE", -62,54, "7A8187", -67,47, "959CA2", -20,51, "8CA3B6") //四级结界判定
+	Dim ENCHANTMENT_LEVEL_5 = Array(0,0, "B5C7D6", -1,18, "B5CBDE", -62,56, "747B80", -68,49, "959CA2", -26,57, "8CA2B3") //五级结界判定
+	Dim ENCHANTMENT_LEVEL_6 = Array(0,0, "AFC3D6", -2,27, "B5CBDE", -182,66, "767D83", -24,66, "798086", 9,64, "B5C7D6") //六级结界判定
+	Dim ENCHANTMENT_LEVEL = Array(ENCHANTMENT_LEVEL_0, ENCHANTMENT_LEVEL_1, ENCHANTMENT_LEVEL_2, ENCHANTMENT_LEVEL_3, ENCHANTMENT_LEVEL_4, ENCHANTMENT_LEVEL_5, ENCHANTMENT_LEVEL_6)
+	Dim ENCHANTMENT_SIZE = Array(332, 128) //结界大小
+	Dim ENCHANTMENT_INTERVAL = Array(10, 5)//结界之间的间隔
+	Dim PERSON_ENCHANTMENT_POSITION_START = Array(131,92) //个人结节突破，结界选择列表的起始位置
+	Dim PERSON_ENCHANTMENT_ROW = 3 //个人结界列表行数
+	Dim PERSON_ENCHANTMENT_COL = 3 //个人结界列表列数
+	
+	//判断是否位于choose enchantment scene
+	If isEnchantmentChooseScene(mode) = False Then 
+		TracePrint "current is not choose enchantment scene."
+		chooseEnchantment = False
+		Exit Function
+	End If
+	
+	//根据mode 寻找挑战对象
+	Dim x = -1
+	Dim y = -1
+	If mode = 0 Then 
+		//iterator every cell
+		Dim i = 0
+		Dim j = 0
+		Do While i < PERSON_ENCHANTMENT_COL
+			
+			Do While j < PERSON_ENCHANTMENT_ROW
+				TracePrint "row "&i+1&" col "&j+1
+        		TracePrint "find in "&PERSON_ENCHANTMENT_POSITION_START(0) + (ENCHANTMENT_SIZE(0) + ENCHANTMENT_INTERVAL(0)) * j&","&PERSON_ENCHANTMENT_POSITION_START(1) + (ENCHANTMENT_SIZE(1) + ENCHANTMENT_INTERVAL(1)) * i&" "&PERSON_ENCHANTMENT_POSITION_START(0) + (ENCHANTMENT_SIZE(0) + ENCHANTMENT_INTERVAL(0))  * j + ENCHANTMENT_SIZE(0) + ENCHANTMENT_INTERVAL(0)&","&PERSON_ENCHANTMENT_POSITION_START(1) + (ENCHANTMENT_SIZE(1) + ENCHANTMENT_INTERVAL(1)) * i + ENCHANTMENT_SIZE(1) + ENCHANTMENT_INTERVAL(1)
+        		//寻找个人结界
+				FindMultiColor(PERSON_ENCHANTMENT_POSITION_START(0) + (ENCHANTMENT_SIZE(0) + ENCHANTMENT_INTERVAL(0)) * j, PERSON_ENCHANTMENT_POSITION_START(1) + (ENCHANTMENT_SIZE(1) + ENCHANTMENT_INTERVAL(1)) * i, PERSON_ENCHANTMENT_POSITION_START(0) + (ENCHANTMENT_SIZE(0) + ENCHANTMENT_INTERVAL(0))  * j + ENCHANTMENT_SIZE(0) + ENCHANTMENT_INTERVAL(0), PERSON_ENCHANTMENT_POSITION_START(1) + (ENCHANTMENT_SIZE(1) + ENCHANTMENT_INTERVAL(1)) * i + ENCHANTMENT_SIZE(1) + ENCHANTMENT_INTERVAL(1),ENCHANTMENT(2),ENCHANTMENT(3)&"|"&ENCHANTMENT(4)&"|"&ENCHANTMENT(5)&","&ENCHANTMENT(6)&"|"&ENCHANTMENT(7)&"|"&ENCHANTMENT(8)&","&ENCHANTMENT(9)&"|"&ENCHANTMENT(10)&"|"&ENCHANTMENT(11)&","&ENCHANTMENT(12)&"|"&ENCHANTMENT(13)&"|"&ENCHANTMENT(14),0,0.9,x,y)
+        		If x > -1 And y > -1 Then 
+        			//找到结界
+        			TracePrint "find enchantment in "&x&","&y
+					//对找到的enchantment进行等级判定
+						//判定方式，对于给定的levelmark只要找到则说明满足需求
+					For k = 0 To level - 1
+						Dim levelMark = ENCHANTMENT_LEVEL(k)
+						Dim levelX = -1
+						Dim levelY = -1
+						FindMultiColor(PERSON_ENCHANTMENT_POSITION_START(0) + (ENCHANTMENT_SIZE(0) + ENCHANTMENT_INTERVAL(0)) * j, PERSON_ENCHANTMENT_POSITION_START(1) + (ENCHANTMENT_SIZE(1) + ENCHANTMENT_INTERVAL(1)) * i, PERSON_ENCHANTMENT_POSITION_START(0) + (ENCHANTMENT_SIZE(0) + ENCHANTMENT_INTERVAL(0))  * j + ENCHANTMENT_SIZE(0) + ENCHANTMENT_INTERVAL(0), PERSON_ENCHANTMENT_POSITION_START(1) + (ENCHANTMENT_SIZE(1) + ENCHANTMENT_INTERVAL(1)) * i + ENCHANTMENT_SIZE(1) + ENCHANTMENT_INTERVAL(1),levelMark(2),levelMark(3)&"|"&levelMark(4)&"|"&levelMark(5)&","&levelMark(6)&"|"&levelMark(7)&"|"&levelMark(8)&","&levelMark(9)&"|"&levelMark(10)&"|"&levelMark(11)&","&levelMark(12)&"|"&levelMark(13)&"|"&levelMark(14),0,0.9,levelX,levelY)
+        				If levelX > -1 And levelY > -1 Then 
+        					//找到对应等级判定点，满足要求
+        					chooseEnchantment = Array(PERSON_ENCHANTMENT_POSITION_START(0) + (ENCHANTMENT_SIZE(0) + ENCHANTMENT_INTERVAL(0)) * j + (ENCHANTMENT_SIZE(0) / 2), PERSON_ENCHANTMENT_POSITION_START(1) + (ENCHANTMENT_SIZE(1) + ENCHANTMENT_INTERVAL(1)) * i + (ENCHANTMENT_SIZE(1) / 2))
+        					TracePrint "find level "&k&" enchantment in position "&x&","&y
+        					Exit Function
+        				Else 
+        					//未找到
+        					TracePrint "not match enchantment"
+        				End If
+					Next
+        		End If 
+				
+				j = j + 1
+			Loop
+			j = 0 
+			i = i + 1
+		Loop
+		
+		//未找到结界，则根据参数选择战败结界
+		If again Then 
+			TracePrint "can not find unfight enchantent, now, start find failed enchantment."
+        	Dim failedX = -1
+        	Dim failedY = -1
+        	FindMultiColor(0, 0, 0, 0,ENCHANTMENT_FAILED(2),ENCHANTMENT_FAILED(3)&"|"&ENCHANTMENT_FAILED(4)&"|"&ENCHANTMENT_FAILED(5)&","&ENCHANTMENT_FAILED(6)&"|"&ENCHANTMENT_FAILED(7)&"|"&ENCHANTMENT_FAILED(8)&","&ENCHANTMENT_FAILED(9)&"|"&ENCHANTMENT_FAILED(10)&"|"&ENCHANTMENT_FAILED(11)&","&ENCHANTMENT_FAILED(12)&"|"&ENCHANTMENT_FAILED(13)&"|"&ENCHANTMENT_FAILED(14),1,0.9,failedX,failedY)
+        	If failedX > -1 And failedY > -1 Then 
+        		//找到战败结界，因为战败结界是挑战过的，说明等级是符合要求，直接返回即可
+        		TracePrint "find a fight failed enchantment in "&failedX&","&failedY
+        		chooseEnchantment = Array(failedX, failedY)
+        		Exit Function
+        	Else 
+        		//未找到战败结界
+        		TracePrint "can not find fight failed enchantment."
+        		chooseEnchantment = False
+        		Exit Function
+        	End If
+		End If
+        
+	ElseIf mode = 1 Then
+		//寻找寮结界
+		FindMultiColor(0, 0, 0, 0,ENCHANTMENT(2),ENCHANTMENT(3)&"|"&ENCHANTMENT(4)&"|"&ENCHANTMENT(5)&","&ENCHANTMENT(6)&"|"&ENCHANTMENT(7)&"|"&ENCHANTMENT(8)&","&ENCHANTMENT(9)&"|"&ENCHANTMENT(10)&"|"&ENCHANTMENT(11)&","&ENCHANTMENT(12)&"|"&ENCHANTMENT(13)&"|"&ENCHANTMENT(14),1,0.9,x,y)
+        If x > -1 And y > -1 Then 
+        	//找到结界
+        	TracePrint "find org enchantment in "&x&","&y
+        	//对找到的enchantment进行等级判定
+				//判定方式，对于给定的levelmark只要找不到则说明满足需求
+			levelMark = ENCHANTMENT_LEVEL(level-1)
+			levelX = -1
+			levelY = -1
+			FindMultiColor(x, y, x + ENCHANTMENT_SIZE(0), y + ENCHANTMENT_SIZE(1),levelMark(2),levelMark(3)&"|"&levelMark(4)&"|"&levelMark(5)&","&levelMark(6)&"|"&levelMark(7)&"|"&levelMark(8)&","&levelMark(9)&"|"&levelMark(10)&"|"&levelMark(11)&","&levelMark(12)&"|"&levelMark(13)&"|"&levelMark(14),1,0.9,levelX,levelY)
+        	If levelX > -1 And levelY > -1 Then 
+        		//找到对应等级判定点，则说明为大于参数等级的结界，放弃
+        		TracePrint "can not find org enchantment"
+        		chooseEnchantment = False
+        		Exit Function
+        	Else 
+        		//未找到，满足要求
+        		chooseEnchantment = Array(x + (ENCHANTMENT_SIZE(0) / 2), y + (ENCHANTMENT_SIZE(1) / 2))
+        		TracePrint "find level "&level&" org enchantment in position "&x&","&y
+        		Exit Function
+        	End If
+        Else 
+        	//未找到结界，则根据参数选择战败结界
+        	TracePrint "can not find unfight org enchantent, now, start find failed org enchantment."
+        	failedX = -1
+        	failedY = -1
+        	FindMultiColor(0, 0, 0, 0,ENCHANTMENT_FIGHTED(2),ENCHANTMENT_FIGHTED(3)&"|"&ENCHANTMENT_FIGHTED(4)&"|"&ENCHANTMENT_FIGHTED(5)&","&ENCHANTMENT_FIGHTED(6)&"|"&ENCHANTMENT_FIGHTED(7)&"|"&ENCHANTMENT_FIGHTED(8)&","&ENCHANTMENT_FIGHTED(9)&"|"&ENCHANTMENT_FIGHTED(10)&"|"&ENCHANTMENT_FIGHTED(11)&","&ENCHANTMENT_FIGHTED(12)&"|"&ENCHANTMENT_FIGHTED(13)&"|"&ENCHANTMENT_FIGHTED(14),1,0.9,failedX,failedY)
+        	If failedX > -1 And failedY > -1 Then 
+        		//找到战败结界，因为战败结界是挑战过的，说明等级是符合要求，直接返回即可
+        		TracePrint "find a org fight failed enchantment in "&failedX&","&failedY
+        		chooseEnchantment = Array(failedX, failedY)
+        		Exit Function
+        	Else 
+        		//未找到战败结界
+        		TracePrint "can not find fight failed org enchantment."
+        		chooseEnchantment = False
+        		Exit Function
+        	End If
+        End If
+	Else 
+		//未知的结界模式
+		TracePrint "unknow enchantment mode by "&mode
+		chooseEnchantment = False
+		Exit Function
+	End If
+	
+	
+End Function
+
+
+/**
+ * 获取当前可用挑战券数量
+ * return Int 
+ */
+Function getFightNum
+	getFightNum = 30
+End Function
+
+//Test
+//Dim result = chooseEnchantment(2, False, 0)
+//TracePrint result
+//enterEnchantment(result)
+//EndScript
+/**
+ * 进入指定坐标的结界
+ * @param coordinate Array 进入结界的坐标
+ * @return True|False
+ */ 
+Function enterEnchantment(coordinate)
+	Dim ENTER_BUTTON = Array(0,0, "5AB2F7",-24,-6,"202528",23,8,"202529",-60,-25,"183C94",59,20,"10459C") //结界战斗开始按钮 5点
+	Dim ENCHANTMENT_SIZE = Array(332, 128) //结界大小
+	
+
+	//判断当前是否处于结界突破
+	If isEnchantmentChooseSceneUni() = False Then 
+		TracePrint "current scene is not fight enchantment scene."
+		enterEnchantment = False
+		Exit Function
+	End If
+	
+	//进入坐标
+	Do Until isEnterEnchantmentSceneUni()
+		TracePrint "enter to attack scene"
+		TracePrint "tap "&coordinate(0)&","&coordinate(1)
+		Tap coordinate(0), coordinate(1)
+		Delay yysLib_utils.WAIT_NORMAL
+		If isEnterEnchantmentSceneUni() = False Then 
+			//判断是否仍旧位于选择结界场景
+			If isEnchantmentChooseSceneUni() Then 
+				//是则继续执行循环
+			Else 
+				//否则说明出现意外，退出循环，进入下一步
+				Exit Do
+			End If
+		End If
+	Loop
+	
+	//点击进入按钮
+	Dim findStartX = coordinate(0) - (ENCHANTMENT_SIZE(0) / 2)
+	Dim findStratY = coordinate(1) - (ENCHANTMENT_SIZE(1) / 2)
+	Dim findEndX = coordinate(0) + ENCHANTMENT_SIZE(0)
+	Dim findEndY = coordinate(1) + ENCHANTMENT_SIZE(1)
+	Do Until yysLib_fight.isFightScene()
+		TracePrint "waiting for fight scene."
+		Dim x = -1
+		Dim y = -1
+		TracePrint "find in "&findStartX&","&findStratY&"  "&findEndX&","&findEndY
+		FindMultiColor(findStartX, findStratY, findEndX, findEndY,ENTER_BUTTON(2),ENTER_BUTTON(3)&"|"&ENTER_BUTTON(4)&"|"&ENTER_BUTTON(5)&","&ENTER_BUTTON(6)&"|"&ENTER_BUTTON(7)&"|"&ENTER_BUTTON(8)&","&ENTER_BUTTON(9)&"|"&ENTER_BUTTON(10)&"|"&ENTER_BUTTON(11)&","&ENTER_BUTTON(12)&"|"&ENTER_BUTTON(13)&"|"&ENTER_BUTTON(14),1,0.9,x,y)
+        If x > -1 And y > -1 Then 
+        	//找到攻击按钮，则开始攻击
+        	Tap x, y
+        Else 
+        	TracePrint "can not find attack button."
+        End If
+        
+        Delay yysLib_utils.WAIT_NORMAL
+	Loop
+	enterEnchantment = True
+	
+End Function
+
+/**
+ * 判断当前屏幕是否处于进入结界的场景
+ * @param Int mode 0 个人结界突破 1 寮结界突破
+ * @return True|False
+ */
+Function isEnterEnchantmentScene(mode)
+	Dim PERSON_ENCHANTMENT = Array(582,50, "596163", 627,48, "5C6466", 649,46, "535A5D", 229,635,"254966",1107,632,"120D55") //个人结界判定点 5点
+	Dim ENCHANTMENT = Array(582,49, "5C6466",649,46,"535A5D",402,122,"4B5055",1204,324,"586265",1166,631,"151C23") //寮结界判定点 5点
+
+	If mode = 0 Then 
+		//person enchantment
+    	Dim cmpResult = CmpColorEx(PERSON_ENCHANTMENT(0)&"|"&PERSON_ENCHANTMENT(1)&"|"&PERSON_ENCHANTMENT(2)&","&PERSON_ENCHANTMENT(3)&"|"&PERSON_ENCHANTMENT(4)&"|"&PERSON_ENCHANTMENT(5)&","&PERSON_ENCHANTMENT(6)&"|"&PERSON_ENCHANTMENT(7)&"|"&PERSON_ENCHANTMENT(8)&","&PERSON_ENCHANTMENT(9)&"|"&PERSON_ENCHANTMENT(10)&"|"&PERSON_ENCHANTMENT(11)&","&PERSON_ENCHANTMENT(12)&"|"&PERSON_ENCHANTMENT(13)&"|"&PERSON_ENCHANTMENT(14), 0.9)
+    	If cmpResult = 1 Then 
+        	isEnterEnchantmentScene = True
+    	Else 
+        	isEnterEnchantmentScene = False
+    	End If
+	ElseIf mode = 1 Then
+		//org enchantment
+		cmpResult = CmpColorEx(ENCHANTMENT(0)&"|"&ENCHANTMENT(1)&"|"&ENCHANTMENT(2)&","&ENCHANTMENT(3)&"|"&ENCHANTMENT(4)&"|"&ENCHANTMENT(5)&","&ENCHANTMENT(6)&"|"&ENCHANTMENT(7)&"|"&ENCHANTMENT(8)&","&ENCHANTMENT(9)&"|"&ENCHANTMENT(10)&"|"&ENCHANTMENT(11)&","&ENCHANTMENT(12)&"|"&ENCHANTMENT(13)&"|"&ENCHANTMENT(14), 0.9)
+    	If cmpResult = 1 Then 
+        	isEnterEnchantmentScene = True
+    	Else 
+        	isEnterEnchantmentScene = False
+    	End If
+	Else 
+		//unknow enchantment mode
+		TracePrint "unknow enchantment mode by "&mode
+		isEnterEnchantmentScene = False
+	End If
+End Function
+
+/**
+ * 判断当前屏幕是否处于进入结界的场景
+ * @return True|False
+ */
+Function isEnterEnchantmentSceneUni
+	Dim result = isEnterEnchantmentScene(0)
+	result = result Or isEnterEnchantmentScene(1)
+	
+	If result = False Then 
+		isEnterEnchantmentSceneUni = False
+	Else 
+		isEnterEnchantmentSceneUni = True
+	End If
+End Function
+
+/**
+ * 战斗
+ * @return True|False
+ */
+Function fight
+
+	//进入战斗成功,点击准备,开始战斗
+	Dim fightStartResult = False
+	Do Until fightStartResult
+		fightStartResult = yysLib_fight.fightStart()
+		Delay yysLib_utils.WAIT_NORMAL
+	Loop
+	TracePrint "fighting"
+	//开始战斗成功，等待战斗结束
+	Dim fightCompleteResult = False
+	Do Until fightCompleteResult
+		fightCompleteResult = yysLib_fight.isFightEnd()
+		Delay yysLib_utils.WAIT_LONG
+	Loop
+	TracePrint "fight complete"
+	
+	//战斗结束，领取奖励返回choose monster scene
+	Dim backChooseEnchantmentSceneResult = False
+	Do Until backChooseEnchantmentSceneResult
+		Tap yysLib_utils.SCREEN_WIDTH / 2, yysLib_utils.SCREEN_HEIGHT * 0.8
+		Delay yysLib_utils.WAIT_NORMAL
+		backChooseEnchantmentSceneResult = isEnchantmentChooseSceneUni()
+		TracePrint "back to choose enchantment scene"
+	Loop
+End Function

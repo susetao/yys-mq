@@ -1,0 +1,174 @@
+
+Randomize
+
+Dim WAIT_SHORT = 500 + Int(((100-0+1) * Rnd()) + 1) //短暂等待时间
+Dim WAIT_NORMAL = 1000 + Int(((300-0+1) * Rnd()) + 1) //一般等待时间
+Dim WAIT_LONG = 1500 + Int(((500-0+1) * Rnd()) + 1) //长等待时间
+		
+Dim SCREEN_WIDTH = 1024
+Dim SCREEN_HEIGHT = 576
+	
+
+/*Function chooseMonsterByMatrx()
+	Dim cmdFightResult = False
+	Dim otherObjectPointer = Array(-1, -1) //寻找到的不正确的点
+	Do Until cmdFightResult
+		Dim findArea = Array(0, 0) //寻找区域起始点，因为是左上到右下的寻找方式所以可以这么写。排除不正确的点的区域
+		
+		If otherObjectPointer(0) < screenWidth
+			findArea(0) = otherObjectPointer(0) + 1
+		Else 
+			findArea(0) = otherObjectPointer(0)
+		End If
+		If otherObjectPointer(1) < screenHeight
+			findArea(1) = otherObjectPointer(1) + 1
+		Else 
+			findArea(1) = otherObjectPointer(1)
+		End If
+		TracePrint "find area start point "&findArea(0)&","&findArea(1)
+		
+		Dim monsterX, monsterY
+		If FindColor(findArea(0), findArea(1), screenWidth, screenHeight, MONSTER(2), 0, 0.9, monsterX, monsterY) > -1 //寻找第一个点
+			TracePrint "finded monster object first point "&monsterX&","&monsterY
+			
+			Dim cmpMonsterResult = CmpColor(monsterX + MONSTER(3), monsterY + MONSTER(4), MONSTER(5), 0.9) > -1 And CmpColor(monsterX + MONSTER(6), monsterY + MONSTER(7), MONSTER(8), 0.9) > -1 And CmpColor(monsterX + MONSTER(9), monsterY + MONSTER(10), MONSTER(11), 0.9)
+			
+			If cmpMonsterResult  //判断是否为怪物对象
+				TracePrint "cmp result code 1"
+				TracePrint "fight monster position "&monsterX&","&monsterY
+				Tap monsterX, monsterY
+				cmdFightResult = True
+			Else 
+				TracePrint "cmp result code 0"
+			End If
+			
+			TracePrint "position "&monsterX&","&monsterY
+		Else 
+			//未寻找到第一个点
+			TracePrint "point "&monsterX&","&monsterY&"is not moster object"
+		End If
+		
+		otherObjectPointer(0) = monsterX
+		otherObjectPointer(1) = monsterY
+	Loop
+End Function
+*/
+
+//Test
+//Dim area = Array(0, 0, 1024, 576)
+//Call findMonsterByImage(area)
+/**
+ * 通过图片来选择怪物对象\
+ * @param area Array(startX, startY, endX, endY) 
+ * @return Array(x,y) 怪物坐标 未找到则返回FALSE
+ */
+Function findMonsterByImage(area)
+	Dim intX, intY
+	FindPic 0, 0, 0, 0, "Attachment:monster.png","000000", 0, 0.8, intX, intY
+	If intX > -1 And intY > -1 Then 
+		//找到图片直接返回
+		TracePrint "fonud monster in "&intX&","&intY
+		findMonsterByImage = Array(intX, intY)
+	Else 
+		//未找到图片，则开始滑动当前界面
+		Dim swipeResult = -1
+		Dim findResult = False
+		Do Until swipeResult > -1 Or findResult
+			
+			Dim startPointColor = GetPixelColor(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4) //参考点
+			
+			Delay WAIT_NORMAL
+			
+			Swipe SCREEN_WIDTH * 0.7, SCREEN_HEIGHT/2, SCREEN_WIDTH * 0.3, SCREEN_HEIGHT/2//每次移动一个屏幕的距离
+			
+			Delay WAIT_NORMAL
+			
+			swipeResult = CmpColor(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4, startPointColor, 1)
+			
+			FindPic 0, 0, 0, 0, "Attachment:monster.png","000000", 0, 0.8, intX, intY
+			If intX > -1 And intY > -1 Then 
+				//找到图片直接返回
+				findResult = True
+				TracePrint "fonud monster in "&intX&","&intY
+				findMonsterByImage = Array(intX, intY)
+				Exit Function
+			End If
+			
+			Delay WAIT_NORMAL
+		Loop
+		
+		TracePrint "not found monster . swipeResult "&swipeResult
+		findMonsterByImage = False
+	End If
+
+End Function
+
+
+//Tset
+//Call findBossByImage()
+//EndScript
+
+/**
+ * 通过图片寻找boss
+ * @author Wszl
+ * @date 2017-02-12
+ * @return 找到boss则返回坐标，否则返回false
+ */
+Function findBossByImage()
+	//遍历当前屏幕，寻找boss
+	Dim FIND_NUM = 3 //定义寻找次数
+	
+	Do Until FIND_NUM < 0
+		Dim intX, intY
+		FindPic 0, 0, 0, 0, "Attachment:monster_boss.png","000000", 0, 0.7, intX, intY
+		If intX > -1 And intY > -1 Then
+			//寻找到boss，则直接返回该坐标
+			TracePrint "found boss in "&intX&","&intY
+			findBossByImage = Array(intX, intY)
+			Exit Function
+		End If
+		//没有寻找到boss则继续查找
+		FIND_NUM = FIND_NUM - 1
+		
+		Delay WAIT_SHORT
+	Loop
+	
+	//FIND_NUM次内仍未找到boss，则直接返回false
+	TracePrint "not found boss"
+	findBossByImage = False
+
+End Function
+
+//Tset
+Call findSceneReward()
+EndScript
+
+/**
+ * 寻找场景奖励
+ * @author Wszl
+ * @date 2017-02-12
+ * @return 成功找到则返回奖励坐标，否则返回false
+ */
+Function findSceneReward()
+	//遍历当前屏幕，寻找奖励
+	Dim FIND_NUM = 3 //定义寻找次数
+	
+	Do Until FIND_NUM < 0
+		Dim intX, intY
+		FindPic 0, 0, 0, 0, "Attachment:scene_reward.png","000000", 0, 0.8, intX, intY
+		If intX > -1 And intY > -1 Then
+			//寻找到奖励，则直接返回该坐标
+			TracePrint "found reward in "&intX&","&intY
+			findSceneReward = Array(intX, intY)
+			Exit Function
+		End If
+		//没有寻找到reward 则继续查找
+		FIND_NUM = FIND_NUM - 1
+		
+		Delay WAIT_SHORT
+	Loop
+	
+	//FIND_NUM次内仍未找到reward ，则直接返回false
+	TracePrint "not found reward"
+	findSceneReward = False
+End Function

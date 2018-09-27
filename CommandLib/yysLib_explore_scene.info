@@ -1,0 +1,99 @@
+
+{
+	"Description" : null,
+	"chooseChapter" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"chooseChapterEnter" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"chooseChapterLevel" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"chooseChapterMode" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"chooseJueXinBoss" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"chooseJueXingLevelAndMode" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"chooseTuPo" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"chooseTuPoObjective" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"enterChooseMonsterScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"exitExploreChooseScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"exitExploreScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"exitExploreSceneJueXin" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"findExploreSeal" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"getChapterNum" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"getTuPoVoucher" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isExploreChooseBossScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isExploreChooseScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isExploreScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isExploreSceneJueXinBoss" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	}
+}

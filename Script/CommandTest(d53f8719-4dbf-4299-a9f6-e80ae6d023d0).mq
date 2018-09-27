@@ -1,0 +1,8 @@
+KeepCapture
+Dim intX, intY
+FindMultiColor 0, 0, 0, 0, "f7f6e5", "-9|0|040402,9|0|483413,-9|25|98170f,9|25|5d0f0b", 1, 0.9, intX, intY
+//如果没有找到，intX和intY的值都会被置为-1
+If intX > -1 And intY > -1 Then 
+End If
+	
+TracePrint intX&","&intY

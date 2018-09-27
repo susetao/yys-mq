@@ -1,0 +1,29 @@
+
+{
+	"Description" : null,
+	"isDefaultSceenColorDepth" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isDefaultSceenRotation" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isDefaultSceenSize" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isDefaultScreen" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"swipteCustom" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	}
+}

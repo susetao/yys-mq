@@ -1,0 +1,552 @@
+
+Randomize
+
+Dim WAIT_SHORT = 500 + Int(((100-0+1) * Rnd()) + 1) //短暂等待时间
+Dim WAIT_NORMAL = 1000 + Int(((300-0+1) * Rnd()) + 1) //一般等待时间
+Dim WAIT_LONG = 1500 + Int(((500-0+1) * Rnd()) + 1) //长等待时间
+		
+Dim SCREEN_WIDTH = 1280
+Dim SCREEN_HEIGHT = 720
+	
+Import "yysLib_utils.mql"
+
+
+Dim MONSTER_POSITION_OFFSET = Array(10, 10) //寻找到怪物坐标的偏移，因为怪物判定点不是判定的怪物的正中心
+
+/*Function chooseMonsterByMatrx()
+	Dim cmdFightResult = False
+	Dim otherObjectPointer = Array(-1, -1) //寻找到的不正确的点
+	Do Until cmdFightResult
+		Dim findArea = Array(0, 0) //寻找区域起始点，因为是左上到右下的寻找方式所以可以这么写。排除不正确的点的区域
+		
+		If otherObjectPointer(0) < screenWidth
+			findArea(0) = otherObjectPointer(0) + 1
+		Else 
+			findArea(0) = otherObjectPointer(0)
+		End If
+		If otherObjectPointer(1) < screenHeight
+			findArea(1) = otherObjectPointer(1) + 1
+		Else 
+			findArea(1) = otherObjectPointer(1)
+		End If
+		TracePrint "find area start point "&findArea(0)&","&findArea(1)
+		
+		Dim monsterX, monsterY
+		If FindColor(findArea(0), findArea(1), screenWidth, screenHeight, MONSTER(2), 0, 0.9, monsterX, monsterY) > -1 //寻找第一个点
+			TracePrint "finded monster object first point "&monsterX&","&monsterY
+			
+			Dim cmpMonsterResult = CmpColor(monsterX + MONSTER(3), monsterY + MONSTER(4), MONSTER(5), 0.9) > -1 And CmpColor(monsterX + MONSTER(6), monsterY + MONSTER(7), MONSTER(8), 0.9) > -1 And CmpColor(monsterX + MONSTER(9), monsterY + MONSTER(10), MONSTER(11), 0.9)
+			
+			If cmpMonsterResult  //判断是否为怪物对象
+				TracePrint "cmp result code 1"
+				TracePrint "fight monster position "&monsterX&","&monsterY
+				Tap monsterX, monsterY
+				cmdFightResult = True
+			Else 
+				TracePrint "cmp result code 0"
+			End If
+			
+			TracePrint "position "&monsterX&","&monsterY
+		Else 
+			//未寻找到第一个点
+			TracePrint "point "&monsterX&","&monsterY&"is not moster object"
+		End If
+		
+		otherObjectPointer(0) = monsterX
+		otherObjectPointer(1) = monsterY
+	Loop
+End Function
+*/
+
+//Test
+//Dim area = Array(0, 0, 1024, 576)
+//Call findMonsterByImage(area)
+/**
+ * 通过图片来选择怪物对象
+ * @param area Array(startX, startY, endX, endY) 
+ * @return Array(x,y) 怪物坐标 未找到则返回FALSE
+ */
+Function findMonsterByImage(area)
+    Dim intX, intY
+    FindPic 0, 0, 0, 0, "Attachment:monster.png","000000", 0, 0.8, intX, intY
+    If intX > -1 And intY > -1 Then 
+        //找到图片直接返回
+        TracePrint "fonud monster in "&intX&","&intY
+        findMonsterByImage = Array(intX, intY)
+    Else 
+        //未找到图片，则开始滑动当前界面
+        Dim swipeResult = -1
+        Dim findResult = False
+        Do Until swipeResult > -1 Or findResult
+			
+            Dim startPointColor = GetPixelColor(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4) //参考点
+			
+            Delay WAIT_NORMAL
+			
+            Swipe SCREEN_WIDTH * 0.7, SCREEN_HEIGHT/2, SCREEN_WIDTH * 0.3, SCREEN_HEIGHT/2//每次移动一个屏幕的距离
+			
+            Delay WAIT_NORMAL
+			
+            swipeResult = CmpColor(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4, startPointColor, 1)
+			
+            FindPic 0, 0, 0, 0, "Attachment:monster.png","000000", 0, 0.8, intX, intY
+            If intX > -1 And intY > -1 Then 
+                //找到图片直接返回
+                findResult = True
+                TracePrint "fonud monster in "&intX&","&intY
+                findMonsterByImage = Array(intX, intY)
+                Exit Function
+            End If
+			
+            Delay WAIT_NORMAL
+        Loop
+		
+        TracePrint "not found monster . swipeResult "&swipeResult
+        findMonsterByImage = False
+    End If
+
+End Function
+
+
+//Tset
+//Call findBossByImage()
+//EndScript
+
+/**
+ * 通过图片寻找boss
+ * @author Wszl
+ * @date 2017-02-12
+ * @return 找到boss则返回坐标，否则返回false
+ */
+Function findBossByImage()
+    //遍历当前屏幕，寻找boss
+    Dim FIND_NUM = 3 //定义寻找次数
+	
+    Do Until FIND_NUM < 0
+        Dim intX, intY
+        FindPic 0, 0, 0, 0, "Attachment:monster_boss.png","000000", 0, 0.7, intX, intY
+        If intX > -1 And intY > -1 Then
+            //寻找到boss，则直接返回该坐标
+            TracePrint "found boss in "&intX&","&intY
+            findBossByImage = Array(intX, intY)
+            Exit Function
+        End If
+        //没有寻找到boss则继续查找
+        FIND_NUM = FIND_NUM - 1
+		
+        Delay WAIT_SHORT
+    Loop
+	
+    //FIND_NUM次内仍未找到boss，则直接返回false
+    TracePrint "not found boss"
+    findBossByImage = False
+
+End Function
+
+//Tset
+//TracePrint findSceneReward()
+//EndScript
+
+/**
+ * 寻找场景奖励
+ * @author Wszl
+ * @date 2017-02-12
+ * @return 成功找到则返回奖励坐标，否则返回false
+ */
+Function findSceneReward()
+
+    Dim SCENE_REWARD = Array(0,0,"17327A",1,-18,"162663",-14,-2,"1F4D9F",18,-3,"19529E",-13,7,"D3F4FF",23,0,"BEF6FF",24,-20,"BDF0FF",-17,-24,"0A1315",40,-10,"2A4E72",5,35,"121B1B") //场景奖励判断点&选择点 10点，第一点坐标值无效，其他坐标值为偏移值
+    //遍历当前屏幕，寻找奖励
+    Dim intX, intY
+    FindMultiColor(0,0,0,0,SCENE_REWARD(2),SCENE_REWARD(3)&"|"&SCENE_REWARD(4)&"|"&SCENE_REWARD(5)&","&SCENE_REWARD(6)&"|"&SCENE_REWARD(7)&"|"&SCENE_REWARD(8)&","&SCENE_REWARD(9)&"|"&SCENE_REWARD(10)&"|"&SCENE_REWARD(11)&","&SCENE_REWARD(12)&"|"&SCENE_REWARD(13)&"|"&SCENE_REWARD(14)&","&SCENE_REWARD(15)&"|"&SCENE_REWARD(16)&"|"&SCENE_REWARD(17)&","&SCENE_REWARD(18)&"|"&SCENE_REWARD(19)&"|"&SCENE_REWARD(20)&","&SCENE_REWARD(21)&"|"&SCENE_REWARD(22)&"|"&SCENE_REWARD(23)&","&SCENE_REWARD(24)&"|"&SCENE_REWARD(25)&"|"&SCENE_REWARD(26)&","&SCENE_REWARD(27)&"|"&SCENE_REWARD(28)&"|"&SCENE_REWARD(29),0,0.9,intX,intY)If intX > -1 And intY > -1 Then
+    //寻找到奖励，则直接返回该坐标
+    TracePrint "found reward in "&intX&","&intY
+    findSceneReward = Array(intX, intY)
+    Exit Function
+End If
+		
+	
+//FIND_NUM次内仍未找到reward ，则直接返回false
+TracePrint "not found reward"
+findSceneReward = False
+End Function
+
+/*****************************************************************************************/
+
+//Test
+//TracePrint findMonster()
+/**
+ * 在当前屏幕寻找怪物普通
+ * @return Array(x,y) 找到则返回怪物坐标，否则返回False
+ */
+Function findMonster
+	
+    Dim MONSTER = Array(0,0,"B99090",-6,-28,"9B93E2",20,-1,"8981D0",-9,20,"ACA3EE",-19,-11,"512720") //怪物特征点，5点 第一点的坐标为无效值
+	
+    //判断是否位于选择怪物场景
+    If isChooseMonsterScene() = False Then 
+        TracePrint "current scene is not choose monster scene"
+        findMonster = False
+        Exit Function
+    End If
+	
+    //进行逻辑
+    Dim x,y
+    FindMultiColor(0,0,0,0,MONSTER(2),MONSTER(3)&"|"&MONSTER(4)&"|"&MONSTER(5)&","&MONSTER(6)&"|"&MONSTER(7)&"|"&MONSTER(8)&","&MONSTER(9)&"|"&MONSTER(10)&"|"&MONSTER(11)&","&MONSTER(12)&"|"&MONSTER(13)&"|"&MONSTER(14),0,0.9,x,y)
+    If x > -1 And Y > -1 Then 
+        TracePrint "find monster in "&x&","&y
+        x = x + MONSTER_POSITION_OFFSET(0)
+        y = y + MONSTER_POSITION_OFFSET(1)
+        findMonster = Array(x, y)
+    Else 
+        TracePrint "can not find monster in crrurent screen"
+        findMonster = False
+    End If
+	
+End Function
+
+
+//Test
+//TracePrint findMonsterInScene()
+/**
+ * 在当前场景寻找普通怪物
+ * @param position 当前所处屏幕位置  0 左边 1 中间  2 右边
+ * @return Array(x,y) 怪物坐标 | False
+ */
+Function findMonsterInScene(position)
+	
+    //判断是否位于选择怪物场景
+    If isChooseMonsterScene() = False Then 
+        TracePrint "current scene is not choose monster scene"
+        findMonsterInScene = False
+        Exit Function
+    End If
+	
+    //获取当前场景的位置
+    If position >= 0 Or position <= 2 Then 
+        TracePrint "position is param"
+    Else 
+        position = getChooseMonsterPostion()
+    End If
+	
+    Delay WAIT_NORMAL
+	
+    Dim positionOffest = 300
+    Dim swipeHeight = SCREEN_HEIGHT * 0.75
+    //先向右滑动至右场景，然后返回到左场景，再向右判断，直到与markPoint点重合
+    Dim endPoint = Array(1127,719,"000000",1246,719,"000000",1278,719,"000000",1190,719,"000000",1108,719,"000000") //端点判定点，仅坐标值有效 5点 用于判断是否位于场景边缘，应实时获取
+    Dim startX,endX 
+    Dim swipeResult = 0
+    Do Until swipeResult > 0
+        //获取endPoint中指定坐标点的颜色值
+        For i = 0 To 14 Step 3	
+            endPoint(i+2) = GetPixelColor(endPoint(i),endPoint(i+1))
+        Next
+		
+        //寻找怪物坐标
+        Dim findMonsterResult = findMonster()
+        If findMonsterResult <> False Then 
+            findMonsterInScene = findMonsterResult
+            Exit Function
+        End If
+		
+        //根据屏幕所处的位置，给予移动方向
+        If position = 0 Then 
+            startX = SCREEN_WIDTH / 2 //定义移动方向，默认为右移
+            endX = 0
+        ElseIf position = 1 Then
+            startX = SCREEN_WIDTH / 2 
+            endX = 0
+        Else 
+            startX = 0
+            endX = SCREEN_WIDTH / 2
+        End If
+        Swipe startX, swipeHeight, endX, swipeHeight, WAIT_SHORT //移动半个屏幕
+		
+        Delay WAIT_SHORT
+		
+        swipeResult = CmpColorEx(endPoint(0)&"|"&endPoint(1)&"|"&endPoint(2)&","&endPoint(3)&"|"&endPoint(4)&"|"&endPoint(5)&","&endPoint(6)&"|"&endPoint(7)&"|"&endPoint(8)&","&endPoint(9)&"|"&endPoint(10)&"|"&endPoint(11)&","&endPoint(12)&"|"&endPoint(13)&"|"&endPoint(14), 1.0)
+	
+        //移动到端点，因为镜头初始处于中间位置的时候，左边是没有探索的，所以需要进行探索
+        If swipeResult = 1 And position = 0 Then 
+            swipeResult = -1
+            position = 2
+        End If
+		
+    Loop 
+	
+    //遍历整个scene依旧未能发现则返回false
+    findMonsterInScene = False
+	
+End Function
+
+//Test
+//TracePrint findBoss()
+/**
+ * 在当前屏幕寻找boss
+ * @return Array(x,y) | False
+ */
+Function findBoss
+    Dim BOSS = Array(0,0,"5F3E46",-25,-9,"629FE3",-22,-6,"1D1EA5",0,-2,"72494D",16,3,"D4E4EC") //BOSS特征点，5点 第一点的坐标为无效值
+	
+    //判断是否位于选择怪物场景
+    If isChooseMonsterScene() = False Then 
+        TracePrint "current scene is not choose monster scene"
+        findBoss = False
+        Exit Function
+    End If
+	
+    //进行逻辑
+    Dim x,y
+    FindMultiColor(0,0,0,0,BOSS(2),BOSS(3)&"|"&BOSS(4)&"|"&BOSS(5)&","&BOSS(6)&"|"&BOSS(7)&"|"&BOSS(8)&","&BOSS(9)&"|"&BOSS(10)&"|"&BOSS(11)&","&BOSS(12)&"|"&BOSS(13)&"|"&BOSS(14),0,0.9,x,y)
+    If x > -1 And Y > -1 Then 
+        TracePrint "find boss in "&x&","&y
+        x = x + MONSTER_POSITION_OFFSET(0)
+        y = y + MONSTER_POSITION_OFFSET(1)
+        findBoss = Array(x, y)
+    Else 
+        TracePrint "can not find boss in crrurent screen"
+        findBoss = False
+    End If
+End Function
+
+//Test
+//TracePrint findBossInScene()
+//EndScript
+/**
+ * 在当前场景寻找boss
+ * @return Array(x,y) | False
+ */
+Function findBossInScene
+    //判断是否位于选择怪物场景
+    If isChooseMonsterScene() = False Then 
+        TracePrint "current scene is not choose monster scene"
+        findBossInScene = False
+        Exit Function
+    End If
+	
+    //获取当前场景的位置
+    Dim position = getChooseMonsterPostion()
+	
+    Delay WAIT_NORMAL
+	
+    Dim positionOffest = 300
+    Dim swipeHeight = SCREEN_HEIGHT * 0.75
+    //先向右滑动至右场景，然后返回到左场景，再向右判断，直到与markPoint点重合
+    Dim endPoint = Array(1127,719,"000000",1246,719,"000000",1278,719,"000000",1190,719,"000000",1108,719,"000000") //端点判定点，仅坐标值有效 5点 用于判断是否位于场景边缘，应实时获取
+    Dim startX,endX 
+    Dim swipeResult = 0
+    Do Until swipeResult > 0
+        //获取endPoint中指定坐标点的颜色值
+        For i = 0 To 14 Step 3	
+            endPoint(i+2) = GetPixelColor(endPoint(i),endPoint(i+1))
+        Next
+		
+        //寻找boss坐标
+        Dim findBossResult = findBoss()
+        If findBossResult <> False Then 
+            findBossInScene = findBossResult
+            Exit Function
+        End If
+		
+        //根据屏幕所处的位置，给予移动方向
+        If position = 0 Then 
+            startX = SCREEN_WIDTH / 2 //定义移动方向，默认为右移
+            endX = 0
+        ElseIf position = 1 Then
+            startX = SCREEN_WIDTH / 2 
+            endX = 0
+        Else 
+            startX = 0
+            endX = SCREEN_WIDTH / 2
+        End If
+        Swipe startX, swipeHeight, endX, swipeHeight, WAIT_SHORT //移动半个屏幕
+		
+        Delay WAIT_SHORT
+		
+        swipeResult = CmpColorEx(endPoint(0)&"|"&endPoint(1)&"|"&endPoint(2)&","&endPoint(3)&"|"&endPoint(4)&"|"&endPoint(5)&","&endPoint(6)&"|"&endPoint(7)&"|"&endPoint(8)&","&endPoint(9)&"|"&endPoint(10)&"|"&endPoint(11)&","&endPoint(12)&"|"&endPoint(13)&"|"&endPoint(14), 1.0)
+	
+        //移动到端点，因为镜头初始处于中间位置的时候，左边是没有探索的，所以需要进行探索
+        If swipeResult = 1 And position = 0 Then 
+            swipeResult = -1
+            position = 2
+        End If
+		
+    Loop 
+	
+    //遍历整个scene依旧未能发现则返回false
+    findBossInScene = False
+End Function
+
+//Test
+//TracePrint findChooseMonsterSceneReward()
+/**
+ * 在当前屏幕寻找战斗奖励
+ * @return Array(x,y) | False
+ */
+Function findChooseMonsterSceneReward
+	
+    Dim REWARD = Array(0,0,"17347C",-3,-20,"6DCCF6",26,-19,"B3E9FB",-15,12,"A3E6F9",15,12,"B6F1FF") //REWARD特征点，5点 第一点的坐标为无效值
+	
+    //判断是否位于选择怪物场景
+    If isChooseMonsterScene() = False Then 
+        TracePrint "current scene is not choose monster scene"
+        findChooseMonsterSceneReward = False
+        Exit Function
+    End If
+	
+    //进行逻辑
+    Dim x,y
+    FindMultiColor(0,0,0,0,REWARD(2),REWARD(3)&"|"&REWARD(4)&"|"&REWARD(5)&","&REWARD(6)&"|"&REWARD(7)&"|"&REWARD(8)&","&REWARD(9)&"|"&REWARD(10)&"|"&REWARD(11)&","&REWARD(12)&"|"&REWARD(13)&"|"&REWARD(14),0,0.9,x,y)
+    If x > -1 And Y > -1 Then 
+        TracePrint "find reward in "&x&","&y
+        findChooseMonsterSceneReward = Array(x, y)
+    Else 
+        TracePrint "can not find reward in crrurent screen"
+        findChooseMonsterSceneReward = False
+    End If
+End Function
+
+//Test
+//TracePrint isChooseMonsterScene()
+//EndScript
+/**
+ * 是否位于选择怪物场景
+ * @return True|False
+ */
+Function isChooseMonsterScene
+    Dim CHOOSE_MONSTER_SCENE = Array(38,66, "FDF5ED", 77,60, "6D341C", 37,571, "5A399B", 21,654, "795861", 1081,641, "AEBDC3", 971,573, "DFF2F7", 1104,574, "3A9AFF", 1196,577, "DEF1F6", 1124,41, "A3CDE5", 1242,628, "2A363E") //选择怪物场景判定点 10 点
+	
+    //使用像素方式判断
+    Dim cmpResult = CmpColorEx(CHOOSE_MONSTER_SCENE(0)&"|"&CHOOSE_MONSTER_SCENE(1)&"|"&CHOOSE_MONSTER_SCENE(2)&","&CHOOSE_MONSTER_SCENE(3)&"|"&CHOOSE_MONSTER_SCENE(4)&"|"&CHOOSE_MONSTER_SCENE(5)&","&CHOOSE_MONSTER_SCENE(6)&"|"&CHOOSE_MONSTER_SCENE(7)&"|"&CHOOSE_MONSTER_SCENE(8)&","&CHOOSE_MONSTER_SCENE(9)&"|"&CHOOSE_MONSTER_SCENE(10)&"|"&CHOOSE_MONSTER_SCENE(11)&","&CHOOSE_MONSTER_SCENE(12)&"|"&CHOOSE_MONSTER_SCENE(13)&"|"&CHOOSE_MONSTER_SCENE(14)&","&CHOOSE_MONSTER_SCENE(15)&"|"&CHOOSE_MONSTER_SCENE(16)&"|"&CHOOSE_MONSTER_SCENE(17)&","&CHOOSE_MONSTER_SCENE(18)&"|"&CHOOSE_MONSTER_SCENE(19)&"|"&CHOOSE_MONSTER_SCENE(20)&","&CHOOSE_MONSTER_SCENE(21)&"|"&CHOOSE_MONSTER_SCENE(22)&"|"&CHOOSE_MONSTER_SCENE(23)&","&CHOOSE_MONSTER_SCENE(24)&"|"&CHOOSE_MONSTER_SCENE(25)&"|"&CHOOSE_MONSTER_SCENE(26)&","&CHOOSE_MONSTER_SCENE(27)&"|"&CHOOSE_MONSTER_SCENE(28)&"|"&CHOOSE_MONSTER_SCENE(29), 0.9)
+    If cmpResult = 1 Then 
+        isChooseMonsterScene = True
+    Else 
+        isChooseMonsterScene = False
+    End If
+End Function
+
+//Test
+//TracePrint getChooseMonsterPostion()
+/**
+ * 获取当前镜头位于scene的位置
+ * @return 0 中间 1 左边 2 右边
+ */
+Function getChooseMonsterPostion
+    Dim positionOffest = 300
+    Dim swipeHeight = SCREEN_HEIGHT * 0.75
+
+
+    //记录当前特征点
+    Dim markPoint = Array(172,708,"000000",682,711,"000000",1149,709,"000000",496,702,"000000",833,700,"000000") //5点 仅坐标值有效，颜色值应该实时获取，用以判断当前镜头位于scene的位置
+    //获取markPoint中指定坐标点的颜色值
+    Dim i
+    For i = 0 To 14 Step 3	
+        markPoint(i + 2) = GetPixelColor(markPoint(i), markPoint(i + 1))
+    Next
+	
+    Delay WAIT_SHORT
+	
+    Dim position = 0 //默认位于中间 1 为左边 2为右边
+    //开始遍历场景 三种情况：1、当屏幕位于最左侧的时候。2、当屏幕位于最右侧的时候。3、当屏幕位于场景的某一处
+    Swipe SCREEN_WIDTH / 2, swipeHeight, SCREEN_WIDTH / 2 + positionOffest, swipeHeight, WAIT_SHORT
+    Delay WAIT_SHORT
+    //判断场景是否位于最左侧
+    If CmpColorEx(markPoint(0)&"|"&markPoint(1)&"|"&markPoint(2)&","&markPoint(3)&"|"&markPoint(4)&"|"&markPoint(5)&","&markPoint(6)&"|"&markPoint(7)&"|"&markPoint(8)&","&markPoint(9)&"|"&markPoint(10)&"|"&markPoint(11)&","&markPoint(12)&"|"&markPoint(13)&"|"&markPoint(14), 1.0) > 0 Then 
+        TracePrint "current scene in left"
+        position = 1
+        getChooseMonsterPostion = 1
+        Exit Function
+    Else 
+        Swipe SCREEN_WIDTH / 2 + positionOffest, swipeHeight, SCREEN_WIDTH / 2, swipeHeight, WAIT_SHORT //重置镜头位置
+        Delay WAIT_SHORT
+    End If
+	
+    Swipe SCREEN_WIDTH / 2, swipeHeight, SCREEN_WIDTH / 2 - positionOffest, swipeHeight, WAIT_SHORT
+    Delay WAIT_SHORT
+    //判断场景是否位于最右侧
+    If CmpColorEx(markPoint(0)&"|"&markPoint(1)&"|"&markPoint(2)&","&markPoint(3)&"|"&markPoint(4)&"|"&markPoint(5)&","&markPoint(6)&"|"&markPoint(7)&"|"&markPoint(8)&","&markPoint(9)&"|"&markPoint(10)&"|"&markPoint(11)&","&markPoint(12)&"|"&markPoint(13)&"|"&markPoint(14), 1.0) > 0 Then 
+        TracePrint "current scene in right"
+        position = 2
+        getChooseMonsterPostion = 2
+    Else
+        Swipe SCREEN_WIDTH / 2 - positionOffest, swipeHeight, SCREEN_WIDTH / 2, swipeHeight, WAIT_SHORT //重置镜头位置
+        Delay WAIT_SHORT
+    End If
+	
+    If position = 0 Then 
+        TracePrint "current scene in center"
+        getChooseMonsterPostion = 0
+    End If
+End Function
+
+//Test
+//TracePrint setTeamLockMode(0)
+//EndScript
+/**
+ * 设置队伍锁定状态
+ * @param mode 0 未锁 1 锁定
+ * @return True|False
+ */
+Function setTeamLockMode(mode)
+    Dim TEAM_BUTTON = Array(1008,647) //队伍状态设置选择点 1点
+	
+    If isChooseMonsterScene() = False Then 
+        TracePrint "current is not choose monster scene"
+        setTeamLockMode = False
+        Exit Function
+    End If
+	
+    //获取当前队伍锁定状态
+    Dim teamlockState = getTeamLockMode()
+    If teamlockState = mode Then 
+        TracePrint "team lock state is right"
+        setTeamLockMode = True
+    Else 
+        TracePrint "team lock state is wrong"
+        Tap TEAM_BUTTON(0), TEAM_BUTTON(1)
+        Dim confirmResult = getTeamLockMode()
+        If confirmResult <> False And confirmResult = mode Then 
+            TracePrint "team lock state is change to right"
+            setTeamLockMode = True
+        Else 
+            TracePrint "team lock state change failed"
+            setTeamLockMode = False
+        End If
+    End If
+	
+	
+End Function
+
+//Test
+TracePrint getTeamLockMode()
+EndScript
+/**
+ * 获取队伍锁定状态
+ * @return 0 未锁 1 锁定 False 获取异常
+ */
+Function getTeamLockMode
+	
+    Dim TEAM_LOCK_MODE = Array(1017,647, "D29BA6", 1016,650, "D0969F", 1031,635, "92CAD5", 1030,642, "1B242F", 1031,664, "9E5640") //队伍锁定判定标志点&选择点 5点
+//    Dim TEAM_UNLOCK_MODE = Array(969,628,"1E2F3D",969,671,"1E2F3D",1001,641,"E95E4B",1001,655,"FFFFFF",1022,657,"2C629A") //队伍未锁判定标志点&选择点 5点
+	
+    If isChooseMonsterScene() = False Then 
+        TracePrint "current is not choose monster scene"
+        getTeamLockMode = False
+        Exit Function
+    End If
+	
+    Dim lockResult = CmpColorEx(TEAM_LOCK_MODE(0)&"|"&TEAM_LOCK_MODE(1)&"|"&TEAM_LOCK_MODE(2)&","&TEAM_LOCK_MODE(3)&"|"&TEAM_LOCK_MODE(4)&"|"&TEAM_LOCK_MODE(5)&","&TEAM_LOCK_MODE(6)&"|"&TEAM_LOCK_MODE(7)&"|"&TEAM_LOCK_MODE(8)&","&TEAM_LOCK_MODE(9)&"|"&TEAM_LOCK_MODE(10)&"|"&TEAM_LOCK_MODE(11)&","&TEAM_LOCK_MODE(12)&"|"&TEAM_LOCK_MODE(13)&"|"&TEAM_LOCK_MODE(14), 0.9)
+//    Dim unlockResult = CmpColorEx(TEAM_UNLOCK_MODE(0)&"|"&TEAM_UNLOCK_MODE(1)&"|"&TEAM_UNLOCK_MODE(2)&","&TEAM_UNLOCK_MODE(3)&"|"&TEAM_UNLOCK_MODE(4)&"|"&TEAM_UNLOCK_MODE(5)&","&TEAM_UNLOCK_MODE(6)&"|"&TEAM_UNLOCK_MODE(7)&"|"&TEAM_UNLOCK_MODE(8)&","&TEAM_UNLOCK_MODE(9)&"|"&TEAM_UNLOCK_MODE(10)&"|"&TEAM_UNLOCK_MODE(11)&","&TEAM_UNLOCK_MODE(12)&"|"&TEAM_UNLOCK_MODE(13)&"|"&TEAM_UNLOCK_MODE(14), 0.8)
+//    If lockResult = 0 And unlockResult = 1 Then 
+//        //未锁
+//        getTeamLockMode = 0
+//    ElseIf lockResult = 1 And unlockResult = 0 Then
+//        //已锁
+//        getTeamLockMode = 1
+//    Else 
+//        TracePrint "team lock status is error"
+//        getTeamLockMode = False
+//    End If
+	getTeamLockMode = lockResult
+End Function

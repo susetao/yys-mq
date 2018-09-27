@@ -1,0 +1,22 @@
+/*
+根据输入的名字来查找指定应用是否运行，若存在则返回true，否则返回false 
+@param appName 应用包名，如 com.tencent.qq
+@date 二〇一六年十一月十四日 22:42:35
+@author Wszl
+@version 0.1
+*/
+Function isRunApp(appName)
+    Dim runApps = getRunningApp() //获得当前运行的app列表
+	
+    //遍历数组
+    For Each name In runApps
+        If name = appName Then 
+            isRunApp = True
+        End If
+    Next
+	
+    isRunApp = False
+End Function
+
+//Test
+TracePrint isRunApp(1)

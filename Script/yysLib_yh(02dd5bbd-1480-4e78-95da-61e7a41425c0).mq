@@ -1,0 +1,184 @@
+
+
+Import "yysLib_explore_scene.mql"
+Import "yysLib_utils.mql"
+Import "yysLib_scene_common.mql"
+Import "yysLib_fight.mql"
+
+
+/**
+ * 是否处于御魂选择界面
+ * @return True|Flase
+ */
+Function isYHBossSelectScene
+	Dim YH_SCENE = Array() //御魂界面判定点  五点
+
+	Dim result = False
+	//使用图片方式判断
+	//使用像素方式判断
+
+	If CmpColorEx(YH_SCENE(0)&"|"&YH_SCENE(1)&"|"&YH_SCENE(2)&","&YH_SCENE(3)&"|"&YH_SCENE(4)&"|"&YH_SCENE(5)&","&YH_SCENE(6)&"|"&YH_SCENE(7)&"|"&YH_SCENE(8)&","&YH_SCENE(9)&"|"&YH_SCENE(10)&"|"&YH_SCENE(11)&","&YH_SCENE(12)&"|"&YH_SCENE(13)&"|"&YH_SCENE(14), 0.9) = 1 Then 
+		TracePrint "isExploreSceneYHBoss function pixel type result is true"
+		result = result Or True
+	End If
+	//综合两种判断方式，返回结果
+	If result Then 
+		TracePrint "current scene is yuhun"
+		isExploreScene = True
+	Else 
+		TracePrint "current scene is not yuhun"
+		isExploreScene = False
+	End If
+End Function
+
+/**
+ * 选择进入御魂挑战的参数
+ * @param level 层数
+ * @param team 挑战模式，组队还是单人，单人 0 ，组队 1，默认0
+ * @param bossid 0 八岐大蛇 1 业火原
+ * @return True|False
+ */
+Function chooseYHLevelAndMode(level, team, bossid)
+	
+	Dim YH_BA_QI_CHOOSE_SCENE = Array() //五点 八岐大蛇副本选择&判定点
+	Dim YH_YE_YUAN_HUO_CHOOSE_SCENE = Array() //五点 业原火副本选择点&判定点
+	Dim YH_SINGLE_BUTTON = Array() //五点 单人模式开始按钮 选择&判定点
+	Dim YH_TEAM_BUTTON = Array() //五点 组队模式按钮 选择点&判定点
+		
+	//验证参数
+	If bossid = 0 Then 
+		If (level > 10 Or level < 1) Then 
+			TracePrint "params level is unknow, please check it ,boos id is :" &boosid&" level is :"&level
+			chooseYHLevelAndMode = False
+			Exit Function
+		Else 
+			If (team < 0 Or team > 1) Then 
+				TracePrint "params team is unknow, please check it ,boos id is :" &boosid&" level is :"&level&" team is :"&team
+				chooseYHLevelAndMode = False
+				Exit Function
+			End If
+		End If
+	ElseIf bossid = 1 Then //业原火
+		If (level > 3 Or level < 1) Then 
+			TracePrint "params level is unknow, please check it ,boos id is :" &boosid&" level is :"&level
+			chooseYHLevelAndMode = False
+			Exit Function
+		Else 
+			If (team < 0 Or team > 0) Then 
+				TracePrint "params team is unknow, please check it ,boos id is :" &boosid&" level is :"&level&" team is :"&team
+				chooseYHLevelAndMode = False
+				Exit Function
+			End If
+		End If
+	Else 
+		TracePrint "params boos id is unknow, pleasa check it. boss id is: "&boosid
+		chooseYHLevelAndMode = False
+		Exit Function
+	End If
+	
+	//选择挑战类型
+	If boosid = 0 Then 
+		//挑战八岐大蛇
+		TracePrint "choose ba qi da she"
+		Tap YH_BA_QI_CHOOSE_SCENE(0), YH_BA_QI_CHOOSE_SCENE(1)
+	Else If boosid = 1 Then
+		//挑战业原火
+		TracePrint "choose ye yuan huo"
+		Tap YH_YE_YUAN_HUO_CHOOSE_SCENE(0), YH_YE_YUAN_HUO_CHOOSE_SCENE(1)
+	Else 
+		//未知挑战
+		TracePrint "pararm boosid is unknow ,please check it"
+		chooseYHLevelAndMode = False
+		Exit Function
+	End If
+		//等待进入副本参数选择界面
+	Do Until isYHParamScene()
+		TracePrint "wait for ba qi da she param choose scene"
+		Delay yysLib_utils.WAIT_NORMAL
+	Loop
+	
+	If isYHParamScene() = False Then 
+		TracePrint "enter choose yuhun param scene failed. please restart game"
+		chooseYHLevelAndMode = False
+		Exit Function
+	End If
+	
+	//选择副本参数
+		//选择副本层数
+	If yysLib_scene_common.chooseLevel(level) = False Then 
+		TracePrint "choose level "&level&" failed"
+		chooseYHLevelAndMode = False
+		Exit Function
+	End If
+		//选择组队模式
+	If team = 0 Then 
+		//单人模式则直接进入副本
+		yysLib_fight.fightEnter YH_SINGLE_BUTTON(0), YH_SINGLE_BUTTON(1)
+	Else If team = 1 Then
+		//组队模式
+		Do Until yysLib_team.isTeamScene()
+			TracePrint "waiting for team scene."
+			Delay yysLib_utils.WAIT_NORMAL
+		Loop
+		If yysLib_team.chooseLevel(level) = False Then 
+			TracePrint "choose team mode failed"
+			chooseYHLevelAndMode = False
+			Exit Function
+		End If
+	Else 
+		//不正确的队伍模式
+		TracePrint "unknow team mode by :"&team
+		chooseYHLevelAndMode = False
+		Exit Function
+	End If
+	
+	chooseYHLevelAndMode = True
+	
+End Function
+
+/**
+ * 是否位于御魂boss参数选择界面
+ * @return True|False
+ */
+Function isYHParamScene
+	Dim YH_PARAM_SCENE = Array() //御魂界面判定点  五点
+
+	Dim result = False
+	//使用图片方式判断
+	//使用像素方式判断
+
+	If CmpColorEx(YH_PARAM_SCENE(0)&"|"&YH_PARAM_SCENE(1)&"|"&YH_PARAM_SCENE(2)&","&YH_PARAM_SCENE(3)&"|"&YH_PARAM_SCENE(4)&"|"&YH_PARAM_SCENE(5)&","&YH_PARAM_SCENE(6)&"|"&YH_PARAM_SCENE(7)&"|"&YH_PARAM_SCENE(8)&","&YH_PARAM_SCENE(9)&"|"&YH_PARAM_SCENE(10)&"|"&YH_PARAM_SCENE(11)&","&YH_PARAM_SCENE(12)&"|"&YH_PARAM_SCENE(13)&"|"&YH_PARAM_SCENE(14), 0.9) = 1 Then 
+		TracePrint "isYHParamScene function pixel type result is true"
+		result = result Or True
+	End If
+	//综合两种判断方式，返回结果
+	If result Then 
+		TracePrint "current scene is yuhun param choose"
+		isExploreScene = True
+	Else 
+		TracePrint "current scene is not yuhun param choose"
+		isExploreScene = False
+	End If
+End Function
+
+/**
+ * 退出御魂界面
+ * @return True|False
+ */
+Function exitExploreSceneYH
+	Dim YH_EXIT_BUTTON = Array() //御魂界面退出按钮判定点&选择点  五点
+	
+	If CmpColorEx(YH_EXIT_BUTTON(0)&"|"&YH_EXIT_BUTTON(1)&"|"&YH_EXIT_BUTTON(2)&","&YH_EXIT_BUTTON(3)&"|"&YH_EXIT_BUTTON(4)&"|"&YH_EXIT_BUTTON(5)&","&YH_EXIT_BUTTON(6)&"|"&YH_EXIT_BUTTON(7)&"|"&YH_EXIT_BUTTON(8)&","&YH_EXIT_BUTTON(9)&"|"&YH_EXIT_BUTTON(10)&"|"&YH_EXIT_BUTTON(11)&","&YH_EXIT_BUTTON(12)&"|"&YH_EXIT_BUTTON(13)&"|"&YH_EXIT_BUTTON(14), 0.9) = 1 Then 
+		//找到退出按钮
+		Tap YH_EXIT_BUTTON(0), YH_EXIT_BUTTON(1)
+		
+		Do Until yysLib_explore_scene.isExploreScene()
+			Delay yysLib_utils.WAIT_NORMAL
+			TracePrint "wait for explore scene"
+		Loop
+		
+		TracePrint "exit yuhun scene success"
+	Else 
+		TracePrint "can not find yuhun exit button "
+	End If
+End Function

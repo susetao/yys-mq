@@ -1,0 +1,107 @@
+/**********************************************
+ * yys常用函数库
+ * @author Wszl
+ * @date 2017年2月14日13:38:32
+ **********************************************/
+ 
+ Randomize
+
+ Dim WAIT_SHORT = 500 + Int(((100-0+1) * Rnd()) + 1) //短暂等待时间
+ Dim WAIT_NORMAL = 1000 + Int(((300-0+1) * Rnd()) + 1) //一般等待时间
+ Dim WAIT_LONG = 1500 + Int(((500-0+1) * Rnd()) + 1) //长等待时间
+ Dim SCREEN_WIDTH = 1280 //默认屏幕宽度
+ Dim SCREEN_HEIGHT = 720 //默认屏幕高度
+ Dim SCREEN_COLOR_DEPTH = 32 //默认屏幕颜色深度
+ Dim SCREEN_ROTATION = 0 //默认屏幕旋转角度
+ 
+ /**
+  * 判断是否为默认屏幕尺寸
+  * @return True|Falsse
+  */
+ Function isDefaultSceenSize()
+ 	Dim currentScreenWidth = GetScreenX()
+ 	Dim currentScreenHeight = GetScreenY()
+ 	
+ 	If currentScreenWidth = SCREEN_WIDTH And currentScreenHeight = SCREEN_HEIGHT Then 
+ 		TracePrint "current device size is default"
+ 		isDefaultSceenSize = True
+ 	Else 
+ 		TracePrint "current device size is "&currentScreenWidth&"x"&currentScreenHeight
+ 		isDefaultSceenSize = False
+ 	End If
+ 	
+ End Function
+ 
+ /**
+  * 判断是否为默认的颜色深度、
+  * @return True|False
+  */
+ Function isDefaultSceenColorDepth()
+ 	Dim currentScreenColorDepth = GetScreenColorDep()
+ 	
+ 	If currentScreenColorDepth = SCREEN_COLOR_DEPTH Then 
+ 		TracePrint "current device color depth is default"
+ 		isDefaultSceenColorDepth = True
+ 	Else 
+ 		TracePrint "current device color depth is "&currentScreenColorDepth
+ 		isDefaultSceenColorDepth = False
+ 	End If
+ End Function
+
+//Test
+//Call isDefaultSceenRotation()
+//EndScript
+ /**
+  * 判断是否为默认的屏幕旋转方向
+  * @return True|False
+  */
+ Function isDefaultSceenRotation()
+ 	Dim currentSceenRotation = GetScreenRotation()
+ 	
+ 	If currentSceenRotation = SCREEN_ROTATION Then 
+ 		TracePrint "current device rotation is default"
+ 		isDefaultSceenRotation = True
+ 	Else 
+ 		TracePrint "current device rotation is "&currentSceenRotation
+ 		isDefaultSceenRotation = False
+ 	End If
+ End Function
+ 
+ 
+//Test
+//Call isDefaultScreen()
+//EndScript
+ /**
+  * 判断是否为默认的屏幕参数
+  * @return True|False
+  */
+ Function isDefaultScreen()
+ 	If isDefaultSceenColorDepth() And isDefaultSceenSize() Then 
+ 		TracePrint "current dvice is default"
+ 		isDefaultScreen = True
+ 	Else 
+ 		TracePrint "current dvice is not default"
+ 		isDefaultScreen = False
+ 	End If
+ End Function
+ 
+ //Test
+ Dim startX, startY, endX, endY
+ startX = SCREEN_WIDTH / 2
+ startY = Int(SCREEN_HEIGHT * 0.76)
+ endX = SCREEN_WIDTH / 2 - 400
+ endY = Int(SCREEN_HEIGHT * 0.76)
+ //Call swipteCustom(startX, startY, endX, endY, 3000)
+ Swipe startX, startY, endX, endY
+ TracePrint startX&","&startY&"  "&endX&","&endY
+ 
+ /**
+  * 自定义滑动
+  */
+ Function swipteCustom(startX, startY, endX, endY, time)
+ 	TouchDown startX, startY, 0
+ 	Delay time / 2
+ 	TouchMove endX, endY, 0, time
+ 	Delay time / 2
+ 	TouchUp
+ End Function

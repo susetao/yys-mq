@@ -1,0 +1,19 @@
+
+{
+	"Description" : null,
+	"findBossByImage" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"findMonsterByImage" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"findSceneReward" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	}
+}

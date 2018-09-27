@@ -1,0 +1,1192 @@
+/**
+ * 战斗场景相关API
+ * @author Wszl
+ * @date 2017年2月18日16:36:09
+ */
+Import "yysLib_utils.mql"
+Import "yysLib_choose_monster.mql"
+ 
+ 
+
+/**
+ * 进入战斗场景
+ * @param x,y monster or boss and other coordinate
+ * @return void
+ */
+Function fightEnter(x, y)
+
+    Tap x, y
+    
+End Function
+
+//TracePrint fightStart()
+//EndScript
+/**
+ * 开始战斗
+ * @return True|False
+ */
+Function fightStart
+    Dim FIGHT_START_BUTTON = Array(1151,481,"96B6D2",1121,536,"ECFAFF",1117,559,"ECFAFF",1187,542,"CFF2FF",1191,570,"D5F4FF") //开始按钮判定点&选择点 5点
+
+    If isFightScene() = False Then 
+        TracePrint "current scene is not fight scene"
+        fightStart = False
+    End If
+
+    //寻找开始按钮
+    Dim cmpResult = CmpColorEx(FIGHT_START_BUTTON(0)&"|"&FIGHT_START_BUTTON(1)&"|"&FIGHT_START_BUTTON(2)&","&FIGHT_START_BUTTON(3)&"|"&FIGHT_START_BUTTON(4)&"|"&FIGHT_START_BUTTON(5)&","&FIGHT_START_BUTTON(6)&"|"&FIGHT_START_BUTTON(7)&"|"&FIGHT_START_BUTTON(8)&","&FIGHT_START_BUTTON(9)&"|"&FIGHT_START_BUTTON(10)&"|"&FIGHT_START_BUTTON(11)&","&FIGHT_START_BUTTON(12)&"|"&FIGHT_START_BUTTON(13)&"|"&FIGHT_START_BUTTON(14), 0.9)
+    Do Until cmpResult <> 1
+        //寻找到，则开始
+        Tap FIGHT_START_BUTTON(0), FIGHT_START_BUTTON(1)
+		
+        Delay yysLib_utils.WAIT_SHORT
+		
+        //再次判定是否存在开始按钮
+        cmpResult = CmpColorEx(FIGHT_START_BUTTON(0)&"|"&FIGHT_START_BUTTON(1)&"|"&FIGHT_START_BUTTON(2)&","&FIGHT_START_BUTTON(3)&"|"&FIGHT_START_BUTTON(4)&"|"&FIGHT_START_BUTTON(5)&","&FIGHT_START_BUTTON(6)&"|"&FIGHT_START_BUTTON(7)&"|"&FIGHT_START_BUTTON(8)&","&FIGHT_START_BUTTON(9)&"|"&FIGHT_START_BUTTON(10)&"|"&FIGHT_START_BUTTON(11)&","&FIGHT_START_BUTTON(12)&"|"&FIGHT_START_BUTTON(13)&"|"&FIGHT_START_BUTTON(14), 0.9)
+        If cmpResult = 0 Then 
+            //开始成功
+            TracePrint "fight start"
+            fightStart = True
+            Exit Function
+        Else
+            //开始失败
+            TracePrint "fight start failed"
+        End If
+		
+        //未找到
+        TracePrint "unsearched start button"
+        fightStart = False
+    Loop
+End Function
+
+//Test
+//TracePrint isFightEnd()
+//EndScript
+/**
+ * 判断战斗是否结束
+ * @return True|False
+ */
+Function isFightEnd
+    Dim FIGHT_END_MARK = Array(480,187,"AABECD",454,201,"121C99",266,340,"0286FF",332,426,"0251C4",667,245,"BEE6F1",424,147,"8AA3B8",346,154,"7DCCE3",285,124,"3646EB",536,321,"2839E1",637,282,"2A4F6D") //战斗完成的判定点&选择点 五点
+	Dim FIGHT_END_FAILED_MARK = Array(254,165,"3B4B5B",340,138,"9ABEC6",469,176,"90A6B8",445,189,"6B5660",724,170,"A5B3BA",949,248,"525F69",409,512,"BFC8C7",651,503,"2F2F9D",865,502,"C6DBFF",608,269,"7CA9B4") //战斗失败mrak
+	
+    Dim cmpResult = CmpColorEx( FIGHT_END_MARK(0) & "|" & FIGHT_END_MARK(1) & "|" & FIGHT_END_MARK(2) & "," & FIGHT_END_MARK(3) & "|" & FIGHT_END_MARK(4) & "|" & FIGHT_END_MARK(5) & "," & FIGHT_END_MARK(6) & "|" & FIGHT_END_MARK(7) & "|" & FIGHT_END_MARK(8) & "," & FIGHT_END_MARK(9) & "|" & FIGHT_END_MARK(10) & "|" & FIGHT_END_MARK(11) & "," & FIGHT_END_MARK(12) & "|" & FIGHT_END_MARK(13) & "|" & FIGHT_END_MARK(14) & "," & FIGHT_END_MARK(15) & "|" & FIGHT_END_MARK(16) & "|" & FIGHT_END_MARK(17) & "," & FIGHT_END_MARK(18) & "|" & FIGHT_END_MARK(19) & "|" & FIGHT_END_MARK(20) & "," & FIGHT_END_MARK(21) & "|" & FIGHT_END_MARK(22) & "|" & FIGHT_END_MARK(23) & "," & FIGHT_END_MARK(24) & "|" & FIGHT_END_MARK(25) & "|" & FIGHT_END_MARK(26) & "," & FIGHT_END_MARK(27) & "|" & FIGHT_END_MARK(28) & "|" & FIGHT_END_MARK(29), 0.9)
+    If cmpResult = 1 Then
+    	//战斗成功
+        TracePrint "fight end"
+        isFightEnd = True
+    Else 
+    	//战斗失败
+    	cmpResult = CmpColorEx(FIGHT_END_FAILED_MARK(0) & "|" & FIGHT_END_FAILED_MARK(1) & "|" & FIGHT_END_FAILED_MARK(2) & "," & FIGHT_END_FAILED_MARK(3) & "|" & FIGHT_END_FAILED_MARK(4) & "|" & FIGHT_END_FAILED_MARK(5) & "," & FIGHT_END_FAILED_MARK(6) & "|" & FIGHT_END_FAILED_MARK(7) & "|" & FIGHT_END_FAILED_MARK(8) & "," & FIGHT_END_FAILED_MARK(9) & "|" & FIGHT_END_FAILED_MARK(10) & "|" & FIGHT_END_FAILED_MARK(11) & "," & FIGHT_END_FAILED_MARK(12) & "|" & FIGHT_END_FAILED_MARK(13) & "|" & FIGHT_END_FAILED_MARK(14) & "," & FIGHT_END_FAILED_MARK(15) & "|" & FIGHT_END_FAILED_MARK(16) & "|" & FIGHT_END_FAILED_MARK(17) & "," & FIGHT_END_FAILED_MARK(18) & "|" & FIGHT_END_FAILED_MARK(19) & "|" & FIGHT_END_FAILED_MARK(20) & "," & FIGHT_END_FAILED_MARK(21) & "|" & FIGHT_END_FAILED_MARK(22) & "|" & FIGHT_END_FAILED_MARK(23) & "," & FIGHT_END_FAILED_MARK(24) & "|" & FIGHT_END_FAILED_MARK(25) & "|" & FIGHT_END_FAILED_MARK(26) & "," & FIGHT_END_FAILED_MARK(27) & "|" & FIGHT_END_FAILED_MARK(28) & "|" & FIGHT_END_FAILED_MARK(29), 0.9)
+    	If cmpResult = 1 Then 
+        	TracePrint "fight end"
+        	isFightEnd = True
+    	Else 
+        	isFightEnd = False
+        End If
+    End If
+End Function
+
+
+//Test
+//TracePrint isFightScene()
+//EndScript
+/**
+ * 判断当前场景是否位于战斗场景
+ * @return True|False
+ */
+Function isFightScene
+    Dim FIGHT_SCENE = Array(45,37, "A2C4D5", 39,569, "543396", 27,666, "5A667B", 3,713, "354533", 1255,72, "061160") //战斗场景判定点 5 点
+    Dim FIGHT_START_SCNE = Array(57,673,"47697B",380,715,"8D3034",577,695,"C8D0D6",926,704,"060624",1262,72,"0F1A7D") //战斗开始场景判定点 5点
+	
+    //使用像素方式判断
+    Dim cmpResult = CmpColorEx(FIGHT_SCENE(0)&"|"&FIGHT_SCENE(1)&"|"&FIGHT_SCENE(2)&","&FIGHT_SCENE(3)&"|"&FIGHT_SCENE(4)&"|"&FIGHT_SCENE(5)&","&FIGHT_SCENE(6)&"|"&FIGHT_SCENE(7)&"|"&FIGHT_SCENE(8)&","&FIGHT_SCENE(9)&"|"&FIGHT_SCENE(10)&"|"&FIGHT_SCENE(11), 0.9)
+    Dim cmpStartResult = CmpColorEx(FIGHT_START_SCNE(0)&"|"&FIGHT_START_SCNE(1)&"|"&FIGHT_START_SCNE(2)&","&FIGHT_START_SCNE(3)&"|"&FIGHT_START_SCNE(4)&"|"&FIGHT_START_SCNE(5)&","&FIGHT_START_SCNE(6)&"|"&FIGHT_START_SCNE(7)&"|"&FIGHT_START_SCNE(8)&","&FIGHT_START_SCNE(9)&"|"&FIGHT_START_SCNE(10)&"|"&FIGHT_START_SCNE(11), 0.9)
+    If cmpResult = 1 Or cmpStartResult = 1 Then 
+        isFightScene = True
+    Else 
+        isFightScene = False
+    End If
+End Function
+
+
+//Test
+//TracePrint setFightMode(0)
+/**
+ * 设置战斗方式 自动或者手动
+ * @param mode 0 手动 1 自动
+ * @return True|False
+ */
+Function setFightMode(mode)
+    Dim FIGHT_MODE_BUTTON = Array(55,660) //战斗模式变化判定点
+
+    If isFightScene() = False Then 
+        TracePrint "current scene is not fight scene"
+        setFightMode = False
+        Exit Function
+    End If
+	
+    Dim fightMode = getFightMode()
+    If fightMode <> False And fightMode = mode Then 
+        TracePrint "current fight mode is right"
+        setFightMode = True
+    Else 
+        Tap FIGHT_MODE_BUTTON(0), FIGHT_MODE_BUTTON(1)
+        Dim confirmResult = getFightMode()
+        If confirmResult <> False And confirmResult = mode Then 
+            TracePrint "change fight mode for right"
+            setFightMode = True
+        Else 
+            TracePrint "change fight mode for wrong"
+            setFightMode = False
+        End If
+    End If
+End Function
+
+
+//Test
+//TracePrint getFightMode()
+/** 
+ * 获取战斗方式
+ * @return 0 手动 1 自动 False获取异常
+ */
+Function getFightMode
+    Dim FIGHT_MODE_AUTO = Array(39,633,"5B7188",40,557,"3E2E63",41,660,"91A1A7",37,657,"B9CAD0",37,671,"D5E7ED") //自动战斗模式判定点 5点 
+    Dim FIGHT_MODE_MANUAL = Array(33,633,"4E586A",40,558,"3A2A63",37,650,"B3C4CA",32,662,"C8DAE0",42,672,"E0F3F8") //手动战斗模式判定点 5点
+	
+    If isFightScene() = False Then 
+        TracePrint "current scene is not fight scene"
+        getFightMode = False
+        Exit Function
+    End If
+	
+    //获取战斗方式
+    Dim autoModeResult = CmpColorEx(FIGHT_MODE_AUTO(0)&"|"&FIGHT_MODE_AUTO(1)&"|"&FIGHT_MODE_AUTO(2)&","&FIGHT_MODE_AUTO(3)&"|"&FIGHT_MODE_AUTO(4)&"|"&FIGHT_MODE_AUTO(5)&","&FIGHT_MODE_AUTO(6)&"|"&FIGHT_MODE_AUTO(7)&"|"&FIGHT_MODE_AUTO(8)&","&FIGHT_MODE_AUTO(9)&"|"&FIGHT_MODE_AUTO(10)&"|"&FIGHT_MODE_AUTO(11)&","&FIGHT_MODE_AUTO(12)&"|"&FIGHT_MODE_AUTO(13)&"|"&FIGHT_MODE_AUTO(14), 0.9)
+    Dim manualModeResult = CmpColorEx(FIGHT_MODE_MANUAL(0)&"|"&FIGHT_MODE_MANUAL(1)&"|"&FIGHT_MODE_MANUAL(2)&","&FIGHT_MODE_MANUAL(3)&"|"&FIGHT_MODE_MANUAL(4)&"|"&FIGHT_MODE_MANUAL(5)&","&FIGHT_MODE_MANUAL(6)&"|"&FIGHT_MODE_MANUAL(7)&"|"&FIGHT_MODE_MANUAL(8)&","&FIGHT_MODE_MANUAL(9)&"|"&FIGHT_MODE_MANUAL(10)&"|"&FIGHT_MODE_MANUAL(11)&","&FIGHT_MODE_MANUAL(12)&"|"&FIGHT_MODE_MANUAL(13)&"|"&FIGHT_MODE_MANUAL(14), 0.9)
+	
+    If autoModeResult = 1 And manualModeResult = 0 Then 
+        TracePrint "current fight mode is auto"
+        getFightMode = 1
+    ElseIf autoModeResult = 0 And manualModeResult = 1 Then
+        TracePrint "current fight mode is manual"
+        getFightMode = 0
+    Else 
+        TracePrint "current fight mode is error"
+        getFightMode = False
+    End If
+	
+End Function
+
+
+//Test
+//Dim arr = getLevelMaxMemberNum(0)
+//For Each i In arr
+//	TracePrint i
+//Next
+//
+//EndScript
+/**
+ * 判断当前屏幕是否存在满级成员
+ * @param reserve_area  排除区域 0 不排除区域 ，从战斗区域到观战区域 一共分为5个区域，从右至左，从下至上编号为1-5
+ * @return Array(POSITION)|False
+ */
+Function getLevelMaxMemberNum(reserve_area)
+	
+    Dim LEVEL_MAX_MARK = Array(0,0,"1FB1ED",-8,-6,"2B9EF8",-8,2,"33A2CD",2,4,"003E6E",10,2,"1697AB") //满级成员判定标志&选择点 5点 第一点仅颜色值有效，后4点坐标全为第一点的offset
+    Dim LEVEL_MAX_MARK_2 = Array(0,0,"27C0F3",-8,-8,"37AAF9",-9,-1,"3CB3E6",-9,5,"05BECF",1,-2,"07659D") //满级成员判定标志&选择点 5点 第一点仅颜色值有效，后4点坐标全为第一点的offset
+    Dim AREA_1 = Array(684,296,801,613) //1号式神所处的区域
+    Dim AREA_2 = Array(425,258,550,487) //2号式神所处的区域
+    Dim AREA_3 = Array(231,215,320,410) //3号式神所处的区域
+    Dim AREA_4 = Array(273,121,354,243) //4号式神所处的区域
+    Dim AREA_5 = Array(373,96,472,253) //5号式神所处的区域
+	
+
+    If isFightScene() = False Then 
+        TracePrint "current scene is not fight scene"
+        getLevelMaxMemberNum = False
+        Exit Function
+    End If
+	
+    //定义寻找区域
+    Dim findArea = Array(AREA_1,AREA_2,AREA_3,AREA_4,AREA_5)
+	
+    //判断对应区域
+    Dim result = Array(0,0,0,0,0)
+    Dim num = 0
+    For i = 0 To UBOUND(findArea)
+    	If reserve_area <> (i + 1)
+        	Dim x,y
+        	FindMultiColor(findArea(i,0), findArea(i,1), findArea(i,2), findArea(i,3),LEVEL_MAX_MARK(2),LEVEL_MAX_MARK(3)&"|"&LEVEL_MAX_MARK(4)&"|"&LEVEL_MAX_MARK(5)&","&LEVEL_MAX_MARK(6)&"|"&LEVEL_MAX_MARK(7)&"|"&LEVEL_MAX_MARK(8)&","&LEVEL_MAX_MARK(9)&"|"&LEVEL_MAX_MARK(10)&"|"&LEVEL_MAX_MARK(11)&","&LEVEL_MAX_MARK(12)&"|"&LEVEL_MAX_MARK(13)&"|"&LEVEL_MAX_MARK(14),1,0.9,x,y)
+        	If x > -1 And y > -1 Then 
+            	result(i) = result(i) + 1
+            	num = num + 1
+            Else 
+        		//辅助检测点
+        		FindMultiColor findArea(i, 0), findArea(i, 1), findArea(i, 2), findArea(i, 3), LEVEL_MAX_MARK_2(2), LEVEL_MAX_MARK_2(3) & "|" & LEVEL_MAX_MARK_2(4) & "|" & LEVEL_MAX_MARK_2(5) & "," & LEVEL_MAX_MARK_2(6) & "|" & LEVEL_MAX_MARK_2(7) & "|" & LEVEL_MAX_MARK_2(8) & "," & LEVEL_MAX_MARK_2(9) & "|" & LEVEL_MAX_MARK_2(10) & "|" & LEVEL_MAX_MARK_2(11) & "," & LEVEL_MAX_MARK_2(12) & "|" & LEVEL_MAX_MARK_2(13) & "|" & LEVEL_MAX_MARK_2(14), 1, 0.9, x, y
+        		If x > -1 And y > -1 Then 
+            		result(i) = result(i) + 1
+            		num = num + 1
+        		End If
+        	End If
+        End If
+    Next
+	
+    //返回结果
+    If num > 0 Then 
+        TracePrint "current sceen has level max member "&num
+        getLevelMaxMemberNum = result
+    Else 
+        TracePrint "current sceen has not level max member"
+        getLevelMaxMemberNum = False
+    End If
+	
+End Function
+
+
+//Test
+//TracePrint isChangeMemberScene()
+//EndScript
+/**
+ * 判断当前屏幕是否位于更换队伍成员场景
+ * @return True|False
+ */
+Function isChangeMemberScene
+    Dim CHANGE_MEMBER_SCENE = Array(68,509,"161F2F",55,669,"FDFDFD",79,674,"CBCDCF",1177,647,"22282A",1168,671,"87C1E4") //更换式神场景判定点 5 点
+	Dim CHANGE_SPECTOTAR_MEMBER_SCENE = Array(68,510,"162030",65,593,"192131",33,585,"5D4793",20,669,"67464E",11,709,"384930") //更换式神场景判定点 5 点
+
+    //使用像素方式判断
+    Dim cmpResult = CmpColorEx(CHANGE_MEMBER_SCENE(0)&"|"&CHANGE_MEMBER_SCENE(1)&"|"&CHANGE_MEMBER_SCENE(2)&","&CHANGE_MEMBER_SCENE(3)&"|"&CHANGE_MEMBER_SCENE(4)&"|"&CHANGE_MEMBER_SCENE(5)&","&CHANGE_MEMBER_SCENE(6)&"|"&CHANGE_MEMBER_SCENE(7)&"|"&CHANGE_MEMBER_SCENE(8)&","&CHANGE_MEMBER_SCENE(9)&"|"&CHANGE_MEMBER_SCENE(10)&"|"&CHANGE_MEMBER_SCENE(11), 0.9)
+    If cmpResult = 1 Then 
+        isChangeMemberScene = True
+    Else 
+    	cmpResult = CmpColorEx(CHANGE_SPECTOTAR_MEMBER_SCENE(0)&"|"&CHANGE_SPECTOTAR_MEMBER_SCENE(1)&"|"&CHANGE_SPECTOTAR_MEMBER_SCENE(2)&","&CHANGE_SPECTOTAR_MEMBER_SCENE(3)&"|"&CHANGE_SPECTOTAR_MEMBER_SCENE(4)&"|"&CHANGE_SPECTOTAR_MEMBER_SCENE(5)&","&CHANGE_SPECTOTAR_MEMBER_SCENE(6)&"|"&CHANGE_SPECTOTAR_MEMBER_SCENE(7)&"|"&CHANGE_SPECTOTAR_MEMBER_SCENE(8)&","&CHANGE_SPECTOTAR_MEMBER_SCENE(9)&"|"&CHANGE_SPECTOTAR_MEMBER_SCENE(10)&"|"&CHANGE_SPECTOTAR_MEMBER_SCENE(11), 0.9)
+    	If cmpResult = 1 Then 
+        	isChangeMemberScene = True
+    	Else 	
+        	isChangeMemberScene = False
+        End If
+    End If
+End Function
+
+//Test
+//TracePrint getPrechangeLevelMaxMemberNum(7)
+
+/**
+ * 判断当前要更换的成员中是否存在满级成员
+ * @param reserve_position 1 - 7 only 0 则不排除
+ * @return Int 存在的位置 1 2 4 | False
+ */
+Function getPrechangeLevelMaxMemberNum(reserve_position)
+	
+    If isChangeMemberScene() = False Then 
+        TracePrint "current scene is not in change member scene"
+        getPrechangeLevelMaxMemberNum = False
+        Exit Function
+    End If
+	
+    //获取三个区域的数据
+    Dim positionResult = Array(False,False,False)
+    Dim i
+    For i = 0 To 2
+        positionResult(i) = getLevelMaxMemberNumByPostion(i + 1)
+        If positionResult(i) = True And i = 0 Then //区域1
+            positionResult(i) = 1
+        ElseIf positionResult(i) = True And i = 1 Then //区域2
+            positionResult(i) = 2
+        ElseIf positionResult(i) = True And i = 2 Then //区域3
+            positionResult(i) = 4
+        End If
+    Next
+	
+    //返回数据
+    //排除区域1
+    Dim result = 0
+    If (reserve_position = 1) Then
+        For i = 1 To 2
+            result = positionResult(i) + result
+        Next
+    End If
+    //排除区域2
+    If (reserve_position = 2) Then
+        result = positionResult(0) + positionResult(2)
+    End If
+    //排除区域1+2
+    If (reserve_position = 3) Then
+        result = positionResult(0) + positionResult(1)
+    End If
+    //排除区域3
+    If (reserve_position = 4) Then
+        result = positionResult(1)
+    End If
+    //排除区域1+3
+    If (reserve_position = 5) Then
+        result = positionResult(0)
+    End If
+    //排除区域2+3
+    If (reserve_position = 6) Then
+        result = positionResult(0)
+    End If
+    //排除区域1+2+3
+    If (reserve_position = 7) Then
+        result = 0
+    End If
+    //查看所有区域
+    If (reserve_position = 0) Then
+        For i = 0 To 2
+            result = positionResult(i) + result
+        Next
+    End If
+	
+    If result > 0 Then 
+        TracePrint "find level max member in postion "&result
+        getPrechangeLevelMaxMemberNum = result
+    Else 
+        TracePrint "can not find level max member"
+        getPrechangeLevelMaxMemberNum = False
+    End If
+	
+	
+End Function
+/**
+ * 判断当前要更换的成员中是否存在满级成员
+ * @param reserve_position 1 - 3 only 0 则不排除
+ * @return Int 存在的位置 1 2 4 | False
+ */
+Function getSpectatorPrechangeLevelMaxMemberNum(reserve_position)
+	
+    If isChangeMemberScene() = False Then 
+        TracePrint "current scene is not in change member scene"
+        getSpectatorPrechangeLevelMaxMemberNum = False
+        Exit Function
+    End If
+	
+    //获取2个区域的数据
+    Dim positionResult = Array(False,False)
+    Dim i
+    For i = 0 To 1
+        positionResult(i) = getSpectatorLevelMaxMemberNumByPostion(i + 1)
+        If positionResult(i) = True And i = 0 Then //区域1
+            positionResult(i) = 1
+        ElseIf positionResult(i) = True And i = 1 Then //区域2
+            positionResult(i) = 2
+        End If
+    Next
+	
+    //返回数据
+    //排除区域1
+    Dim result = 0
+    If (reserve_position = 1) Then 
+    	result = positionResult(1)
+    End If
+    //排除区域2
+    If (reserve_position = 2) Then
+        result = positionResult(0)
+    End If
+    //排除区域1+2
+    If (reserve_position = 3) Then
+        result = -1
+    End If
+    //查看所有区域
+    If (reserve_position = 0) Then
+         result = positionResult(0) + positionResult(1)
+    End If
+	
+    If result > 0 Then 
+        TracePrint "find Spectator level max member in postion "&result
+        getSpectatorPrechangeLevelMaxMemberNum = result
+    Else 
+        TracePrint "can Spectator not find level max member"
+        getSpectatorPrechangeLevelMaxMemberNum = False
+    End If
+	
+	
+End Function
+
+//Test 
+//TracePrint getLevelMaxMemberNumByPostion(3)
+//!postion 3 判断不稳定 主要是鸟的满mark会移动，解决方法，寻找多次
+/**
+ * 获取给定位置是否存在满级成员
+ * @postion  1 2 3
+ * @return  True|False
+ */
+Function getLevelMaxMemberNumByPostion(position)
+
+    Dim LEVEL_MAX_MARK = Array(0,0,"30C5F8",-7,-9,"2D8AAD",-10,-1,"2F9CCF",-7,7,"0E7B8C",6,-8,"0E7B8C") //满级成员判定标志&选择点 5点 第一点仅颜色值有效，后4点坐标全为第一点的offset
+	Dim LEVEL_MAX_MARK_2 = Array(0,0,"24BAED",-9,-7,"05245C",-9,6,"0DA9BA",5,0,"21BCE7",7,8,"10E0F4") //辅助判断标志
+	
+    Dim RESERVER_POSITION = Array(48,71,420,514,450,100,812,506,922,58,1251,468) //排除区域的坐标
+	
+    //判断参数是否正确
+    If position > 3 Or position < 1 Then 
+        TracePrint "position not validate ,please check "&position
+        getLevelMaxMemberNumByPostion = False
+        Exit Function
+    End If
+    //开始在对应区域查找,查找三次保证稳定性
+    Dim findResult = False
+    Dim x,y
+    Dim i
+    For i = 0 To 2
+        FindMultiColor(RESERVER_POSITION((position-1)*4),RESERVER_POSITION((position-1)*4+1),RESERVER_POSITION((position-1)*4+2),RESERVER_POSITION((position-1)*4+3),LEVEL_MAX_MARK(2),LEVEL_MAX_MARK(3)&"|"&LEVEL_MAX_MARK(4)&"|"&LEVEL_MAX_MARK(5)&","&LEVEL_MAX_MARK(6)&"|"&LEVEL_MAX_MARK(7)&"|"&LEVEL_MAX_MARK(8)&","&LEVEL_MAX_MARK(9)&"|"&LEVEL_MAX_MARK(10)&"|"&LEVEL_MAX_MARK(11)&","&LEVEL_MAX_MARK(12)&"|"&LEVEL_MAX_MARK(13)&"|"&LEVEL_MAX_MARK(14),1,0.9,x,y)
+        If x > -1 And y > -1 Then 
+            findResult = findResult Or True
+        Else 
+        	//辅助判断
+        	FindMultiColor(RESERVER_POSITION((position-1)*4),RESERVER_POSITION((position-1)*4+1),RESERVER_POSITION((position-1)*4+2),RESERVER_POSITION((position-1)*4+3),LEVEL_MAX_MARK_2(2),LEVEL_MAX_MARK_2(3)&"|"&LEVEL_MAX_MARK_2(4)&"|"&LEVEL_MAX_MARK_2(5)&","&LEVEL_MAX_MARK_2(6)&"|"&LEVEL_MAX_MARK_2(7)&"|"&LEVEL_MAX_MARK_2(8)&","&LEVEL_MAX_MARK_2(9)&"|"&LEVEL_MAX_MARK_2(10)&"|"&LEVEL_MAX_MARK_2(11)&","&LEVEL_MAX_MARK_2(12)&"|"&LEVEL_MAX_MARK_2(13)&"|"&LEVEL_MAX_MARK_2(14),1,0.9,x,y)
+        	If x > -1 And y > -1 Then 
+            	findResult = findResult Or True
+        	End If
+        End If
+        Delay yysLib_utils.WAIT_NORMAL
+    Next
+	
+    If findResult Then 
+        TracePrint "find level max member in position "&position
+        getLevelMaxMemberNumByPostion = True
+    Else 
+        TracePrint "can not find level max member in position "&position
+        getLevelMaxMemberNumByPostion = False
+    End If
+	
+End Function
+
+/**
+ * 获取给定位置是否存在满级成员
+ * @postion  1 2 
+ * @return  True|False
+ */
+Function getSpectatorLevelMaxMemberNumByPostion(position)
+
+    Dim LEVEL_MAX_MARK = Array(0,0,"21CBFE",-6,-10,"349EE1",-6,6,"0DEAFB",7,-10,"31A3F5",10,6,"0DE3FC") //满级成员判定标志&选择点 5点 第一点仅颜色值有效，后4点坐标全为第一点的offset
+	
+    Dim RESERVER_POSITION = Array(217,71,595,453,618,65,957,444) //排除区域的坐标
+	
+    //判断参数是否正确
+    If position > 2 Or position < 1 Then 
+        TracePrint "position not validate ,please check "&position
+        getSpectatorLevelMaxMemberNumByPostion = False
+        Exit Function
+    End If
+    //开始在对应区域查找,查找三次保证稳定性
+    Dim findResult = False
+    Dim x,y
+    Dim i
+    For i = 0 To 2
+        FindMultiColor(RESERVER_POSITION((position-1)*4),RESERVER_POSITION((position-1)*4+1),RESERVER_POSITION((position-1)*4+2),RESERVER_POSITION((position-1)*4+3),LEVEL_MAX_MARK(2),LEVEL_MAX_MARK(3)&"|"&LEVEL_MAX_MARK(4)&"|"&LEVEL_MAX_MARK(5)&","&LEVEL_MAX_MARK(6)&"|"&LEVEL_MAX_MARK(7)&"|"&LEVEL_MAX_MARK(8)&","&LEVEL_MAX_MARK(9)&"|"&LEVEL_MAX_MARK(10)&"|"&LEVEL_MAX_MARK(11)&","&LEVEL_MAX_MARK(12)&"|"&LEVEL_MAX_MARK(13)&"|"&LEVEL_MAX_MARK(14),1,0.9,x,y)
+        If x > -1 And y > -1 Then 
+            findResult = findResult Or True
+        End If
+        Delay yysLib_utils.WAIT_NORMAL
+    Next
+	
+    If findResult Then 
+        TracePrint "find spectator level max member in position "&position
+        getSpectatorLevelMaxMemberNumByPostion = True
+    Else 
+        TracePrint "can not find spectator level max member in position "&position
+        getSpectatorLevelMaxMemberNumByPostion = False
+    End If
+	
+End Function
+
+//Test
+//TracePrint changeFightTeamMember(1, 1)
+//EndScript
+/**
+ * 更换队伍成员
+ * @level 更换成员的等级
+ * @reserve  保留成员的位置 1-7 only
+ * @param replaceMemberPosition 1-7 only 半参数可无，当没有本参数时，则会遍历三个位置寻找满级成员,该参数传入时，reserve参数无效
+ * @return Int 更换的成员的数量 | False 更换失败
+ */
+Function changeFightTeamMember(level,reserve_position,replaceMemberPosition)
+	
+    Dim RESERVER_POSITION = Array(Array(48,71,420,514),Array(450,100,812,506),Array(922,58,1251,468)) //排除区域的坐标，同时也是1 2 4需要更换式神的位置区域
+    
+    If isChangeMemberScene() = False Then 
+        TracePrint "current scene is not change member scene"
+        changeFightTeamMember = False
+        Exit Function
+    End If
+	
+    //寻找需要更换的成员位置 用二维坐标数组保存
+    Dim prechangeMemberPositonArray = Array(0)
+    Dim prechangeMemberPositon
+    If replaceMemberPosition > 7 Or replaceMemberPosition < 0 Then 
+		//未传入需要更换成员的位置时
+    	prechangeMemberPositon = getPrechangeLevelMaxMemberNum(reserve_position)
+    	If prechangeMemberPositon = False Then 
+    		TracePrint "get member postin wrong, change team member failed"
+    		changeFightTeamMember = False
+    		Exit Function
+    	End If
+    Else 
+    	//传入了需要更换成员的位置时
+    	prechangeMemberPositon = replaceMemberPosition
+    End If
+    TracePrint "prepar replace member by"&prechangeMemberPositon
+    	//根据区域，将对应的坐标位置放入二维数组
+    If prechangeMemberPositon = 1 Then //仅1号区域
+    	prechangeMemberPositonArray(0) = RESERVER_POSITION(0)
+    ElseIf prechangeMemberPositon = 2 Then //仅2号区域
+    	prechangeMemberPositonArray(0) = RESERVER_POSITION(1)
+    ElseIf prechangeMemberPositon = 3 Then //1+2号区域
+    	prechangeMemberPositonArray(0) = RESERVER_POSITION(0)
+    	prechangeMemberPositonArray(1) = RESERVER_POSITION(1)
+    ElseIf prechangeMemberPositon = 4 Then //仅4号区域
+    	prechangeMemberPositonArray(0) = RESERVER_POSITION(2)
+    ElseIf prechangeMemberPositon = 5 Then //1+4号区域
+    	prechangeMemberPositonArray(0) = RESERVER_POSITION(0)
+    	prechangeMemberPositonArray(1) = RESERVER_POSITION(2)	
+    ElseIf prechangeMemberPositon = 6 Then //2+4号区域
+    	prechangeMemberPositonArray(0) = RESERVER_POSITION(1)
+    	prechangeMemberPositonArray(1) = RESERVER_POSITION(2)
+    ElseIf prechangeMemberPositon = 7 Then //1+2+4号区域
+    	prechangeMemberPositonArray = RESERVER_POSITION
+    Else 
+    	TracePrint "the position "&prechangeMemberPositon&" is wrong"
+    	changeFightTeamMember = False
+    	Exit Function
+    End If
+    	//将区域转化为坐标
+    For i = 0 To UBOUND(prechangeMemberPositonArray)
+    	prechangeMemberPositonArray(i, 0) = Int((prechangeMemberPositonArray(i, 0) + prechangeMemberPositonArray(i, 2)) / 2)
+    	prechangeMemberPositonArray(i, 1) = Int((prechangeMemberPositonArray(i, 1) + prechangeMemberPositonArray(i, 3)) / 2)
+    	TracePrint "prechange member in "&prechangeMemberPositonArray(i, 0)&","&prechangeMemberPositonArray(i, 1)
+    Next
+    
+    
+    //寻找符合条件的替代member卡的positon，然后开始替换
+    For i = 0 To UBOUND(prechangeMemberPositonArray)
+		Dim findSuitableResult = findSuitableShishen(level)
+		If findSuitableResult <> False Then 
+			//寻找到式神则开始更换
+			TracePrint "change is start "&findSuitableResult(0)&","&findSuitableResult(1)&"   "&prechangeMemberPositonArray(i, 0)&","&prechangeMemberPositonArray(i, 1)
+			yysLib_utils.swipteCustom(findSuitableResult(0), findSuitableResult(1), prechangeMemberPositonArray(i, 0), prechangeMemberPositonArray(i, 1), yysLib_utils.WAIT_LONG)
+			Delay yysLib_utils.WAIT_NORMAL
+		Else 
+			//未找到符合是式神，则退出
+			TracePrint "change team member failed ,can not find level unmax card"
+			If i = 0 Then
+				changeFightTeamMember = False
+			Else 
+				changeFightTeamMember = i - 1
+			End If
+			Exit Function
+		End If
+	Next
+	
+	//TODO 查找指定位置是否还存在满级式神
+	
+	//执行完上述代码，则说明成功实现了功能
+	TracePrint "change team member success"
+	changeFightTeamMember = UBOUND(prechangeMemberPositonArray) + 1
+	
+End Function
+
+
+//Test
+//TracePrint changeSpectatorMember(1, 0)
+//EndScript
+/**
+ * 更换旁观成员
+ * @level 更换成员的等级
+ * @reserve  保留成员的位置 1-3 only
+ * @param replaceMemberPosition 1-3 only 半参数可无，当没有本参数时，则会遍历2个位置寻找满级成员,该参数传入时，reserve参数无效
+ * @return Int 更换的成员的数量 | False 更换失败
+ */
+Function changeSpectatorMember(level,reserve_position, replaceMemberPosition)
+	 Dim RESERVER_POSITION = Array(Array(217,71,595,453),Array(618,65,957,444)) //排除区域的坐标，同时也是1 2 需要更换式神的位置区域
+    
+    If isChangeMemberScene() = False Then 
+        TracePrint "current scene is not change member scene"
+        changeSpectatorMember = False
+        Exit Function
+    End If
+	
+   //寻找需要更换的成员位置 用二维坐标数组保存
+    Dim prechangeMemberPositonArray = Array(0)
+    Dim prechangeMemberPositon
+    If replaceMemberPosition > 3 Or replaceMemberPosition < 0 Then 
+		//未传入需要更换成员的位置时
+    	prechangeMemberPositon = getPrechangeLevelMaxMemberNum(reserve_position)
+    	If prechangeMemberPositon = False Then 
+    		TracePrint "get spectator member postin wrong, change team member failed"
+    		changeSpectatorMember = False
+    		Exit Function
+    	End If
+    Else 
+    	//传入了需要更换成员的位置时
+    	prechangeMemberPositon = replaceMemberPosition
+    End If
+    	//根据区域，将对应的坐标位置放入二维数组
+    If prechangeMemberPositon = 1 Then //仅1号区域
+    	prechangeMemberPositonArray(0) = RESERVER_POSITION(0)
+    ElseIf prechangeMemberPositon = 2 Then //仅2号区域
+    	prechangeMemberPositonArray(0) = RESERVER_POSITION(1)
+    ElseIf prechangeMemberPositon = 3 Then //1+2号区域
+    	prechangeMemberPositonArray(0) = RESERVER_POSITION(0)
+    	prechangeMemberPositonArray(1) = RESERVER_POSITION(1)
+    Else 
+    	TracePrint "the position "&prechangeMemberPositon&" is wrong"
+    	changeSpectatorMember = False
+    	Exit Function
+    End If
+    	//将区域转化为坐标
+    For i = 0 To UBOUND(prechangeMemberPositonArray)
+    	prechangeMemberPositonArray(i, 0) = Int((prechangeMemberPositonArray(i, 0) + prechangeMemberPositonArray(i, 2)) / 2)
+    	prechangeMemberPositonArray(i, 1) = Int((prechangeMemberPositonArray(i, 1) + prechangeMemberPositonArray(i, 3)) / 2)
+    Next
+    
+    //寻找符合条件的替代member卡的positon，然后开始替换
+    For i = 0 To UBOUND(prechangeMemberPositonArray)
+		Dim findSuitableResult = findSuitableShishen(level)
+		If findSuitableResult <> False Then 
+			//寻找到式神则开始更换
+			yysLib_utils.swipteCustom(findSuitableResult(0), findSuitableResult(1), prechangeMemberPositonArray(i, 0), prechangeMemberPositonArray(i, 1), yysLib_utils.WAIT_LONG)
+			Delay yysLib_utils.WAIT_NORMAL
+		Else 
+			//未找到符合是式神，则退出
+			TracePrint "change team member failed ,can not find level unmax card"
+			If i = 0 Then
+				changeSpectatorMember = False
+			Else 
+				changeSpectatorMember = i - 1
+			End If
+			Exit Function
+		End If
+	Next
+	
+	//TODO 检查指定位置是否还存在满级成员
+	
+	//执行完上述代码，则说明成功实现了功能
+	TracePrint "change spectator team member success"
+	changeSpectatorMember = UBOUND(prechangeMemberPositonArray) + 1
+End Function
+
+//Test
+//TracePrint changeMember(1, 1)
+//EndScript
+/**
+ * 更换成员
+ * @param level 更换的式神最大品级
+ * revsePosition Int 保留成员的位置 1 - 5
+ * @return True|False
+ */
+Function changeMember(level, revsePosition)
+    Dim FIGHT_MEMBER_MARK = Array() //战斗成员判定点 五点
+    Dim SPECTATOR_MEMBER_MARK = Array() //观战成员判定点 五点
+	
+    Dim LEVEL_MAX_MARK = Array() //成员满级判定点 五点
+	
+	Dim FIGHT_AREA = Array(323,418,713,642)
+	Dim SPECTATOR_AREA = Array(296,214,465,329)
+	Dim EXIT_CHANGE_SCENE_BUTTON = Array(36,28)
+	
+	//检查等级
+	If revsePosition < 1 Or revsePosition > 5 Then 
+		//则不排除区域
+		revsePosition = 0
+	End If
+	
+	Dim maxMemberPosition = getLevelMaxMemberNum(revsePosition)
+	If maxMemberPosition = False Then 
+		TracePrint "not level max member"
+		changeMember = True
+		
+		Do Until isFightScene()
+			Tap EXIT_CHANGE_SCENE_BUTTON(0), EXIT_CHANGE_SCENE_BUTTON(1)
+			TracePrint "waiting for come back fight scene."
+			Delay yysLib_utils.WAIT_NORMAL
+		Loop
+		Exit Function
+	End If
+	Dim maxMemberNum = 0 //满级成员个数
+	Dim fightMember = 0 //保留的fight位置
+	Dim spectatorMember = 0 //保留的spectator位置
+	Dim fightMemberPosition = 0 //战斗区域的满级成员数据，排除保留位置的数据
+	Dim spectatorMemberPosition = 0 //同上
+	For i = 0 To UBound(maxMemberPosition) //统计满级个数
+		If maxMemberPosition(i) > 0 Then 
+			maxMemberNum = maxMemberNum + 1
+		End If
+		
+		//处理满级成员的位置数据
+		If i < 3 And maxMemberPosition(i) > 0 And i <> (revsePosition - 1) Then  //fight area ,and resever
+			fightMemberPosition = fightMemberPosition + i + 1
+			If i = 2 Then 
+				fightMemberPosition = fightMemberPosition + 1 //因为3号位的序号为4
+			End If
+		ElseIf i >= 3 And maxMemberPosition(i) > 0 And i <> (revsePosition - 1) Then //spectator area, and resever
+			spectatorMemberPosition = spectatorMemberPosition + i - 2
+		Else 
+			TracePrint "resever position "&i
+		End If
+	Next
+	
+	TracePrint "max member position - fight: "&fightMemberPosition&" - spectator:"&spectatorMemberPosition
+	TracePrint "max member num :"&maxMemberNum
+		
+	If revsePosition > 0 And revsePosition <= 3 Then
+		fightMember = revsePosition
+	End If
+	If revsePosition > 3 And revsePosition <= 5 Then 
+		spectatorMember = revsePosition - 3
+	End If
+	//开始替换成员
+	If maxMemberNum > 0 Then 
+		Dim area = levelMemberArea(maxMemberPosition)
+		TracePrint "max member area :"&area
+		If area = 0 Then 
+			//替换战斗成员
+			Do Until isChangeMemberScene()
+				Tap (FIGHT_AREA(0) + FIGHT_AREA(2)) / 2, (FIGHT_AREA(1) + FIGHT_AREA(3)) / 2
+				TracePrint "waiting for change fight member scene "&(FIGHT_AREA(0) + FIGHT_AREA(2)) / 2&","&(FIGHT_AREA(1) + FIGHT_AREA(3)) / 2
+				Delay yysLib_utils.WAIT_NORMAL
+			Loop
+			
+			Dim changeFightTeamMemberResult = changeFightTeamMember(level, fightMember, fightMemberPosition)
+			If changeFightTeamMemberResult = False Then 
+				TracePrint "change fight max level member faied."
+			Else 
+				TracePrint "change fihgt max level member success :"&changeFightTeamMemberResult
+			End If
+			
+			Delay yysLib_utils.WAIT_NORMAL
+			
+			Do Until isFightScene()
+				Tap EXIT_CHANGE_SCENE_BUTTON(0), EXIT_CHANGE_SCENE_BUTTON(1)
+				TracePrint "waiting for come back fight scene."
+				Delay yysLib_utils.WAIT_NORMAL
+			Loop
+		ElseIf area = 1 Then
+			//替换旁观成员
+			Tap (SPECTATOR_AREA(0) + SPECTATOR_AREA(2)) / 2, (SPECTATOR_AREA(1) + SPECTATOR_AREA(3)) / 2
+			Do Until isChangeMemberScene()
+				Tap (SPECTATOR_AREA(0) + SPECTATOR_AREA(2)) / 2, (SPECTATOR_AREA(1) + SPECTATOR_AREA(3)) / 2
+				TracePrint "waiting for change spectator member scene"
+				Delay yysLib_utils.WAIT_NORMAL
+			Loop
+			Dim changeSpectatorMemberResult = changeSpectatorMember(level, spectatorMember,spectatorMemberPosition)
+			
+			If changeSpectatorMemberResult = False Then 
+				TracePrint "change spectator max level member faied."
+			Else 
+				TracePrint "change spectator max level member success :"&changeSpectatorMemberResult
+			End If
+			
+			Delay yysLib_utils.WAIT_NORMAL
+			
+			Do Until isFightScene()
+				Tap EXIT_CHANGE_SCENE_BUTTON(0), EXIT_CHANGE_SCENE_BUTTON(1)
+				TracePrint "waiting for come back fight scene."
+				Delay yysLib_utils.WAIT_NORMAL
+			Loop
+		ElseIf area = 2 Then
+			//两者都替换
+			Tap (FIGHT_AREA(0) + FIGHT_AREA(2)) / 2, (FIGHT_AREA(1) + FIGHT_AREA(3)) / 2
+			Do Until isChangeMemberScene()
+				Tap (FIGHT_AREA(0) + FIGHT_AREA(2)) / 2, (FIGHT_AREA(1) + FIGHT_AREA(3)) / 2
+				TracePrint "waiting for change fight member scene"
+				Delay yysLib_utils.WAIT_NORMAL
+			Loop
+			
+			Dim result = changeFightTeamMember(level, fightMember, fightMemberPosition)
+			If result = False Then 
+				TracePrint "change fight max level member faied."
+			Else 
+				TracePrint "change fihgt max level member success :"&result
+			End If
+			
+			Delay yysLib_utils.WAIT_NORMAL
+			
+			Do Until isFightScene()
+				Tap EXIT_CHANGE_SCENE_BUTTON(0), EXIT_CHANGE_SCENE_BUTTON(1)
+				TracePrint "waiting for come back fight scene."
+				Delay yysLib_utils.WAIT_NORMAL
+			Loop
+			
+			
+			Tap (SPECTATOR_AREA(0) + SPECTATOR_AREA(2)) / 2, (SPECTATOR_AREA(1) + SPECTATOR_AREA(3)) / 2
+			Do Until isChangeMemberScene()
+				Tap (SPECTATOR_AREA(0) + SPECTATOR_AREA(2)) / 2, (SPECTATOR_AREA(1) + SPECTATOR_AREA(3)) / 2
+				TracePrint "waiting for change spectator member scene"
+				Delay yysLib_utils.WAIT_NORMAL
+			Loop
+			result = changeSpectatorMember(level, spectatorMember, spectatorMemberPosition)
+			
+			If result = False Then 
+				TracePrint "change spectator max level member faied."
+			Else 
+				TracePrint "change spectator max level member success :"&result
+			End If
+			
+			Delay yysLib_utils.WAIT_NORMAL
+			
+			Do Until isFightScene()
+				Tap EXIT_CHANGE_SCENE_BUTTON(0), EXIT_CHANGE_SCENE_BUTTON(1)
+				TracePrint "waiting for come back fight scene."
+				Delay yysLib_utils.WAIT_NORMAL
+			Loop
+		Else
+			TracePrint "error area code: "&area
+		End If
+		
+		
+	End If
+	
+End Function
+
+
+//Test
+//Dim findResult = findSuitableShishen(1)
+//Swipe findResult(0), findResult(1) , 0,0
+//EndScript
+/**
+ * 寻找给定品级的未满级的式神，返回的坐标的式神，位于当前屏幕
+ * @param level 给定的品级 1 N 2 R 3 SR 4 SSR 0 不限定
+ * @return Array(x,y) 寻找到的第一个符合条件的式神位于当前屏幕的坐标,未找到则返回 False
+ * @Depredect
+ */
+Function findSuitableShishen(level)
+    Dim LEVEL_MAX_MARK = Array(0,0,"A8CBD0",-15,16,"B1D6FA",-60,22,"16D6F7",0,31,"98BCDD",2,13,"1CB0F0") //满级成员判定标志&选择点 5点 第一点仅颜色值有效，后4点坐标全为第一点的offset
+    Dim LEVEL_UNMANX_MARK = Array(0,0,"94BBCE",-15,15,"86A5BF",0,29,"82A3BD",13,15,"63798F",2,4,"2B394C") //
+    Dim FIGHT_MARK = Array(0,0,"CEEFFF",-9,-10,"CCEDFF",-14,17,"C7E8FF",12,-12,"D6F7FF",16,20,"CDEAFF") //已处于战斗位置的式神判定标志 5点 第一点仅颜色值有效，后4点坐标全为第一点的offset
+    Dim SPECTATOR_MARK = Array(0,0,"F8D4AD",-13,-16,"FFDFB5",-22,4,"FFE7C6",5,-23,"FFE7C6",11,12,"FDE1B8") //已处于观战位置的式神判定标志 5点 第一点仅颜色值有效，后4点坐标全为第一点的offset
+    
+    Dim CHOOSE_AREA = Array(Array(167,513),Array(1047,702)) //待选择式神的区域
+    Dim SHISHEN_CARD_SIZE = Array(115,184) //式神卡片的宽 高
+    Dim CARD_INTEVAL = 12 //式神卡片之间的间隔距离
+    Dim CARD_MARK = Array(0,0,"171B2B",1,178,"0E162E",110,178,"0E162F",110,1,"0E162F",50,1,"0E162F") //卡片判定点 5点 5点 第一点仅颜色值有效，后4点坐标全为第一点的offset  第一点应为左上角的点
+    Dim SELECT_RIGHT_AREA = Array(973,563,"",962,639,"",1023,616,"",1047,610,"",1062,617,"") //式神选择区域右侧判定点，仅坐标值有效 5点
+    
+    Dim LIMITED_DJ_DM = Array(0,0,"CD764B",0,-44,"DBA07C",0,-20,"E1E7F0",-24,35,"292B31",25,29,"27292F") 
+    Dim LIMITED_RED_DM = Array(0,0,"5364DE",-45,-103,"103052",-5,-12,"E4E5EB",-16,28,"F5EC8D",24,31,"F1EBA3")
+    Dim LIMITED_CARD = Array(LIMITED_DJ_DM,LIMITED_RED_DM) //限制使用的卡片二维数组，元素为5点的判定数组
+    
+	If isChangeMemberScene() = False Then 
+		TracePrint "current scene is not change member scene"
+		findSuitableShishen = False
+		Exit Function
+	End If
+	
+	If level > 4 Or level < 0 Then 
+		TracePrint "the level is wrong, check you setting"
+		findSuitableShishen = False
+		Exit Function
+	End If
+	
+	//选择品级
+	If changeMemberGrade(level) = False Then 
+		Do Until isAllocateGradeScene(level)
+			TracePrint "change shishen grade failed, please manual choose"
+			ShowMessage "请手动点击左下角选择怪物品级"&level
+			Delay yysLib_utils.WAIT_LONG * 5
+		Loop
+	End If
+	
+	//在当前屏幕的待选式神区域寻找卡片标志，使用从坐上向右下的方式寻找
+	//所以寻找到的应该是最前面的卡片，在找到卡片后，再检查该卡片内是否存在满级标志，不存在则可以返回该卡片坐标值
+	//若在当前屏幕未找到，则滑动待选区域，再次判断，直到无法滑动为止
+	Dim tmpX = -1
+	Dim tmpY = -1
+	Do Until tmpX > 0
+		Dim offsetWidth = 0 //排除的区域偏移值
+		//填充右侧区域判定点颜色
+		For i = 0 To 14 Step 3	
+			SELECT_RIGHT_AREA(i+2) = GetPixelColor(SELECT_RIGHT_AREA(i),SELECT_RIGHT_AREA(i+1))
+		Next
+		
+		//卡片寻找,在当前屏幕循环查找，直到当前屏幕区域查找  完毕
+		Do Until offsetWidth > CHOOSE_AREA(1, 0)
+			Dim x,y
+			FindMultiColor CHOOSE_AREA(0, 0) + offsetWidth, CHOOSE_AREA(0, 1), CHOOSE_AREA(1, 0), CHOOSE_AREA(1, 1), CARD_MARK(2), CARD_MARK(3) & "|" & CARD_MARK(4) & "|" & CARD_MARK(5) & "," & CARD_MARK(6) & "|" & CARD_MARK(7) & "|" & CARD_MARK(8) & "," & CARD_MARK(9) & "|" & CARD_MARK(10) & "|" & CARD_MARK(11) & "," & CARD_MARK(12) & "|" & CARD_MARK(13) & "|" & CARD_MARK(14), 0, 0.8, x, y
+			If x > -1 And y > -1 Then 
+				//寻找到卡片，则在卡片区域寻找未满级标志
+				TracePrint "position start "&x-30&","&y-30
+				TracePrint "position end "& x + (SHISHEN_CARD_SIZE(0) / 3)&","&y + (SHISHEN_CARD_SIZE(1) / 3)
+				Dim levelMaxX, levelMaxY
+				FindMultiColor(x - 30, y - 30, x + (SHISHEN_CARD_SIZE(0) / 3), y + (SHISHEN_CARD_SIZE(1) / 3),LEVEL_UNMANX_MARK(2),LEVEL_UNMANX_MARK(3)&"|"&LEVEL_UNMANX_MARK(4)&"|"&LEVEL_UNMANX_MARK(5)&","&LEVEL_UNMANX_MARK(6)&"|"&LEVEL_UNMANX_MARK(7)&"|"&LEVEL_UNMANX_MARK(8)&","&LEVEL_UNMANX_MARK(9)&"|"&LEVEL_UNMANX_MARK(10)&"|"&LEVEL_UNMANX_MARK(11)&","&LEVEL_UNMANX_MARK(12)&"|"&LEVEL_UNMANX_MARK(13)&"|"&LEVEL_UNMANX_MARK(14),0,0.9,levelMaxX, levelMaxY)
+				If levelMaxX > -1 And levelMaxY > -1 Then 
+					TracePrint "unmax mark in "&levelMaxX&","&levelMaxY
+					//找到未满级标志，再寻找其满级标志
+					Dim levelUnMaxX, levelUnMaxY
+					FindMultiColor(x - 30, y - 30, x + (SHISHEN_CARD_SIZE(0) / 3), y + (SHISHEN_CARD_SIZE(1) / 3),LEVEL_MAX_MARK(2),LEVEL_MAX_MARK(3)&"|"&LEVEL_MAX_MARK(4)&"|"&LEVEL_MAX_MARK(5)&","&LEVEL_MAX_MARK(6)&"|"&LEVEL_MAX_MARK(7)&"|"&LEVEL_MAX_MARK(8)&","&LEVEL_MAX_MARK(9)&"|"&LEVEL_MAX_MARK(10)&"|"&LEVEL_MAX_MARK(11)&","&LEVEL_MAX_MARK(12)&"|"&LEVEL_MAX_MARK(13)&"|"&LEVEL_MAX_MARK(14),0,0.9,levelUnMaxX, levelUnMaxY)
+					If levelUnMaxX > -1 And levelUnMaxY > -1 Then 
+						//找到满级标志，则跳过
+						offsetWidth = offsetWidth + SHISHEN_CARD_SIZE(0) + CARD_INTEVAL
+					Else 
+						TracePrint levelUnMaxX&","&levelUnMaxY
+						//判断其是否为观战、战斗式神
+						Dim onlineFightX = -1
+						Dim onlineFightY = -1
+						FindMultiColor(x - 30, y - 30, x + SHISHEN_CARD_SIZE(0), y + SHISHEN_CARD_SIZE(1),FIGHT_MARK(2),FIGHT_MARK(3)&"|"&FIGHT_MARK(4)&"|"&FIGHT_MARK(5)&","&FIGHT_MARK(6)&"|"&FIGHT_MARK(7)&"|"&FIGHT_MARK(8)&","&FIGHT_MARK(9)&"|"&FIGHT_MARK(10)&"|"&FIGHT_MARK(11)&","&FIGHT_MARK(12)&"|"&FIGHT_MARK(13)&"|"&FIGHT_MARK(14),0,0.9,onlineFightX, onlineFightY)
+						
+						Dim onlineSpecX = -1
+						Dim onlineSpecY = -1
+						
+						FindMultiColor(x - 30, y - 30, x + SHISHEN_CARD_SIZE(0), y + SHISHEN_CARD_SIZE(1),SPECTATOR_MARK(2),SPECTATOR_MARK(3)&"|"&SPECTATOR_MARK(4)&"|"&SPECTATOR_MARK(5)&","&SPECTATOR_MARK(6)&"|"&SPECTATOR_MARK(7)&"|"&SPECTATOR_MARK(8)&","&SPECTATOR_MARK(9)&"|"&SPECTATOR_MARK(10)&"|"&SPECTATOR_MARK(11)&","&SPECTATOR_MARK(12)&"|"&SPECTATOR_MARK(13)&"|"&SPECTATOR_MARK(14),0,0.9,onlineSpecX, onlineSpecY)
+						
+						If onlineFightX > -1 Or onlineSpecX > -1 Then 
+							//为已出站式神，则跳过，将寻找区域缩小
+							offsetWidth = offsetWidth + SHISHEN_CARD_SIZE(0) + CARD_INTEVAL
+							TracePrint "offsetwidth change to:"&offsetWidth
+						Else
+							//排除指定式神，返回该坐标
+							TracePrint "selected unlimited card"
+							Dim unlimtedResult = True
+							For i = 0 To UBound(LIMITED_CARD)
+								Dim limitedX = -1
+								Dim limitedY = -1
+								
+								FindMultiColor(x - 30, y - 30, x + SHISHEN_CARD_SIZE(0), y + SHISHEN_CARD_SIZE(1),LIMITED_CARD(i,2),LIMITED_CARD(i,3)&"|"&LIMITED_CARD(i,4)&"|"&LIMITED_CARD(i,5)&","&LIMITED_CARD(i,6)&"|"&LIMITED_CARD(i,7)&"|"&LIMITED_CARD(i,8)&","&LIMITED_CARD(i,9)&"|"&LIMITED_CARD(i,10)&"|"&LIMITED_CARD(i,11)&","&LIMITED_CARD(i,12)&"|"&LIMITED_CARD(i,13)&"|"&LIMITED_CARD(i,14),0,0.9,limitedX, limitedY)
+								If limitedX > -1 And limitedY > -1
+									TracePrint "this card is limited."
+									unlimtedResult = False
+									Exit For
+								End If	
+							Next
+							
+							//不是限制使用的卡片，则返回
+							If unlimtedResult Then 
+								TracePrint "find level is unmax card in "&x&","&y+SHISHEN_CARD_SIZE(1)/2
+								findSuitableShishen = Array(x, y+SHISHEN_CARD_SIZE(1)/2)
+								Exit Function
+							Else 
+								offsetWidth = offsetWidth + SHISHEN_CARD_SIZE(0) + CARD_INTEVAL
+							End If
+						End If
+					End If
+					
+				Else 
+					//找到满级标识，则跳过，将寻找区域缩小
+					offsetWidth = offsetWidth + SHISHEN_CARD_SIZE(0) + CARD_INTEVAL
+					TracePrint "offsetwidth change to:"&offsetWidth
+				End If
+			Else 
+				//found not card
+				TracePrint "can not find card in offset area"
+				offsetWidth = offsetWidth + SHISHEN_CARD_SIZE(0) + CARD_INTEVAL
+			End If
+		Loop
+		
+		TracePrint "swipte screen start "&CHOOSE_AREA(1,0) * 0.9&","&(CHOOSE_AREA(1,1) + CHOOSE_AREA(0,1)) / 2&" into "&CHOOSE_AREA(0,0)&","&(CHOOSE_AREA(1,1) + CHOOSE_AREA(0,1)) / 2
+		//未找到未满级卡片，则屏幕向左滑动一个当前屏幕的选择卡片宽度*0.9
+		yysLib_utils.swipteCustom(CHOOSE_AREA(1,0) * 0.9, (CHOOSE_AREA(1,1) + CHOOSE_AREA(0,1)) / 2, CHOOSE_AREA(0,0), (CHOOSE_AREA(1,1) + CHOOSE_AREA(0,1)) / 2, yysLib_utils.WAIT_LONG)
+		
+		Delay yysLib_utils.WAIT_LONG
+		
+		//右侧检测
+		FindMultiColor(CHOOSE_AREA(0,0), CHOOSE_AREA(0,1), CHOOSE_AREA(1,0), CHOOSE_AREA(1,1),SELECT_RIGHT_AREA(2),SELECT_RIGHT_AREA(3)&"|"&SELECT_RIGHT_AREA(4)&"|"&SELECT_RIGHT_AREA(5)&","&SELECT_RIGHT_AREA(6)&"|"&SELECT_RIGHT_AREA(7)&"|"&SELECT_RIGHT_AREA(8)&","&SELECT_RIGHT_AREA(9)&"|"&SELECT_RIGHT_AREA(10)&"|"&SELECT_RIGHT_AREA(11)&","&SELECT_RIGHT_AREA(12)&"|"&SELECT_RIGHT_AREA(13)&"|"&SELECT_RIGHT_AREA(14),1,0.9,tmpX,tmpY) 
+		
+	Loop
+	
+	//上述动作完成，仍未退出函数，说明没有找到满足要求的点，则返回false
+	TracePrint "can not find level unmax card for level "&level
+	findSuitableShishen = False
+	
+End Function
+
+/**
+ * 判断当前场景是否位于指定的式神品级场景
+ * @param level 指定的品级 1 N 2 R 3 SR 4 SSR 0 不限定
+ * @return True|False
+ */
+Function isAllocateGradeScene(level)
+	
+End Function
+//Test
+//TracePrint changeMemberGrade(1)
+
+/**
+ * 更改当前式神品级到指定的品级 
+ * @param level 给定的品级 1 N 2 R 3 SR 4 SSR 0 不限定
+ * @return 	True|False
+ */
+Function changeMemberGrade(level)
+	Dim GRADE_CHOOSE_BUTTON = Array(51,543,"F7F7F8",64,558,"913138",52,564,"FFFFFF",68,509,"171F2F",69,593,"1B2332") //展开品级选择按钮判定点&选择点  5点 下同
+	Dim GRADE_N_BUTTON = Array(72,315,"3F3F3F",68,283,"142030",56,338,"F3F3F3",56,336,"EAEAEA",80,313,"949494") //品级N按钮判定点&选择点
+	Dim GRADE_R_BUTTON = Array(171,344,"B25F0D",180,314,"161F2F",174,358,"D88923",187,368,"ECA831",92,350,"C16E13") //品级R按钮判定点&选择点
+	Dim GRADE_SR_BUTTON = Array(253,432,"C81A96",262,397,"161F2F",252,450,"F865E9",266,430,"C0148E",274,446,"EC42CA") //品级SR按钮判定点&选择点
+	Dim GRADE_SSR_BUTTON = Array(281,545,"1D68E3",292,509,"161F2F",280,560,"21CFD4",289,552,"29ABF9",304,554,"0CB9EB") //品级SSR按钮判定点&选择点
+	Dim GRADE_ALL_BUTTON = Array(261,672,"94363B",264,622,"141C2C",249,655,"F8F8F9",273,656,"FFFFFF",280,675,"F9F9F9") //全品级按钮判定点&选择点
+	Dim GRADE_ARRAY = Array(GRADE_ALL_BUTTON,GRADE_N_BUTTON,GRADE_R_BUTTON,GRADE_SR_BUTTON,GRADE_SSR_BUTTON) //上述品级列表的集合数组
+	
+	If isChangeMemberScene() = False Then 
+		TracePrint "current scene is not change member scene"
+		changeMemberGrade = False
+		Exit Function
+	End If
+	
+	If level > 4 Or level < 0 Then 
+		TracePrint "the level is wrong, check you setting"
+		changeMemberGrade = False
+		Exit Function
+	End If
+	
+	//点开grade_choose_button
+	Tap GRADE_CHOOSE_BUTTON(0), GRADE_CHOOSE_BUTTON(1)
+	
+	Delay yysLib_utils.WAIT_NORMAL
+		//确认已展开选择
+	Dim confirmResult = CmpColorEx(GRADE_ALL_BUTTON(0)&"|"&GRADE_ALL_BUTTON(1)&"|"&GRADE_ALL_BUTTON(2)&","&GRADE_ALL_BUTTON(3)&"|"&GRADE_ALL_BUTTON(4)&"|"&GRADE_ALL_BUTTON(5)&","&GRADE_ALL_BUTTON(6)&"|"&GRADE_ALL_BUTTON(7)&"|"&GRADE_ALL_BUTTON(8)&","&GRADE_ALL_BUTTON(9)&"|"&GRADE_ALL_BUTTON(10)&"|"&GRADE_ALL_BUTTON(11)&","&GRADE_ALL_BUTTON(12)&"|"&GRADE_ALL_BUTTON(13)&"|"&GRADE_ALL_BUTTON(14), 0.9)
+	If confirmResult = 0 Or isChangeMemberScene() Then 
+		TracePrint "tap choose button wrong ,please manual choose"
+		Do Until confirmResult = 1 And isChangeMemberScene() = False
+			confirmResult = CmpColorEx(GRADE_ALL_BUTTON(0)&"|"&GRADE_ALL_BUTTON(1)&"|"&GRADE_ALL_BUTTON(2)&","&GRADE_ALL_BUTTON(3)&"|"&GRADE_ALL_BUTTON(4)&"|"&GRADE_ALL_BUTTON(5)&","&GRADE_ALL_BUTTON(6)&"|"&GRADE_ALL_BUTTON(7)&"|"&GRADE_ALL_BUTTON(8)&","&GRADE_ALL_BUTTON(9)&"|"&GRADE_ALL_BUTTON(10)&"|"&GRADE_ALL_BUTTON(11)&","&GRADE_ALL_BUTTON(12)&"|"&GRADE_ALL_BUTTON(13)&"|"&GRADE_ALL_BUTTON(14), 0.9)
+	
+			ShowMessage "自动展开式神品级选择列表失败，请手动选择"
+			
+			Delay yysLib_utils.WAIT_LONG
+		Loop
+	End If
+	//选择指定品级
+	Tap GRADE_ARRAY(level, 0), GRADE_ARRAY(level, 1)
+	
+	Delay yysLib_utils.WAIT_NORMAL
+		//确认已关闭展开
+	confirmResult = CmpColorEx(GRADE_ARRAY(level,0)&"|"&GRADE_ARRAY(level,1)&"|"&GRADE_ARRAY(level,2)&","&GRADE_ARRAY(level,3)&"|"&GRADE_ARRAY(level,4)&"|"&GRADE_ARRAY(level,5)&","&GRADE_ARRAY(level,6)&"|"&GRADE_ARRAY(level,7)&"|"&GRADE_ARRAY(level,8)&","&GRADE_ARRAY(level,9)&"|"&GRADE_ARRAY(level,10)&"|"&GRADE_ARRAY(level,11)&","&GRADE_ARRAY(level,12)&"|"&GRADE_ARRAY(level,13)&"|"&GRADE_ARRAY(level,14), 0.9)
+
+	If confirmResult = 1 Or isChangeMemberScene() = False Then 
+		TracePrint "choose grade failed ,please manual choose"
+		Do Until confirmResult = 0 And isChangeMemberScene()
+			confirmResult = CmpColorEx(GRADE_ARRAY(level,0)&"|"&GRADE_ARRAY(level,1)&"|"&GRADE_ARRAY(level,2)&","&GRADE_ARRAY(level,3)&"|"&GRADE_ARRAY(level,4)&"|"&GRADE_ARRAY(level,5)&","&GRADE_ARRAY(level,6)&"|"&GRADE_ARRAY(level,7)&"|"&GRADE_ARRAY(level,8)&","&GRADE_ARRAY(level,9)&"|"&GRADE_ARRAY(level,10)&"|"&GRADE_ARRAY(level,11)&","&GRADE_ARRAY(level,12)&"|"&GRADE_ARRAY(level,13)&"|"&GRADE_ARRAY(level,14), 0.9)
+	
+			ShowMessage "自动选择式神品级失败，请手动选择"
+			TracePrint "confirmResult :"&confirmResult
+			
+			Delay yysLib_utils.WAIT_LONG
+		Loop
+	End If
+	 
+	changeMemberGrade = True
+	
+End Function
+
+/**
+ * 获取当前master
+ * @return 1 晴明 2 神乐 3 博雅 4 比丘尼
+ */
+Function getMaster
+	
+End Function
+
+/**
+ * 更换master
+ * @master 1 晴明 2 神乐 3 博雅 4 比丘尼
+ */
+Function changeMaster
+
+End Function
+
+//NoTest
+/**
+ * 设置式神攻击模式 （普通、技能）
+ * @param killModeArray Array() 技能模式数组，右下角图标从右到左的id依次为0-n，值为True则为技能，False则为普通攻击 如 Array(False, True, False, False, False),表示除鸟其他都用普通攻击
+ * @return True | False
+ */
+Function setShiShenFightMode(killModeArray)
+	Dim SET_BUTTON_START_POSITION = Array() //技能设置按钮起始位置
+	Dim SET_BUTTON_INTERVAL = 1//技能按钮间隔
+	Dim SET_BUTTON_VEC_INTERVAL = 1//技能按钮垂直间隔
+	Dim SET_BUTTON_SIZE = Array(1) //技能按钮大小
+	Dim SET_BUTTON_ROW_MAX = 4 //一行所能容纳的技能按钮数量
+	Dim SET_BUTTON = Array(1) //技能按钮判定点 5点 
+	Dim SET_BUTTON_FIGHT = Array() //技能按钮判定点 出手状态 5点
+
+	//判断是否为战斗场景
+	If isFightScene() Then
+		TracePrint "current is not fighting scene, please check you scene."
+		setShiShenFightMode = False
+		Exit Function
+	End If
+
+	//根据参数计算出每个成员技能图标的位置，并加以判断后，根据killModeArray，设置对应的战斗状态,并检查
+	Dim killerRow = UBound(killModeArray)
+	For i = 1 To killerRow
+		
+	Next
+	
+End Function
+
+
+//Test
+//TracePrint fight(1, 1)
+//EndScript
+/**
+ * 战斗整合
+ * @param resevePosition 保留位置  从右至左 1 - 5
+ * @param level 练级狗粮最大品级 给定的品级 1 N 2 R 3 SR 4 SSR 0 不限定
+ * @return True|False
+ */
+Function fight(level, revsePosition)
+	
+	//等级检查
+	Dim checkResult = changeMember(level, revsePosition)
+	If checkResult = False Then 
+		TracePrint "check member level failed. please notify admin"
+	End If
+
+	//进入战斗成功,点击准备,开始战斗
+	Dim fightStartResult = False
+	Do Until fightStartResult
+		fightStartResult = fightStart()
+		Delay yysLib_utils.WAIT_NORMAL
+	Loop
+	TracePrint "fighting"
+	//开始战斗成功，等待战斗结束
+	Dim fightCompleteResult = False
+	Do Until fightCompleteResult
+		fightCompleteResult = isFightEnd()
+		Delay yysLib_utils.WAIT_LONG
+	Loop
+	TracePrint "fight complete"
+	
+	//战斗结束，领取奖励返回choose monster scene
+	Dim backChooseMonsterSceneResult = False
+	Do Until backChooseMonsterSceneResult
+		Tap yysLib_utils.SCREEN_WIDTH / 2, yysLib_utils.SCREEN_HEIGHT * 0.8
+		Delay yysLib_utils.WAIT_NORMAL
+		backChooseMonsterSceneResult = yysLib_choose_monster.isChooseMonsterScene()
+		TracePrint "back to choose monster scene"
+	Loop
+End Function
+
+
+//Test
+//TracePrint levelMemberArea(getLevelMaxMemberNum(0))
+/**
+ * 满级成员所在的区域
+ * @param levelMaxArray() 使用getLevelMaxMemberNum()获得的结果
+ * @return 0 fight area 1 spectator area 2 two area
+ */
+Function levelMemberArea(levelMaxArray)
+	Dim fightResult = False
+	Dim spectatorResult = False
+	
+	For i = 0 To UBound(levelMaxArray)
+		TracePrint levelMaxArray(i)
+		If i >= 3 Then 
+			If levelMaxArray(i) > 0 Then 
+				spectatorResult = spectatorResult Or True
+			End If
+		End If
+		If i >= 0 And i < 3 Then
+			If levelMaxArray(i) > 0 Then
+				fightResult = fightResult Or True
+			End If
+		End If
+	Next
+	
+	Dim result = -1
+	If fightResult Then 
+		result = result + 1
+	End If
+	If spectatorResult Then 
+		result = result + 2
+	End If
+	
+	levelMemberArea = result
+	
+End Function

@@ -1,0 +1,446 @@
+/*
+阴阳师挂机脚本，实现全自动挂机，开发中
+@date：二〇一六年十一月十四日 22:37:54
+@scrren dx 1024x576 
+@author Wszl
+@version 0.1
+*/
+
+Dim APP_NAME = "com.netease.onmyoji.bili"
+Dim SCREEN_WIDTH = 1024
+Dim SCREEN_HEIGHT = 576
+Dim WAIT_TIME = 2000
+	Randomize
+	
+	Dim WAIT_SHORT = 500 + Int(((100-0+1) * Rnd()) + 1) //短暂等待时间
+	Dim WAIT_NORMAL = 1000 + Int(((300-0+1) * Rnd()) + 1) //一般等待时间
+	Dim WAIT_LONG = 1500 + Int(((500-0+1) * Rnd()) + 1) //长等待时间
+
+
+//Test
+Do While True
+Call EventMain(SCREEN_WIDTH, SCREEN_HEIGHT, 4, 1)
+Loop
+
+
+//启动应用
+If isRunApp(APP_NAME) Then 
+	//开始游戏进程
+	Call game(APP_NAME)
+Else 
+	RunApp APP_NAME
+	Call game(APP_NAME)
+End If
+
+
+/**
+ * 阴阳师游戏脚本主程序
+ * @author Wszl
+ * @date 二〇一六年十一月十六日 22:52:38
+ */
+ 
+Sub game(APP_NAME)
+	//第一步 进入游戏
+	If login() = true Then 
+		//登陆成功，执行开始执行任务
+		EventMain(SCREEN_WIDTH, SCREEN_HEIGHT, 7, 0)
+		//读取任务列表
+		//按列表执行任务
+	End If
+End Sub
+
+/**
+ * 登入游戏
+ * @author Wszl
+ * @date 2017-02-13
+ */
+Function login()
+	Dim VERSION = 1
+	Dim GAME_SCENE = Array(902,62, "C8D8EC") //游戏第一画面判定点
+	Dim UPDATE = Array()  //更新动作判断点&选择点
+	Dim UPDATE_COMPLETE = Array() //更新完成判断点
+	Dim NOTIC = Array(827,142, "6949BC") //公告判定点&选择点
+	Dim START_BUTTON = Array(513,479,"FFFFFF") //开始按钮判断点&选择点
+	Dim DAY_FIRST_LOGIN = Array(29,35,"CBCBCB") //第一次登陆web判定点&选择点
+	Dim LEFT_SCENE = Array(100,322, "522852") //左场景判断点
+	Dim MAIN_SCENE = Array(24,16,"e3a94b",208,-3,"fff7f0",800,428,"5f2c3f",448,216,"44382a") //主场景判定点 四点 后四点为第一点的相对位置
+	
+	TracePrint "login function version "&VERSION
+	//判断是否进入游戏
+	Dim cmpGameSceneResult = False
+	Do Until cmpGameSceneResult
+		//判断是否处于主场景或者是否处于开始按钮界面
+		cmpGameSceneResult = CmpColor(GAME_SCENE(0), GAME_SCENE(1), GAME_SCENE(2), 1.0) > -1 Or CmpColor(START_BUTTON(0), START_BUTTON(1), START_BUTTON(2), 0.9) > -1
+		Tap SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2
+		Delay WAIT_SHORT
+	Loop
+	
+	TracePrint "login start"
+	
+	//判断是否存在更新
+	Dim cmpUpdateResult = CmpColor(UPDATE(0), UPDATE(1), UPDATE(2), 0.9)
+	TracePrint "check update result by "&cmpUpdateResult
+	If cmpUpdateResult > -1 Then 
+		//存在更新
+		TracePrint "has a new update"
+		//点击开始更新
+		Dim cmpUpdateCompleteResult = -1
+		Do Until cmpUpdateCompleteResult > -1 
+			Tap UPDATE(0), UPDATE(1)
+			Delay WAIT_SHORT
+			cmpUpdateCompleteResult = CmpColor(UPDATE_COMPLETE(0), UPDATE_COMPLETE(1), UPDATE_COMPLETE(2), 0.9)
+		Loop
+		TracePrint "update start"
+		//点击完成更新
+		Do Until cmpUpdateCompleteResult = -1
+			Tap UPDATE_COMPLETE(0), UPDATE_COMPLETE(1)
+			Delay WAIT_SHORT
+			cmpUpdateCompleteResult = CmpColor(UPDATE_COMPLETE(0), UPDATE_COMPLETE(1), UPDATE_COMPLETE(2), 0.9)
+		Loop
+		TracePrint "update complete"
+	End If
+	
+	//循环点击空白区域 以跳过动画 直到开始界面
+	TracePrint "jump up katoo"
+	Dim cmpStartButtonResult = -1
+	Do Until cmpStartButtonResult > -1
+		Tap SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2
+		Delay WAIT_SHORT
+		cmpStartButtonResult = CmpColor(START_BUTTON(0), START_BUTTON(1), START_BUTTON(2), 0.9)
+		//同时寻找公告栏
+		Dim cmpNoticeResult = CmpColor(NOTIC(0), NOTIC(1), NOTIC(2), 0.9)
+		If cmpNoticeResult > -1 Then 
+			TracePrint "has a new notice"
+			Tap NOTIC(0), NOTIC(1)
+		End If
+	Loop
+	
+	//点击开始按钮
+	TracePrint "game start"
+	Do Until cmpStartButtonResult = -1
+		Tap START_BUTTON(0), START_BUTTON(1)
+		Delay WAIT_SHORT
+		cmpStartButtonResult = CmpColor(START_BUTTON(0), START_BUTTON(1), START_BUTTON(2), 0.9)	
+	Loop
+	
+	//跳过后续动画
+	TracePrint "jump start katoo"
+	Dim loopNum = 0
+	Do Until loopNum > 15
+		Delay WAIT_LONG
+		//判断是否为主场景
+		If CmpColorEx("MAIN_SCENE(0)|MAIN_SCENE(1)|MAIN_SCENE(2)|MAIN_SCENE(0) + MAIN_SCENE(3)|MAIN_SCENE(1) + MAIN_SCENE(4)|MAIN_SCENE(5)|MAIN_SCENE(0) + MAIN_SCENE(6)|MAIN_SCENE(1) + MAIN_SCENE(7)|MAIN_SCENE(8)|MAIN_SCENE(0) + MAIN_SCENE(9)|MAIN_SCENE(1) + MAIN_SCENE(10)|MAIN_SCENE(11)", 1) = 1 Then 
+			//找到主场景
+			TracePrint "main scene"
+			login = True
+			Exit Function
+		End If
+		//判断是否为左侧场景
+		If CmpColor(LEFT_SCENE(0), LEFT_SCENE(1), LEFT_SCENE(2), 0.9) Then 
+			//找到左场景
+			TracePrint "left scene"
+			//滑动至右场景
+			Dim cmpRightSceneResult = 0
+			Do Until cmpRightSceneResult > 0
+				Swipe SCREEN_WIDTH * 0.8, SCREEN_HEIGHT * 0.8, SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.8
+				Delay WAIT_SHORT
+				cmpRightSceneResult = CmpColorEx("MAIN_SCENE(0)|MAIN_SCENE(1)|MAIN_SCENE(2)|MAIN_SCENE(0) + MAIN_SCENE(3)|MAIN_SCENE(1) + MAIN_SCENE(4)|MAIN_SCENE(5)|MAIN_SCENE(0) + MAIN_SCENE(6)|MAIN_SCENE(1) + MAIN_SCENE(7)|MAIN_SCENE(8)|MAIN_SCENE(0) + MAIN_SCENE(9)|MAIN_SCENE(1) + MAIN_SCENE(10)|MAIN_SCENE(11)", 0.9)
+			Loop
+			TracePrint "main scene"
+			login = True
+			Exit Function
+		End If
+		//判断是否为web场景
+		If CmpColor(DAY_FIRST_LOGIN(0), DAY_FIRST_LOGIN(1), DAY_FIRST_LOGIN(2), 0.9) Then 
+			//找到web场景
+			TracePrint "web scene"
+			//退出web场景
+			Dim cmpWebSceneResult = 0
+			Do Until cmpWebSceneResult = -1
+				Tap DAY_FIRST_LOGIN(0), DAY_FIRST_LOGIN(1)
+				Delay WAIT_SHORT
+				cmpWebSceneResult = CmpColor(DAY_FIRST_LOGIN(0), DAY_FIRST_LOGIN(1), DAY_FIRST_LOGIN(2), 0.9)
+			Loop
+			//滑动至右场景
+			Dim cmpRightSceneResult = 0
+			Do Until cmpRightSceneResult > 0
+				Swipe SCREEN_WIDTH * 0.8, SCREEN_HEIGHT * 0.8, SCREEN_WIDTH * 0.2, SCREEN_HEIGHT * 0.8
+				Delay WAIT_SHORT
+				cmpRightSceneResult = CmpColorEx("MAIN_SCENE(0)|MAIN_SCENE(1)|MAIN_SCENE(2)|MAIN_SCENE(0) + MAIN_SCENE(3)|MAIN_SCENE(1) + MAIN_SCENE(4)|MAIN_SCENE(5)|MAIN_SCENE(0) + MAIN_SCENE(6)|MAIN_SCENE(1) + MAIN_SCENE(7)|MAIN_SCENE(8)|MAIN_SCENE(0) + MAIN_SCENE(9)|MAIN_SCENE(1) + MAIN_SCENE(10)|MAIN_SCENE(11)", 0.9)
+			Loop
+			TracePrint "main scene"
+			login = True
+			Exit Function
+		End If
+		
+		//动画
+		TracePrint "find main sceneing at "&loopNum
+		Tap SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2
+		Delay WAIT_SHORT
+		loopNum = loopNum + 1
+	Loop
+	
+	TracePrint "unkonw postion"
+	login = False
+End Function
+
+/**
+ * 主要任务，打怪
+ * @param screenWidth 屏幕宽度 Int
+ * @param screenHeight 屏幕高度 Int
+ * @param chapter 进入第几章节 Int
+ * @param mode 副本难度 0 默认  1困难
+ * @author Wszl
+ * @date 2017-2-11
+ */
+Function EventMain(screenWidth, screenHeight, chapter, mode)
+	
+	Dim SCENE_MAIN_DEFAULT = Array() //主场景判定点 3点 1->右上角头像区域 2->卷轴右侧 3->卷轴左侧
+	Dim SCENE_MAIN_DEPLOY = Array() //主场景卷轴收起判定点 3点 1->右上角头像区域 2->卷轴上侧 3->卷轴下侧 
+	
+	Dim BUTTON_MAIN_DINGZHONG = Array() //町中的颜色判定点&选择点 3点 除第一点外，其余两点都是偏移值 同时也是主页面的基准点，第一点坐标为右侧时的坐标，当在当前屏幕找不到三个颜色组合，应该滑动屏幕继续查找，否则就不是主页面
+	Dim BUTTON_MAIN_EXPORLE = Array() //探索的选择点 偏移值
+	
+	Dim CHAPTER_TOP_COLOR = Array(920,182, "362ADF") //右侧章节处于最上的判定颜色点
+	Dim CHAPTER_ELEMENT_HEIGHT = 95 //右侧章节每一个章节的高度
+	Dim MODE_NORMAL = Array(272,172, "BD136C") //普通难度的颜色判定点&选择点
+	Dim MODE_NORMAL_SELECTED = Array(271,175, "CD1C88") //普通难度已选择的颜色判定点&选择点
+	Dim MODE_HARD = Array(380,178, "060F1D") //困难难度的颜色判定点&选择点
+	Dim MODE_HARD_SELECTED = Array(377,181, "EC248F") //困难难度已选择的颜色判定点&选择点
+	Dim START_EXPORLE = Array(762,424, "5FB2F4") //开始探索的颜色判定点&选择点
+	Dim SCENE_COLOR = Array(27,456, "58379A") //进入副本后的场景判定点
+	Dim LOCK = Array(795,512, "1A212D") //未锁定式神的判定点&反向选择点
+	Dim LOCK_SELECTED = Array(798,515, "E85D4A") //锁定式神的判定点&反向选择点
+	Dim MONSTER = Array(0, 0, "121020", 35, 11, "f5f2f8", 33, 33, "1f1f50", 6, 29, "dddcf3") //怪物对象判定点&选择点 四点结构 上左下右  相对上点偏移 （上点应为搜索MONSTER(2)颜色得到的点，故MONSTER(0),(1)值无作用,下同）
+	Dim MONSTER_EXP = Array() //经验怪物对象判定点 三点结构 左右下  偏移
+	Dim MONSTER_MONEY = Array() //金钱怪物对象判定点 三点结构 
+	Dim MONSTER_CARD = Array() //御魂怪物对象判定点 三点结构
+	Dim MONSTER_REWARD = Array() //悬赏怪物对象判定点 三点结构
+	Dim MONSTER_BOSS = Array() //BOSS怪度对象判定点 三点结构
+	Dim MONSTER_LOGO_SIZE = Array(75, 75) //怪物对象图像的大小 x y
+	Dim FIGHT = Array(933,440, "7AAED2") //对战判定点&开始对战选择点
+	Dim FIGHT_REWARD = Array(214,272, "0286FF") //对战奖励判定点
+	Dim SCENE_REWARD = Array() //副本奖励判定点&选择点 四点结构 上左下右  偏移
+	//判断当前场景
+	//开始处理任务
+		//进入探索
+		TracePrint "开始探索"
+			
+			//判断是否位于主界面
+		/*Dim cmpResult = "undefined"
+		Do Until cmpResult = 1
+			TracePrint "未处于庭院右侧, code:"&cmpResult
+			
+			cmpResult = CmpColorEx("SCENE_MAIN_DEFAULT(0)| SCENE_MAIN_DEFAULT(1)| SCENE_MAIN_DEFAULT(2)|SCENE_MAIN_DEFAULT(3)| SCENE_MAIN_DEFAULT(4)| SCENE_MAIN_DEFAULT(5)", 0.9)
+			If cmpResult = 1 Then 
+				TracePrint "找到主场景，确认主场景"
+				Dim positionX, positionY
+				FindColor 0, 0, 0, 0, BUTTON_MAIN_DINGZHONG(2), 1, 1.0, positionX, positionY
+				If positionX > -1 Then 
+					TracePrint "开始确认主场景，寻找町中位置"
+					Dim mainScene = CmpColorEx("positionX| positionY| BUTTON_MAIN_DINGZHONG(2)| positionX + BUTTON_MAIN_DINGZHONG(3)| positionY + BUTTON_MAIN_DINGZHONG(4)| BUTTON_MAIN_DINGZHONG(5)| | positionX + BUTTON_MAIN_DINGZHONG(6)| positionY + BUTTON_MAIN_DINGZHONG(7)| BUTTON_MAIN_DINGZHONG(8)", 0.9)
+					
+					TracePrint "find result code "&mainScene
+					
+					If mainScene = 1 Then 
+						TracePrint "confirm main scene"
+						cmpResult = 1
+					Else 
+						TracePrint "can not confirm main scene by dz"
+						cmpResult = 0
+					End If
+				Else
+					TracePrint "can not find ding zhong point"
+					cmpResult = 0
+				End If
+			Else 
+				//未找到默认的主场景判断点，寻找展开判断点
+				TracePrint "find deploy main scene"
+			End If
+			Swipe screenWidth/2, screenHeight * 0.5, 10, screenHeight * 0.5
+		Loop
+		
+		Tap EXPORLE(0), EXPORLE(1)*/
+		//进入章节
+		/*TracePrint "进入章节"
+		Dim cmpChapterResult = -1
+		Do Until cmpChapterResult  > -1
+			//未处于最顶点，滑动至顶点
+			TracePrint "未处于最顶点，滑动至顶点"
+			cmpChapterResult = CmpColor(CHAPTER_TOP_COLOR(0), CHAPTER_TOP_COLOR(1), CHAPTER_TOP_COLOR(2), 0.9)
+			TracePrint "fimd chapter result code "&cmpChapterResult
+			Swipe CHAPTER_TOP_COLOR(0), CHAPTER_TOP_COLOR(1), CHAPTER_TOP_COLOR(0), CHAPTER_TOP_COLOR(1) + screenHeight
+			Delay WAIT_LONG
+		Loop
+		If chapter < 4 Then 
+				//处在当前屏幕直接进入
+				TracePrint "处在当前屏幕直接进入"
+				Tap CHAPTER_TOP_COLOR(0), CHAPTER_TOP_COLOR(1) + ((chapter -1) * CHAPTER_ELEMENT_HEIGHT) 
+			Else 
+				//未处在当前屏幕则进滑动
+				TracePrint "未处在当前屏幕则进滑动"
+				Swipe CHAPTER_TOP_COLOR(0), CHAPTER_TOP_COLOR(1), CHAPTER_TOP_COLOR(0), CHAPTER_TOP_COLOR(1) + chapter * CHAPTER_ELEMENT_HEIGHT
+				//然后进入
+				TracePrint "然后进入"
+				Tap CHAPTER_TOP_COLOR(0), CHAPTER_TOP_COLOR(1)
+		End If
+		*/
+		
+		Import "yysLib_explore_scene.mql"
+		yysLib_explore_scene.chooseChapter(4)
+		//选择难度
+		TracePrint "选择难度"
+		
+		Dim cmpModeResult = -1
+		Do Until cmpModeResult > -1
+			TracePrint "set mode to default"
+			cmpModeResult = CmpColor(MODE_NORMAL(0), MODE_NORMAL(1), MODE_NORMAL(2), 0.9)
+			
+			If cmpModeResult = -1 Then 
+				//讲难度设置为默认
+				Tap MODE_NORMAL(0), MODE_NORMAL(1)
+			End If
+			
+			TracePrint "set mode status code "&cmpModeResult
+			
+			Delay WAIT_NORMAL
+		Loop
+		
+		Delay WAIT_LONG
+		
+		If mode = 0 Then 
+				TracePrint "选择难度 0"
+				Tap MODE_NORMAL(0), MODE_NORMAL(1)
+			ElseIf mode = 1 Then 
+				TracePrint "选择难度 1"
+				Tap MODE_HARD(0), MODE_HARD(1)
+		End If
+		//进入副本
+		TracePrint "进入副本"
+		
+		Delay WAIT_SHORT
+		Tap START_EXPORLE(0), START_EXPORLE(1)
+		//解锁式神锁定
+		TracePrint "解锁式神锁定"
+		
+		Do Until CmpColor(SCENE_COLOR(0), SCENE_COLOR(1), SCENE_COLOR(2), 0.9) > -1 
+			Delay WAIT_NORMAL
+		Loop
+		
+		Delay WAIT_LONG
+		
+		If CmpColor(LOCK(0), LOCK(1), LOCK(2), 0.9) > 0 Then 
+				//未锁
+				TracePrint "未锁的队伍锁定状态"
+			ElseIf CmpColor(LOCK_SELECTED(0), LOCK_SELECTED(1), LOCK_SELECTED(2), 0.9) > -1 Then
+				//已锁
+				TracePrint "已锁的队伍锁定状态"
+				Tap LOCK_SELECTED(0), LOCK_SELECTED(1)
+			Else 
+				TracePrint "错误的队伍锁定状态"
+		End If
+		//选择战斗对象
+		TracePrint "选择战斗对象"
+		
+		Delay WAIT_LONG
+	
+		Dim fightResult = False //是否结束战斗，通过判断场景等方式修改本值
+		Do Until fightResult
+			//扫描当前屏幕 检查是否出现首领提示
+			//扫描当前屏幕 是否存在击杀对象
+			//扫描当前屏幕 选择击杀对象
+			Dim area = Array(0, 0, screenWidth, screenHeight)
+			Import "yysLib.mql"
+			
+				//检查场景奖励
+			Delay WAIT_LONG * 3
+			Dim sceneRewardPosition = yysLib.findSceneReward()
+			Dim monsterBossPosition = yysLib.findBossByImage()
+			Dim monsterPosition
+			If monsterBossPosition = False
+				monsterPosition = yysLib.findMonsterByImage(area)
+			End If
+			
+			If sceneRewardPosition Then 
+				//判断是否还有奖励
+				Do Until sceneRewardPosition = False
+					Tap sceneRewardPosition(0), sceneRewardPosition(1)
+					Delay WAIT_NORMAL
+					Tap screenWidth / 2, screenHeight * 0.8
+					sceneRewardPosition = yysLib.findSceneReward()
+				Loop
+				//完成战斗
+				Exit Function
+			//End If
+				//检查boss
+			//Dim monsterBossPosition = yysLib.findBossByImage()
+			ElseIf monsterBossPosition Then 
+				Tap monsterBossPosition(0), monsterBossPosition(1)
+			//End If
+				//检查普通怪物
+			//Dim monsterPosition = yysLib.findMonsterByImage(area)
+			ElseIf monsterPosition
+				Tap monsterPosition(0), monsterPosition(1)
+			Else 
+				//刷完所有怪物
+				TracePrint "not more monster"
+				Exit Do
+			End If
+			//进入对战
+			TracePrint "进入对战"
+			
+			Dim fightDone = False
+			//循环查找准备标志，应对波次变化
+			Do Until fightDone
+			
+				Delay WAIT_LONG
+					//判断是否进入战斗界面
+				Do Until CmpColor(FIGHT(0), FIGHT(1), FIGHT(2), 0.9) > -1 
+					Delay WAIT_SHORT
+				Loop
+				
+				Delay WAIT_LONG 
+				
+				Tap FIGHT(0), FIGHT(1) //fight start
+				
+				Do Until CmpColor(FIGHT_REWARD(0), FIGHT_REWARD(1), FIGHT_REWARD(2), 0.9) > -1
+					Delay WAIT_LONG
+				Loop
+			
+				Do Until CmpColor(SCENE_COLOR(0), SCENE_COLOR(1), SCENE_COLOR(2), 0.9) > -1
+					Tap screenWidth / 2, screenHeight /2
+					//直到进入奖励界面完成战斗
+					Delay WAIT_SHORT
+					fightDone = True
+				Loop
+			Loop
+			
+			TracePrint "战斗结束"
+		
+			Delay WAIT_LONG
+			
+		Loop
+
+		//处理主线
+		//处理支线
+End Function
+
+/*
+根据输入的名字来查找指定应用是否运行，若存在则返回true，否则返回false 
+@param appName 应用包名，如 com.tencent.qq
+@date 二〇一六年十一月十四日 22:42:35
+@author Wszl
+@version 0.1
+*/
+Function isRunApp(appName)
+    Dim runApps = getRunningApp() //获得当前运行的app列表
+	
+    //遍历数组
+    For Each name In runApps
+        If name = appName Then 
+            isRunApp = True
+        End If
+    Next
+	
+    isRunApp = False
+End Function

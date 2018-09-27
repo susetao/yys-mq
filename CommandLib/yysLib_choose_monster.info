@@ -1,0 +1,64 @@
+
+{
+	"Description" : null,
+	"findBoss" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"findBossByImage" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"findBossInScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"findChooseMonsterSceneReward" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"findMonster" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"findMonsterByImage" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"findMonsterInScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"findSceneReward" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"getChooseMonsterPostion" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"getTeamLockMode" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isChooseMonsterScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"setTeamLockMode" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	}
+}

@@ -1,0 +1,44 @@
+
+{
+	"Description" : null,
+	"chooseEnchantment" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"enterEnchantment" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"fight" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"getFightNum" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isEnchantmentChooseScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isEnchantmentChooseSceneUni" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isEnterEnchantmentScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isEnterEnchantmentSceneUni" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	}
+}

@@ -1,0 +1,124 @@
+
+{
+	"Description" : null,
+	"changeFightTeamMember" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"changeMaster" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"changeMember" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"changeMemberGrade" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"changeSpectatorMember" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"changeTeamMember" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"fight" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"fightEnter" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"fightStart" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"findSuitableShishen" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"getFightMode" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"getLevelMaxMemberNum" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"getLevelMaxMemberNumByPostion" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"getMaster" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"getPrechangeLevelMaxMemberNum" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"getSpectatorLevelMaxMemberNumByPostion" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"getSpectatorPrechangeLevelMaxMemberNum" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isAllocateGradeScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isChangeMemberScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isFightEnd" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isFightScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"levelMemberArea" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"setFightMode" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"setShiShenFightMode" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	}
+}

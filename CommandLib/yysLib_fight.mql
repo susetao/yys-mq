@@ -67,8 +67,8 @@ End Function
  * @return True|False
  */
 Function isFightEnd
-    Dim FIGHT_END_MARK = Array(480,187,"AABECD",454,201,"121C99",266,340,"0286FF",332,426,"0251C4",667,245,"BEE6F1",424,147,"8AA3B8",346,154,"7DCCE3",285,124,"3646EB",536,321,"2839E1",637,282,"2A4F6D") //战斗完成的判定点&选择点 五点
-	Dim FIGHT_END_FAILED_MARK = Array(254,165,"3B4B5B",340,138,"9ABEC6",469,176,"90A6B8",445,189,"6B5660",724,170,"A5B3BA",949,248,"525F69",409,512,"BFC8C7",651,503,"2F2F9D",865,502,"C6DBFF",608,269,"7CA9B4") //战斗失败mrak
+    Dim FIGHT_END_MARK = Array(644,431, "4234D1", 537,426, "1781D6", 555,538, "CE8C40", 635,532, "191F2F", 755,583, "1A5692", 669,450, "9CB4C7", 729,416, "2974AD", 725,454, "1F2024", 757,519, "1990D2", 490,620, "CE8C40") //战斗完成的判定点&选择点 十点
+	Dim FIGHT_END_FAILED_MARK = Array(305,134, "9ABDC7", 465,146, "594850", 731,168, "ABB9C0", 915,183, "96A5AD", 397,513, "D9DFDD", 651,484, "3434C4", 865,517, "BFD7FA", 638,412, "FFFFFF", 613,275, "82AFBC", 608,494, "2B2E36") //战斗失败mrak
 	
     Dim cmpResult = CmpColorEx( FIGHT_END_MARK(0) & "|" & FIGHT_END_MARK(1) & "|" & FIGHT_END_MARK(2) & "," & FIGHT_END_MARK(3) & "|" & FIGHT_END_MARK(4) & "|" & FIGHT_END_MARK(5) & "," & FIGHT_END_MARK(6) & "|" & FIGHT_END_MARK(7) & "|" & FIGHT_END_MARK(8) & "," & FIGHT_END_MARK(9) & "|" & FIGHT_END_MARK(10) & "|" & FIGHT_END_MARK(11) & "," & FIGHT_END_MARK(12) & "|" & FIGHT_END_MARK(13) & "|" & FIGHT_END_MARK(14) & "," & FIGHT_END_MARK(15) & "|" & FIGHT_END_MARK(16) & "|" & FIGHT_END_MARK(17) & "," & FIGHT_END_MARK(18) & "|" & FIGHT_END_MARK(19) & "|" & FIGHT_END_MARK(20) & "," & FIGHT_END_MARK(21) & "|" & FIGHT_END_MARK(22) & "|" & FIGHT_END_MARK(23) & "," & FIGHT_END_MARK(24) & "|" & FIGHT_END_MARK(25) & "|" & FIGHT_END_MARK(26) & "," & FIGHT_END_MARK(27) & "|" & FIGHT_END_MARK(28) & "|" & FIGHT_END_MARK(29), 0.9)
     If cmpResult = 1 Then
@@ -1112,28 +1112,35 @@ End Function
 
 
 //Test
-//TracePrint fight(1, 1)
-//EndScript
+TracePrint fight(1, 1, 1)
+EndScript
 /**
  * 战斗整合
  * @param resevePosition 保留位置  从右至左 1 - 5
  * @param level 练级狗粮最大品级 给定的品级 1 N 2 R 3 SR 4 SSR 0 不限定
+ * @param teamLockMode 1 锁定 0 不锁定 (锁定队伍模式, 无法进行队伍成员更换)
  * @return True|False
  */
-Function fight(level, revsePosition)
+Function fight(level, revsePosition, teamLockMode)
 	
-	//等级检查
-	Dim checkResult = changeMember(level, revsePosition)
-	If checkResult = False Then 
-		TracePrint "check member level failed. please notify admin"
-	End If
+	// 队伍模式检查
+	If teamLockMode = 1 Then 
+		TracePrint "team lock mode, can not change team member."
+	Else
+		//等级检查
+		Dim checkResult = changeMember(level, revsePosition)
+		If checkResult = False Then 
+			TracePrint "check member level failed. please notify admin"
+		End If
+		//进入战斗成功,点击准备,开始战斗
+		Dim fightStartResult = False
+		Do Until fightStartResult
+			fightStartResult = fightStart()
+			Delay yysLib_utils.WAIT_NORMAL
+		Loop
+	End If 
+	
 
-	//进入战斗成功,点击准备,开始战斗
-	Dim fightStartResult = False
-	Do Until fightStartResult
-		fightStartResult = fightStart()
-		Delay yysLib_utils.WAIT_NORMAL
-	Loop
 	TracePrint "fighting"
 	//开始战斗成功，等待战斗结束
 	Dim fightCompleteResult = False

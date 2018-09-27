@@ -19,7 +19,7 @@ Import "yysLib_jj.mql"
 
 //Test
 Do While True
-	Dim resut = ,exploreScene(1, 0, 0, 1, 0, 1, 1)
+	Dim resut = exploreScene(1, 0, 0, 1, 0, 1, 1, 1, 1, 2)
 	If resut = False Then 
 		EndScript
 	End If
@@ -33,9 +33,12 @@ Do While True
  * @param reservepl 保留的体力，0为不保留
  * @param shishenLevel 升级狗粮品级
  * @param resevePosition 保留式神位置
+ * @param fightSpeed 1 1x 2 2x 战斗速度
+ * @param fightMode 0 手动 1 自动 战斗模式(手动模式需要进行战斗处理, 比较复杂, 应出现在高级版中)
+ * @param fightLockMode 0 未锁定 1 锁定 (锁定队伍模式, 无法进行队伍成员更换)
  * @return True|False
  */
-Function exploreScene(chapter, mode, team, type, reservepl, shishenLevel, resevePosition)
+Function exploreScene(chapter, mode, team, type, reservepl, shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode)
 	//判断当前位置是否处于探索场景
 	Delay yysLib_utils.WAIT_NORMAL
 	
@@ -104,13 +107,6 @@ Function exploreScene(chapter, mode, team, type, reservepl, shishenLevel, reseve
 		Delay yysLib_utils.WAIT_NORMAL
 	Loop
 	
-	//设定队伍状态为不锁定
-//	Dim setTeamLockStateResult = yysLib_choose_monster.setTeamLockMode(0)
-//	If setTeamLockStateResult = False Then 
-//		TracePrint "set team state failed, please try again ,current task terminal"
-//		exploreScene = False
-//		Exit Function
-//	End If
 	//开始战斗
 		//寻找怪物
 	Dim currentScene = True
@@ -169,7 +165,7 @@ Function exploreScene(chapter, mode, team, type, reservepl, shishenLevel, reseve
 				End If
     		Loop
 			
-			yysLib_fight.fight(shishenLevel, resevePosition) 
+			yysLib_fight.fight(shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode) 
 		End If
 		//normal monster
 		If position  < 0 Then 
@@ -191,7 +187,7 @@ Function exploreScene(chapter, mode, team, type, reservepl, shishenLevel, reseve
 				End If
     		Loop
     		
-			yysLib_fight.fight(shishenLevel, resevePosition) 
+			yysLib_fight.fight(shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode) 
 			
 		End If
 	Loop

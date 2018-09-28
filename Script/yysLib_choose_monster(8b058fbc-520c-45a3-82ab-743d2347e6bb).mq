@@ -408,8 +408,8 @@ Function findChooseMonsterSceneReward
 End Function
 
 //Test
-//TracePrint isChooseMonsterScene()
-//EndScript
+TracePrint isChooseMonsterScene()
+EndScript
 /**
  * 是否位于选择怪物场景
  * @return True|False

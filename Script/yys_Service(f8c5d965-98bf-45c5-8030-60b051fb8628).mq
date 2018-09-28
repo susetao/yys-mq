@@ -19,7 +19,7 @@ Import "yysLib_jj.mql"
 
 //Test
 Do While True
-	Dim resut = exploreScene(1, 0, 0, 1, 0, 1, 1, 1, 1, 2)
+	Dim resut = exploreScene(1, 0, 0, 0, 0, 1, 1, 1, 1, 2)
 	If resut = False Then 
 		EndScript
 	End If
@@ -52,14 +52,15 @@ Function exploreScene(chapter, mode, team, type, reservepl, shishenLevel, reseve
 	
 	//选择章节
 	If chapter < 0 Or chapter > yysLib_explore_scene.getChapterNum() Then 
-		TracePrint "chapter "&chapter&" is wrong"
+		TracePrint "exploreScene.chapter "&chapter&" is wrong"
 		exploreScene = False
 		Exit Function
 	End If
 		//选择章节
 	Dim chooseChapterResult = yysLib_explore_scene.chooseChapter(chapter)
-	Do Until chooseChapterResult = False And yysLib_choose_monster.isChooseMonsterScene() = False
-		TracePrint "choose chapter failed"
+	TracePrint "exploreScene.chooseChapter result ",chooseChapterResult
+	Do Until chooseChapterResult = True And yysLib_explore_scene.isExploreScene() = False
+		TracePrint "exploreScene.choose chapter failed"
 		Delay yysLib_utils.WAIT_NORMAL
 	Loop
 	
@@ -69,12 +70,13 @@ Function exploreScene(chapter, mode, team, type, reservepl, shishenLevel, reseve
 		confirmChooseChapterResult = yysLib_explore_scene.isExploreChooseScene()
 		Delay yysLib_utils.WAIT_NORMAL
 	Loop
+	TracePrint "exploreScene.choose chapter details"
 		
 		//选择模式
 	If chooseChapterResult Then 
 		Dim chooseChpaterModeResult = yysLib_explore_scene.chooseChapterMode(mode)
 		If chooseChpaterModeResult = False Then 
-			TracePrint "choose chapter mode failed"
+			TracePrint "exploreScene.choose chapter mode failed"
 			exploreScene = False
 			Exit Function
 		Else 

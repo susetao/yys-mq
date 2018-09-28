@@ -51,21 +51,21 @@ Dim SCENE_EXPLORE_CHAPTER_LIST = Array(SCENE_EXPLORE_CHAPTER_1,SCENE_EXPLORE_CHA
  */
 Function isExploreScene
 	
-	Dim SCENE_EXPLORE = Array(44,59,"FDF5ED",16,707,"13131C",149,702,"0A092E",1133,113,"E0F3F8",1230,109,"E0F3F8") //探索界面判定点  五点
+	Dim SCENE_EXPLORE = Array(45,60, "FDF5ED", 24,693, "2E3F66", 1030,704, "9881E9", 1159,147, "101018", 1156,159, "BDCDD5") //探索界面判定点  五点
 
 	Dim result = False
 	//使用像素方式判断
 
 	If CmpColorEx(SCENE_EXPLORE(0)&"|"&SCENE_EXPLORE(1)&"|"&SCENE_EXPLORE(2)&","&SCENE_EXPLORE(3)&"|"&SCENE_EXPLORE(4)&"|"&SCENE_EXPLORE(5)&","&SCENE_EXPLORE(6)&"|"&SCENE_EXPLORE(7)&"|"&SCENE_EXPLORE(8)&","&SCENE_EXPLORE(9)&"|"&SCENE_EXPLORE(10)&"|"&SCENE_EXPLORE(11)&","&SCENE_EXPLORE(12)&"|"&SCENE_EXPLORE(13)&"|"&SCENE_EXPLORE(14), 0.9) = 1 Then 
-		TracePrint "isExploreScene function pixel type result is true"
+		TracePrint "isExploreScene.isExploreScene function pixel type result is true"
 		result = result Or True
 	End If
 	//综合两种判断方式，返回结果
 	If result Then 
-		TracePrint "current scene is explore"
+		TracePrint "isExploreScene.current scene is explore"
 		isExploreScene = True
 	Else 
-		TracePrint "current scene is not explore"
+		TracePrint "isExploreScene.current scene is not explore"
 		isExploreScene = False
 	End If
 End Function
@@ -173,7 +173,7 @@ Function exitExploreScene
 End Function
 
 //Test
-//Call chooseChapter(14)
+//Call chooseChapter(1)
 //EndScript
 
 /**
@@ -184,22 +184,22 @@ End Function
 Function chooseChapter(chapter)
 	Dim CHAPTER_HEIGHT = 118 //定义一个章节的高度
 	Dim CHAPTER_BOTTOM_HEADER_HEIGHT = 30 //定义章节末端，头部多余的高度
-	Dim CHAPTER_TOP_COLOR = Array(1160,158, "15253E",1171,168,"748289",1181,176,"13243D") //右侧章节处于最上的判定颜色点,三点
+	Dim CHAPTER_TOP_COLOR = Array(1150,196, "27698A", 1156,202, "387A9B", 1164,195, "306B8B") //右侧章节处于最上三角端的判定颜色点,三点
 	Dim CHAPTER_BOOTOM_COLOR = Array(1161,547,"000000",1172,553,"000000",1180,562,"000000") //章节最下的判断点 三点  三点的颜色值为无效值,应获取当前屏幕的值填入，再使用
 
 	//判断是否位于探索界面
 	If isExploreScene() = False Then 
-		TracePrint "current scene is not explore"
+		TracePrint "chooseChapter.current scene is not explore"
 		chooseChapter = False
 		Exit Function
 	End If
 
 	//重置章节选择
 	Dim cmpChapterResult = 0
-	TracePrint "swipe to top"
+	TracePrint "chooseChapter.swipe to top"
 	Do Until cmpChapterResult  > 0
 		//未处于最顶点，滑动至顶点
-		Swipe CHAPTER_TOP_COLOR(0), CHAPTER_TOP_COLOR(1), CHAPTER_TOP_COLOR(0), CHAPTER_TOP_COLOR(1) + (CHAPTER_HEIGHT * 4) //每次滑动4个章节
+		Swipe CHAPTER_TOP_COLOR(0) , CHAPTER_TOP_COLOR(1) + CHAPTER_HEIGHT / 2, CHAPTER_TOP_COLOR(0), CHAPTER_TOP_COLOR(1) + (CHAPTER_HEIGHT * 4) //每次滑动4个章节
 		
 		Delay WAIT_LONG
 		
@@ -207,12 +207,12 @@ Function chooseChapter(chapter)
 	Loop
 	
 	//确定进入指定chapter
-	TracePrint "choose chapter "&chapter
+	TracePrint "chooseChapter.choose chapter "&chapter
 	Dim userChapterNum = getChapterNum() //获得用户最大的章节数
 	
 	//确认chapter为有效值
 	If userChapterNum < chapter Or chapter <= 0 Then 
-		TracePrint "unknow chapter value "&chapter
+		TracePrint "chooseChapter.unknow chapter value "&chapter
 		chooseChapter = False
 		Exit Function
 	End If
@@ -221,8 +221,8 @@ Function chooseChapter(chapter)
 	Do Until isExploreChooseScene()
 		If chapter <= 4 Then 
 			//处在当前屏幕直接进入
-			TracePrint "join chapter"
-			Tap CHAPTER_TOP_COLOR(0), CHAPTER_TOP_COLOR(1) + ((chapter -1) * CHAPTER_HEIGHT) 
+			TracePrint "chooseChapter.join chapter"&CHAPTER_TOP_COLOR(0)&","&CHAPTER_TOP_COLOR(1) + ((chapter -1) * CHAPTER_HEIGHT) + CHAPTER_HEIGHT / 2
+			Tap CHAPTER_TOP_COLOR(0), CHAPTER_TOP_COLOR(1) + ((chapter -1) * CHAPTER_HEIGHT) + CHAPTER_HEIGHT / 2
 		ElseIf chapter <= (userChapterNum - 4) Then
 			//未处在当前屏幕则进滑动
 			Dim swipeStratX = CHAPTER_TOP_COLOR(0)
@@ -232,7 +232,7 @@ Function chooseChapter(chapter)
 			TracePrint swipeStratX&","&swipeStratY&" to "&swipeEndX&","&swipeEndY
 			yysLib_utils.swipteCustom(swipeStratX, swipeStratY, swipeEndX, swipeEndY, 2000) //每次滑动4个章节
 			//然后进入
-			TracePrint "join chapter"
+			TracePrint "chooseChapter.join chapter"
 			Tap CHAPTER_TOP_COLOR(0), CHAPTER_TOP_COLOR(1)
 		Else 
 			//处于最底端则滑动至最底端然后选择章节进入
@@ -250,7 +250,7 @@ Function chooseChapter(chapter)
 				cmpBottomResult = CmpColorEx(CHAPTER_BOOTOM_COLOR(0)&"|"&CHAPTER_BOOTOM_COLOR(1)&"|"&CHAPTER_BOOTOM_COLOR(2)&","&CHAPTER_BOOTOM_COLOR(3)&"|"&CHAPTER_BOOTOM_COLOR(4)&"|"&CHAPTER_BOOTOM_COLOR(5)&","&CHAPTER_BOOTOM_COLOR(6)&"|"&CHAPTER_BOOTOM_COLOR(7)&"|"&CHAPTER_BOOTOM_COLOR(8), 0.9)
 			Loop
 			
-			TracePrint "join chapter"
+			TracePrint "chooseChapter.join chapter"
 			Dim tempChapter = chapter - ( userChapterNum - 3)
 			//TracePrint tempChapter
 			Tap CHAPTER_TOP_COLOR(0), CHAPTER_TOP_COLOR(1) + (CHAPTER_BOTTOM_HEADER_HEIGHT + tempChapter * CHAPTER_HEIGHT)
@@ -261,7 +261,7 @@ Function chooseChapter(chapter)
 	
 	//TODO 判断该章节是否为正确的章节
 	chooseChapter = True
-	TracePrint "chooseChapter end"
+	TracePrint "chooseChapter.chooseChapter end"
 End Function
 
 /**
@@ -273,7 +273,7 @@ Function getChapterNum
 End Function
 
 //Test
-TracePrint chooseChapterLevel(1)
+TracePrint chooseChapterLevel(0)
 EndScript
 /**
  * 选择章节难度 普通 0 困难 1
@@ -281,14 +281,14 @@ EndScript
  */
 Function chooseChapterLevel(level)
 	Dim CHOOSE_CHAPTER_LEVEL_NORMAL = Array(318,205,"BEBEE2",318,236,"777A99",374,235,"BCBFBA",366,208,"FCFCFC",341,216,"152545") //普通难度未被选择的判定点&选择点 5点
-	Dim CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED = Array(306,197,"DDE0E3",298,228,"AAAEB1",378,200,"E9E4EB",382,245,"8F9498",338,218,"ED1587") //普通难度已被选择的判定点&选择点 5点
+	Dim CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED = Array(334,171, "B44269", 336,182, "14233B", 336,277, "0B1026", 338,287, "B5446B", 388,224, "1F3F60") //普通难度已被选择的判定点&选择点 5点
 	Dim CHOOSE_CHAPTER_LEVEL_HARD = Array(451,200,"79B2D1",447,237,"77BADD",500,248,"78B0CF",495,210,"E9FFFF",475,222,"060E1B") //困难难度未被选择的判定点&选择点 5点
 	Dim CHOOSE_CHAPTER_LEVEL_HARD_SELECTED = Array(318,205,"BEBEE2",320,238,"A5A8A9",372,235,"A1A4A9",366,208,"FCFCFC",339,218,"0B1B32") //困难难度已被选择的判定点&选择点 5点
-	Dim CHOOSE_CHAPTER_LEVEL_HARD_LOCKED = Array(435,201,"336587",482,198,"2F2F2F",435,243,"316486",482,246,"BDBDBD",498,193,"272727") //困难难度未解锁的判断点
+	Dim CHOOSE_CHAPTER_LEVEL_HARD_LOCKED = Array(469,186, "25282B", 471,193, "282828", 443,203, "C1C1C1", 487,256, "BCBCBC", 513,250, "43718D") //困难难度未解锁的判断点
 	
 	//判断是否位于chapter choose 
 	If isExploreChooseScene() = False Then 
-		TracePrint "current scene is not choose chapter scene"
+		TracePrint "chooseChapterLevel.current scene is not choose chapter scene"
 		chooseChapterLevel = False
 		Exit Function
 	End If
@@ -297,31 +297,31 @@ Function chooseChapterLevel(level)
 	Dim normalUnselectedMode = CmpColorEx(CHOOSE_CHAPTER_LEVEL_NORMAL(0)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL(1)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL(2)&","&CHOOSE_CHAPTER_LEVEL_NORMAL(3)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL(4)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL(5)&","&CHOOSE_CHAPTER_LEVEL_NORMAL(6)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL(7)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL(8)&","&CHOOSE_CHAPTER_LEVEL_NORMAL(9)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL(10)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL(11)&","&CHOOSE_CHAPTER_LEVEL_NORMAL(12)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL(13)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL(14), 0.9)
 	If normalUnselectedMode = 1 Then 
 		//确认到普通未选择难度
-		TracePrint "searched unselect normal"
+		TracePrint "chooseChapterLevel.searched unselect normal"
 	End If
 	
 	Dim normalSelectedMode = CmpColorEx(CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(0)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(1)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(2)&","&CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(3)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(4)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(5)&","&CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(6)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(7)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(8)&","&CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(9)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(10)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(11)&","&CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(12)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(13)&"|"&CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(14), 0.9)
 	If normalSelectedMode = 1 Then 
 		//确认到普通已选择难度
-		TracePrint "searched selected normal"
+		TracePrint "chooseChapterLevel.searched selected normal"
 	End If
 	
 	Dim hardUnselectedMode = CmpColorEx(CHOOSE_CHAPTER_LEVEL_HARD(0)&"|"&CHOOSE_CHAPTER_LEVEL_HARD(1)&"|"&CHOOSE_CHAPTER_LEVEL_HARD(2)&","&CHOOSE_CHAPTER_LEVEL_HARD(3)&"|"&CHOOSE_CHAPTER_LEVEL_HARD(4)&"|"&CHOOSE_CHAPTER_LEVEL_HARD(5)&","&CHOOSE_CHAPTER_LEVEL_HARD(6)&"|"&CHOOSE_CHAPTER_LEVEL_HARD(7)&"|"&CHOOSE_CHAPTER_LEVEL_HARD(8)&","&CHOOSE_CHAPTER_LEVEL_HARD(9)&"|"&CHOOSE_CHAPTER_LEVEL_HARD(10)&"|"&CHOOSE_CHAPTER_LEVEL_HARD(11)&","&CHOOSE_CHAPTER_LEVEL_HARD(12)&"|"&CHOOSE_CHAPTER_LEVEL_HARD(13)&"|"&CHOOSE_CHAPTER_LEVEL_HARD(14), 0.9)
 	If hardUnselectedMode = 1 Then 
 		//确认到困难未选择难度
-		TracePrint "searched unselect hard"
+		TracePrint "chooseChapterLevel.searched unselect hard"
 	End If
 	
 	Dim hardSelectedMode = CmpColorEx(CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(0)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(1)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(2)&","&CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(3)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(4)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(5)&","&CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(6)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(7)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(8)&","&CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(9)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(10)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(11)&","&CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(12)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(13)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(14), 0.9)
 	If hardSelectedMode = 1 Then 
 		//确认到困难已选择难度
-		TracePrint "searched selected hard"
+		TracePrint "chooseChapterLevel.searched selected hard"
 	End If
 	
 	Dim hardLockedMode = CmpColorEx(CHOOSE_CHAPTER_LEVEL_HARD_LOCKED(0)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_LOCKED(1)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_LOCKED(2)&","&CHOOSE_CHAPTER_LEVEL_HARD_LOCKED(3)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_LOCKED(4)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_LOCKED(5)&","&CHOOSE_CHAPTER_LEVEL_HARD_LOCKED(6)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_LOCKED(7)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_LOCKED(8)&","&CHOOSE_CHAPTER_LEVEL_HARD_LOCKED(9)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_LOCKED(10)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_LOCKED(11)&","&CHOOSE_CHAPTER_LEVEL_HARD_LOCKED(12)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_LOCKED(13)&"|"&CHOOSE_CHAPTER_LEVEL_HARD_LOCKED(14), 0.9)
 	If hardLockedMode = 1 Then 
 		//确认到困难未解锁
-		TracePrint "searched locked hard"
+		TracePrint "chooseChapterLevel.searched locked hard"
 	End If
 	
 	//组合判断已确认到的结果
@@ -329,27 +329,28 @@ Function chooseChapterLevel(level)
 		//判断和level是否相同
 		If level = 0 Then 
 		 	//相同则不需要操作
-			TracePrint "select normal mode"
+			TracePrint "chooseChapterLevel.select normal mode"
 			chooseChapterLevel = True
+			Exit Function
 		ElseIf level = 1 Then
 			//不同则选择困难难度,首先确认困难难度是否解锁
 			If hardLockedMode = 0
 				Tap CHOOSE_CHAPTER_LEVEL_HARD(0), CHOOSE_CHAPTER_LEVEL_HARD(1)
 			Else 
 				//困难难度未解锁
-				TracePrint "the hard mode is locked"
+				TracePrint "chooseChapterLevel.the hard mode is locked"
 				chooseChapterLevel = False
 				Exit Function
 			End If
 			//确认操作
 			If CmpColorEx(CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(0) & "|" & CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(1) & "|" & CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(2) & "," & CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(3) & "|" & CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(4) & "|" & CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(5) & "," & CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(6) & "|" & CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(7) & "|" & CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(8) & "," & CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(9) & "|" & CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(10) & "|" & CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(11) & "," & CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(12) & "|" & CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(13) & "|" & CHOOSE_CHAPTER_LEVEL_NORMAL_SELECTED(14), 0.9) = 1 Then 
-				TracePrint "select hard mode"
+				TracePrint "chooseChapterLevel.select hard mode"
 				chooseChapterLevel = True
 				Exit Function 
 			End If
 		Else 
 			//其他的困难级别
-			TracePrint "unsupport level mode"
+			TracePrint "chooseChapterLevel.unsupport level mode"
 		End If
 	ElseIf normalUnselectedMode = 1 And normalSelectedMode = 0 And hardUnselectedMode = 0 And hardSelectedMode = 1 Then  //选择困难难度的情况
 		//判断和level是否相同
@@ -358,18 +359,18 @@ Function chooseChapterLevel(level)
 			Tap CHOOSE_CHAPTER_LEVEL_NORMAL(0), CHOOSE_CHAPTER_LEVEL_NORMAL(1)
 			//确认操作
 			If CmpColorEx(CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(0) & "|" & CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(1) & "|" & CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(2) & "," & CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(3) & "|" & CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(4) & "|" & CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(5) & "," & CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(6) & "|" & CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(7) & "|" & CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(8) & "," & CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(9) & "|" & CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(10) & "|" & CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(11) & "," & CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(12) & "|" & CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(13) & "|" & CHOOSE_CHAPTER_LEVEL_HARD_SELECTED(14), 0.9) = 1 Then 	
-		 		TracePrint "select hard mode"
+		 		TracePrint "chooseChapterLevel.select hard mode"
 		 		chooseChapterLevel = True
 				Exit Function 
 			End If
 		ElseIf level = 1 Then
 			//相同则不需要操作
-			TracePrint "select hard mode"
+			TracePrint "chooseChapterLevel.select hard mode"
 			chooseChapterLevel = True
 			Exit Function
 		Else 
 			//其他的困难级别
-			TracePrint "unsupport level mode"
+			TracePrint "chooseChapterLevel.unsupport level mode"
 		End If
 	End If
 	
@@ -378,8 +379,8 @@ End Function
 
 
 //Test
-TracePrint chooseChapterEnter(0)
-
+//TracePrint chooseChapterEnter(0)
+//EndScript
 /**
  * 进入章节探索 包括从探索和挑战两个模式进入
  * @mode 0 单人 1 组队 用于探索模式
@@ -391,22 +392,22 @@ Function chooseChapterEnter(mode)
 	Dim EXPLORE_CHOOSE_BOSS_BUTTON = Array(953,530) //挑战模式的选择点
 	//判断当前场景
 	If isExploreChooseScene() = True And isExploreChooseBossScene() = False Then //探索模式
-		TracePrint "searched explore mode"
+		TracePrint "chooseChapterEnter.searched explore mode"
 		//判断单人还是组队
 		If mode = 0 Then 
 			Tap EXPLORE_CHOOSE_START_BUTTON(0), EXPLORE_CHOOSE_START_BUTTON(1)
 		ElseIf mode = 1 Then
 			Tap EXPLORE_CHOOSE_TEAM_BUTTON(0), EXPLORE_CHOOSE_TEAM_BUTTON(1)
 		Else 
-			TracePrint "unkonw param mode by "&mode
+			TracePrint "chooseChapterEnter.unkonw param mode by "&mode
 			chooseChapterEnter = False
 			Exit Function
 		End If
 	ElseIf isExploreChooseScene() = False And isExploreChooseBossScene() = True Then //挑战模式
-		TracePrint "searched boos mode"
+		TracePrint "chooseChapterEnter.searched boos mode"
 		Tap EXPLORE_CHOOSE_BOSS_BUTTON(0),EXPLORE_CHOOSE_BOSS_BUTTON(1)
 	Else 
-		TracePrint "unsearched true scene mode"
+		TracePrint "chooseChapterEnter.unsearched true scene mode"
 		chooseChapterEnter = False
 		Exit Function
 	End If

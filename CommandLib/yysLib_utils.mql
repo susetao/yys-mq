@@ -1,8 +1,11 @@
+
 /**********************************************
  * yys常用函数库
  * @author Wszl
  * @date 2017年2月14日13:38:32
  **********************************************/
+ 
+//阴阳师需设置为精细画面，默认庭院场景
  
  Randomize
 
@@ -104,4 +107,15 @@
  	TouchMove endX, endY, 0, time
  	Delay time / 2
  	TouchUp
+ End Function
+ 
+ 
+ Function tapCustom(x, y)
+ 	Tap x, y
+ 	TracePrint "tap :", x, y
+ End Function
+ 
+ Function tapRadomCustom(x, y, maxX, maxY)
+ 	Tap x, y
+ 	TracePrint "tap :", x, y
  End Function

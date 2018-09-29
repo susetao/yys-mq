@@ -134,20 +134,19 @@ Function exploreScene(chapter, mode, team, type, reservepl, shishenLevel, reseve
 		//reward
 		Dim rewardCoordinateResult = yysLib_choose_monster.findSceneReward()
 		If rewardCoordinateResult <> False Then 
-			Do Until rewardCoordinateResult = False And yysLib_explore_scene.isExploreScene()
+			Do Until rewardCoordinateResult = False And yysLib_explore_scene.isExploreChooseScene()
 				If rewardCoordinateResult <> False Then 
 					TracePrint "find reward in postion "&rewardCoordinateResult(0)&","&rewardCoordinateResult(1)
 					Tap rewardCoordinateResult(0), rewardCoordinateResult(1)
 					Delay yysLib_utils.WAIT_NORMAL
 				Else 
 					TracePrint "waiting for back to explore scene."
-					Tap yysLib_utils.SCREEN_WIDTH / 2, yysLib_utils.SCREEN_HEIGHT / 5
+					Tap yysLib_utils.SCREEN_WIDTH / 3, yysLib_utils.SCREEN_HEIGHT / 5
 				End If
 				Delay yysLib_utils.WAIT_NORMAL
 				rewardCoordinateResult = yysLib_choose_monster.findSceneReward()
 			Loop
 			TracePrint "explore chappter "&chapter&" is done"
-			Exit Function
 		End If
 		//boss
 		Dim boosCoordinateResult = yysLib_choose_monster.findBoss()
@@ -194,8 +193,13 @@ Function exploreScene(chapter, mode, team, type, reservepl, shishenLevel, reseve
 		End If
 	Loop
 	TracePrint "explore chapter "&chapter&" complete"
+			
+	Do Until yysLib_explore_scene.exitExploreChooseScene()
+		TracePrint "exit explore choose scene faild."
+	Loop
 	
 	Delay yysLib_utils.WAIT_NORMAL
+	
 	
 End Function
 

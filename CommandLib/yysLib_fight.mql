@@ -111,8 +111,8 @@ End Function
 
 
 //Test
-TracePrint setFightMode(1)
-EndScript
+//TracePrint setFightMode(1)
+//EndScript
 /**
  * 设置战斗方式 自动或者手动
  * @param mode 0 手动 1 自动
@@ -126,14 +126,14 @@ Function setFightMode(mode)
         If mode = 1 Then 
             TracePrint "current mode is auto"
         Else 
-            Tap FIGHT_MODE_BUTTON(0), FIGHT_MODE_BUTTON(1)
+            yysLib_utils.tapCustom(FIGHT_MODE_BUTTON(0), FIGHT_MODE_BUTTON(1))
             TracePrint "change mode to manuml"
         End If
     Else 
         If mode = 0 Then 
         	TracePrint "current mode is manuml"
         Else 
-            Tap FIGHT_MODE_BUTTON(0), FIGHT_MODE_BUTTON(1)
+            yysLib_utils.tapCustom(FIGHT_MODE_BUTTON(0), FIGHT_MODE_BUTTON(1))
             TracePrint "change mode to auto"
         End If
     End If
@@ -145,13 +145,13 @@ End Function
 //EndScript
 /** 
  * 获取战斗方式
- * @return 0 手动 1 自动 False获取异常
+ * @return 0 手动 1 自动 
  */
 Function getFightMode
-    Dim FIGHT_MODE_AUTO = Array(39,633,"5B7188",40,557,"3E2E63",41,660,"91A1A7",37,657,"B9CAD0",37,671,"D5E7ED") //自动战斗模式判定点 5点 
+    Dim FIGHT_MODE_AUTO = "37|655|DBEDF2,34|662|6E3245,37|671|D5E7ED,49|670|E0F3F8,49|667|E0F3F8"
 	
     //获取战斗方式
-    Dim autoModeResult = CmpColorEx(FIGHT_MODE_AUTO(0)&"|"&FIGHT_MODE_AUTO(1)&"|"&FIGHT_MODE_AUTO(2)&","&FIGHT_MODE_AUTO(3)&"|"&FIGHT_MODE_AUTO(4)&"|"&FIGHT_MODE_AUTO(5)&","&FIGHT_MODE_AUTO(6)&"|"&FIGHT_MODE_AUTO(7)&"|"&FIGHT_MODE_AUTO(8)&","&FIGHT_MODE_AUTO(9)&"|"&FIGHT_MODE_AUTO(10)&"|"&FIGHT_MODE_AUTO(11)&","&FIGHT_MODE_AUTO(12)&"|"&FIGHT_MODE_AUTO(13)&"|"&FIGHT_MODE_AUTO(14), 0.9)
+    Dim autoModeResult = CmpColorEx(FIGHT_MODE_AUTO, 0.9)
     getFightMode = autoModeResult
 	
 End Function
@@ -166,20 +166,20 @@ End Function
  * @return True 成功 False 失败
  */
 Function setFightSpeed(speed)
-    Dim SPEED_X_1 = Array(120,632, "E0F3F8", 144,623, "D3E6EB", 144,639, "E0F3F8", 144,635, "DEF1F6", 125,627, "D0E2E8") //一倍速度判定点 5点 (此处仅使用第一个坐标点即可, 可复制getFightSpeed的坐标点到此)
+    Dim SPEED_X_1 = Array(140,632) //速度button
 	
     If getFightSpeed() = 1 Then 
         If speed = 1 Then 
             TracePrint "current speed is x1"
         Else 
-            Tap SPEED_X_1(0), SPEED_X_1(1)
+            yysLib_utils.tapCustom(SPEED_X_1(0), SPEED_X_1(1))
             TracePrint "change speed to 2x"
         End If
     Else 
         If speed = 1 Then 
             TracePrint "current speed is x1"
         Else 
-            Tap SPEED_X_1(0), SPEED_X_1(1)
+            yysLib_utils.tapCustom(SPEED_X_1(0), SPEED_X_1(1))
             TracePrint "change speed to 2x"
         End If
     End If
@@ -194,9 +194,9 @@ End Function
  * @return 1 1x 0 2x
  */
 Function getFightSpeed
-    Dim SPEED_X_1 = Array(120,632, "E0F3F8", 144,623, "D3E6EB", 144,639, "E0F3F8", 144,635, "DEF1F6", 125,627, "D0E2E8") //一倍速度判定点 5点
+    Dim SPEED_X_1 = "143|631|B3C4CA,143|633|AFC0C6,143|629|B7C8CE"
 	
-    Dim isX1SpeedResult = CmpColorEx(SPEED_X_1(0)&"|"&SPEED_X_1(1)&"|"&SPEED_X_1(2)&","&SPEED_X_1(3)&"|"&SPEED_X_1(4)&"|"&SPEED_X_1(5)&","&SPEED_X_1(6)&"|"&SPEED_X_1(7)&"|"&SPEED_X_1(8)&","&SPEED_X_1(9)&"|"&SPEED_X_1(10)&"|"&SPEED_X_1(11)&","&SPEED_X_1(12)&"|"&SPEED_X_1(13)&"|"&SPEED_X_1(14), 0.8)
+    Dim isX1SpeedResult = CmpColorEx(SPEED_X_1, 0.9)
     getFightSpeed = isX1SpeedResult
 End Function
 
@@ -1135,8 +1135,8 @@ End Function
 
 
 //Test
-TracePrint fight(1, 1, 1, 1, 2)
-EndScript
+//TracePrint fight(1, 1, 1, 1, 2)
+//EndScript
 /**
  * 战斗整合
  * @param resevePosition 保留位置  从右至左 1 - 5
@@ -1165,11 +1165,11 @@ Function fight(level, revsePosition, teamLockMode, fightMode, fightSpeed)
     End If 
 	
     //战斗模式选择
-	Delay yysLib_utils.WAIT_LONG
+//	Delay yysLib_utils.WAIT_LONG
 	TracePrint "fightMode is:"&fightMode
     setFightMode(fightMode)
     //战斗速度设置
-    Delay yysLib_utils.WAIT_LONG
+//    Delay yysLib_utils.WAIT_LONG
     TracePrint "fightSpeed is:"&fightSpeed
     setFightSpeed(fightSpeed)
 

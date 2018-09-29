@@ -108,3 +108,14 @@
  	Delay time / 2
  	TouchUp
  End Function
+ 
+ 
+ Function tapCustom(x, y)
+ 	Tap x, y
+ 	TracePrint "tap :", x, y
+ End Function
+ 
+ Function tapRadomCustom(x, y, maxX, maxY)
+ 	Tap x, y
+ 	TracePrint "tap :", x, y
+ End Function

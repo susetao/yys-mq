@@ -25,5 +25,15 @@
 	{
 		"Description" : null,
 		"TranslateTemplate" : null
+	},
+	"tapCustom" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"tapRadomCustom" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
 	}
 }

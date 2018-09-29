@@ -42,7 +42,7 @@ Dim SCENE_EXPLORE_CHAPTER_LIST = Array(SCENE_EXPLORE_CHAPTER_1,SCENE_EXPLORE_CHA
 //Test
 //SetScreenScale(1024, 576, 1)
 //TracePrint CmpColorEx(SCENE_EXPLORE(0)&"|"&SCENE_EXPLORE(1)&"|"&SCENE_EXPLORE(2)&","&SCENE_EXPLORE(3)&"|"&SCENE_EXPLORE(4)&"|"&SCENE_EXPLORE(5)&","&SCENE_EXPLORE(6)&"|"&SCENE_EXPLORE(7)&"|"&SCENE_EXPLORE(8)&","&SCENE_EXPLORE(9)&"|"&SCENE_EXPLORE(10)&"|"&SCENE_EXPLORE(11)&","&SCENE_EXPLORE(12)&"|"&SCENE_EXPLORE(13)&"|"&SCENE_EXPLORE(14), 0.9)
-//Call isExploreScene()
+//TracePrint isExploreScene()
 //EndScript
 
 /**
@@ -273,8 +273,8 @@ Function getChapterNum
 End Function
 
 //Test
-TracePrint chooseChapterLevel(0)
-EndScript
+//TracePrint chooseChapterLevel(0)
+//EndScript
 /**
  * 选择章节难度 普通 0 困难 1
  * @return True|False
@@ -470,30 +470,32 @@ Function enterChooseMonsterScene
 End Function
 
 //Test TODO
-//TracePrint exitExploreChooseScene()
+TracePrint exitExploreChooseScene()
+EndScript
 /**
  * 退出副本选择界面
  * @return True|False
  */
 Function exitExploreChooseScene
-	Dim EXPLORE_CHOOSE_SCENE_EXIT_BUTTON = Array() //副本选择界面退出按钮选择点
+	Dim EXPLORE_CHOOSE_SCENE_EXIT_BUTTON = Array(1047,152) //副本选择界面退出按钮选择点
 	
 	//判断是否处于副本选择界面
 	If isExploreChooseScene() Or isExploreChooseBossScene() Then 
-		TracePrint "searched choose scene"
-		Tap EXPLORE_CHOOSE_SCENE_EXIT_BUTTON(0), EXPLORE_CHOOSE_SCENE_EXIT_BUTTON(1)
+		TracePrint "exitExploreChooseScene.searched choose scene"
+		yysLib_utils.tapCustom(EXPLORE_CHOOSE_SCENE_EXIT_BUTTON(0), EXPLORE_CHOOSE_SCENE_EXIT_BUTTON(1))
 		
+		Delay yysLib_utils.WAIT_NORMAL
 		//判断是否成功退出
 		If isExploreScene() Then 
-			TracePrint "exit choose scene success"
+			TracePrint "exitExploreChooseSceneexit choose scene success"
 			exitExploreChooseScene = True
 		Else 
-			TracePrint "exit choose scene failed"
+			TracePrint "exitExploreChooseScene.exit choose scene failed"
 			exitExploreChooseScene = False
 		End If
 	Else 
 		//未处于副本选择界面
-		TracePrint "currrent scene is not choose scene"
+		TracePrint "exitExploreChooseScene.currrent scene is not choose scene"
 		exitExploreChooseScene = False
 	End If
 End Function

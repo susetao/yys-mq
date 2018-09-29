@@ -1,0 +1,46 @@
+/**
+ * story场景相关API
+ * @author Wszl
+ * @date 2018年9月29日
+ */
+Import "yysLib_utils.mql"
+Import "yysLib_fight.mql"
+
+/**
+ * 进入story
+ * @return
+ */
+Function enterStory(x, y)
+
+	yysLib_utils.tapCustom x, y
+	TracePrint "enterStory.enter story"
+End Function
+
+/**
+ * 
+ * 在 main scene 搜索story
+ * @return Array(x, y)
+ */
+Function serachStory()
+	Dim STORY_MARK = 
+	Dim result = Array(-1, -1)
+	
+	//检查当前界面是否在主界面 main scene
+	Dim checkMainSceneResult = //TODO
+	If checkMainSceneResult Then 
+		//在主界面搜索剧情进入点
+		Dim IntX,IntY
+		FindMultiColor 0,0,0,0,"6496CD","-36|34|304F71,36|35|344B69,0|90|585C5D,-19|41|ECECFF,0|42|E8E8FC,17|41|E8E8FC,-9|41|181C40,9|41|1B1F45,-1|64|0C1012",1,0.9,intX,intY
+		If intX > -1 Then
+    		TracePrint "serachStory.find story in "&intX&","&intY
+		Else
+    		TracePrint "serachStory.not find story"
+		End If
+		result(0) = IntX
+		result(1) = IntY
+	Else 
+		TracePrint "serachStory.current scene is not main scene"
+		serachStory = False
+	End If
+	
+End Function

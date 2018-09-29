@@ -4,9 +4,6 @@
  * @date 2017年2月18日16:36:09
  */
 Import "yysLib_utils.mql"
-Import "yysLib_choose_monster.mql"
- 
- 
 
 /**
  * 进入战斗场景
@@ -23,40 +20,18 @@ End Function
 //EndScript
 /**
  * 开始战斗
- * @return True|False
+ * @return 
  */
 Function fightStart
-    Dim FIGHT_START_BUTTON = Array(1151,481,"96B6D2",1121,536,"ECFAFF",1117,559,"ECFAFF",1187,542,"CFF2FF",1191,570,"D5F4FF") //开始按钮判定点&选择点 5点
+    Dim FIGHT_START_BUTTON = Array(1151,481) //开始按钮
 
-    If isFightScene() = False Then 
-        TracePrint "current scene is not fight scene"
+    If isSettingMemberScene() = False Then 
+        TracePrint "fightStart.current scene is not fight setting member scene"
         fightStart = False
     End If
 
     //寻找开始按钮
-    Dim cmpResult = CmpColorEx(FIGHT_START_BUTTON(0)&"|"&FIGHT_START_BUTTON(1)&"|"&FIGHT_START_BUTTON(2)&","&FIGHT_START_BUTTON(3)&"|"&FIGHT_START_BUTTON(4)&"|"&FIGHT_START_BUTTON(5)&","&FIGHT_START_BUTTON(6)&"|"&FIGHT_START_BUTTON(7)&"|"&FIGHT_START_BUTTON(8)&","&FIGHT_START_BUTTON(9)&"|"&FIGHT_START_BUTTON(10)&"|"&FIGHT_START_BUTTON(11)&","&FIGHT_START_BUTTON(12)&"|"&FIGHT_START_BUTTON(13)&"|"&FIGHT_START_BUTTON(14), 0.9)
-    Do Until cmpResult <> 1
-        //寻找到，则开始
-        Tap FIGHT_START_BUTTON(0), FIGHT_START_BUTTON(1)
-		
-        Delay yysLib_utils.WAIT_SHORT
-		
-        //再次判定是否存在开始按钮
-        cmpResult = CmpColorEx(FIGHT_START_BUTTON(0)&"|"&FIGHT_START_BUTTON(1)&"|"&FIGHT_START_BUTTON(2)&","&FIGHT_START_BUTTON(3)&"|"&FIGHT_START_BUTTON(4)&"|"&FIGHT_START_BUTTON(5)&","&FIGHT_START_BUTTON(6)&"|"&FIGHT_START_BUTTON(7)&"|"&FIGHT_START_BUTTON(8)&","&FIGHT_START_BUTTON(9)&"|"&FIGHT_START_BUTTON(10)&"|"&FIGHT_START_BUTTON(11)&","&FIGHT_START_BUTTON(12)&"|"&FIGHT_START_BUTTON(13)&"|"&FIGHT_START_BUTTON(14), 0.9)
-        If cmpResult = 0 Then 
-            //开始成功
-            TracePrint "fight start"
-            fightStart = True
-            Exit Function
-        Else
-            //开始失败
-            TracePrint "fight start failed"
-        End If
-		
-        //未找到
-        TracePrint "unsearched start button"
-        fightStart = False
-    Loop
+    yysLib_utils.tapCustom(FIGHT_START_BUTTON(0), FIGHT_START_BUTTON(1))
 End Function
 
 //Test
@@ -89,8 +64,20 @@ End Function
 
 
 //Test
-//TracePrint isFightScene()
+//TracePrint isSettingMemberScene()
 //EndScript
+/**
+ * 判断当前场景是否位于设置战斗成员场景
+ * @return 0 不处于 1 处于
+ */
+Function isSettingMemberScene
+    Dim FIGHT_SETTING_MEMBER_SCENE = "39|536|5B4A52,32|551|170E14,37|575|573699,14|616|6C484F,90|688|334334,12|708|6F3E13,624|687|FFFFFF,1182|649|1D2228,1161|676|6EAAD8,1270|705|394830" //设置战斗成员场景
+	
+    //使用像素方式判断
+    Dim cmpResult = CmpColorEx(FIGHT_SETTING_MEMBER_SCENE, 0.9)
+    isSettingMemberScene = cmpResult
+End Function
+
 /**
  * 判断当前场景是否位于战斗场景
  * @return True|False
@@ -224,8 +211,8 @@ Function getLevelMaxMemberNum(reserve_area)
     Dim AREA_5 = Array(373,96,472,253) //5号式神所处的区域
 	
 
-    If isFightScene() = False Then 
-        TracePrint "current scene is not fight scene"
+    If isSettingMemberScene() = 0 Then 
+        TracePrint "getLevelMaxMemberNum.current scene is not fight scene"
         getLevelMaxMemberNum = False
         Exit Function
     End If
@@ -689,7 +676,7 @@ Function changeSpectatorMember(level,reserve_position, replaceMemberPosition)
 End Function
 
 //Test
-//TracePrint changeMember(1, 1)
+//TracePrint changeMember(1, 0)
 //EndScript
 /**
  * 更换成员
@@ -713,16 +700,11 @@ Function changeMember(level, revsePosition)
         revsePosition = 0
     End If
 	
+	//获取满级成员的位置
     Dim maxMemberPosition = getLevelMaxMemberNum(revsePosition)
     If maxMemberPosition = False Then 
         TracePrint "not level max member"
         changeMember = True
-		
-        Do Until isFightScene()
-            Tap EXIT_CHANGE_SCENE_BUTTON(0), EXIT_CHANGE_SCENE_BUTTON(1)
-            TracePrint "waiting for come back fight scene."
-            Delay yysLib_utils.WAIT_NORMAL
-        Loop
         Exit Function
     End If
     Dim maxMemberNum = 0 //满级成员个数
@@ -1135,7 +1117,7 @@ End Function
 
 
 //Test
-//TracePrint fight(1, 1, 1, 1, 2)
+//TracePrint fight(1, 1, 0, 1, 2)
 //EndScript
 /**
  * 战斗整合
@@ -1149,46 +1131,47 @@ End Function
 Function fight(level, revsePosition, teamLockMode, fightMode, fightSpeed)
     // 队伍模式检查
     If teamLockMode = 1 Then 
-        TracePrint "team lock mode, can not change team member."
+        TracePrint "fight.team lock mode, can not change team member."
     Else
         //等级检查
         Dim checkResult = changeMember(level, revsePosition)
         If checkResult = False Then 
-            TracePrint "check member level failed. please notify admin"
+            TracePrint "fight.check member level failed. please notify admin"
         End If
         //进入战斗成功,点击准备,开始战斗
-        Dim fightStartResult = False
+        Dim fightStartResult = isFightScene()
         Do Until fightStartResult
-            fightStartResult = fightStart()
+        	fightStart()
+            fightStartResult = isFightScene()
+            TracePrint "fight.wait fight start."
             Delay yysLib_utils.WAIT_NORMAL
         Loop
     End If 
 	
     //战斗模式选择
 //	Delay yysLib_utils.WAIT_LONG
-	TracePrint "fightMode is:"&fightMode
+	TracePrint "fight.fightMode is:"&fightMode
     setFightMode(fightMode)
     //战斗速度设置
 //    Delay yysLib_utils.WAIT_LONG
-    TracePrint "fightSpeed is:"&fightSpeed
+    TracePrint "fight.fightSpeed is:"&fightSpeed
     setFightSpeed(fightSpeed)
 
-    TracePrint "fighting"
+    TracePrint "fight.fighting"
     //开始战斗成功，等待战斗结束
     Dim fightCompleteResult = False
     Do Until fightCompleteResult
         fightCompleteResult = isFightEnd()
         Delay yysLib_utils.WAIT_LONG
     Loop
-    TracePrint "fight complete"
+    TracePrint "fight.fight complete"
 	
-    //战斗结束，领取奖励返回choose monster scene
-    Dim backChooseMonsterSceneResult = False
-    Do Until backChooseMonsterSceneResult
-        Tap yysLib_utils.SCREEN_WIDTH / 2, yysLib_utils.SCREEN_HEIGHT * 0.8
+//    //战斗结束，领取奖励返回choose monster scene
+    Do Until fightCompleteResult = False
         Delay yysLib_utils.WAIT_NORMAL
-        backChooseMonsterSceneResult = yysLib_choose_monster.isChooseMonsterScene()
-        TracePrint "back to choose monster scene"
+        Tap yysLib_utils.SCREEN_WIDTH / 2, yysLib_utils.SCREEN_HEIGHT * 0.8
+        fightCompleteResult = isFightEnd()
+        TracePrint "fight.wait to exit fight scene"
     Loop
 End Function
 

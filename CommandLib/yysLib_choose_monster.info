@@ -1,6 +1,11 @@
 
 {
 	"Description" : null,
+	"exploreInstanceZones" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
 	"findBoss" : 
 	{
 		"Description" : null,
@@ -56,7 +61,17 @@
 		"Description" : null,
 		"TranslateTemplate" : null
 	},
+	"serviceMain" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
 	"setTeamLockMode" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"waitIntoCurrentScene" : 
 	{
 		"Description" : null,
 		"TranslateTemplate" : null

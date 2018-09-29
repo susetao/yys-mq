@@ -9,6 +9,8 @@ Dim SCREEN_WIDTH = 1280
 Dim SCREEN_HEIGHT = 720
 	
 Import "yysLib_utils.mql"
+Import "yysLib_explore_scene.mql"
+Import "yysLib_fight.mql"
 
 
 Dim MONSTER_POSITION_OFFSET = Array(10, 10) //寻找到怪物坐标的偏移，因为怪物判定点不是判定的怪物的正中心
@@ -408,7 +410,9 @@ Function findChooseMonsterSceneReward
 End Function
 
 //Test
-TracePrint isChooseMonsterScene()
+For 100
+	TracePrint isChooseMonsterScene()
+Next
 EndScript
 /**
  * 是否位于选择怪物场景
@@ -519,8 +523,8 @@ Function setTeamLockMode(mode)
 End Function
 
 //Test
-TracePrint getTeamLockMode()
-EndScript
+//TracePrint getTeamLockMode()
+//EndScript
 /**
  * 获取队伍锁定状态
  * @return 0 未锁 1 锁定 False 获取异常
@@ -549,4 +553,134 @@ Function getTeamLockMode
 //        getTeamLockMode = False
 //    End If
 	getTeamLockMode = lockResult
+End Function
+
+//Test
+//TracePrint exploreInstanceZones( 0, 1, 1, 1, 1, 2)
+//EndScript
+/**
+ * main
+ * @param reservepl 保留的体力，0为不保留
+ * @param shishenLevel 升级狗粮品级
+ * @param resevePosition 保留式神位置
+ * @param fightSpeed 1 1x 2 2x 战斗速度
+ * @param fightMode 0 手动 1 自动 战斗模式(手动模式需要进行战斗处理, 比较复杂, 应出现在高级版中)
+ * @param fightLockMode 0 未锁定 1 锁定 (锁定队伍模式, 无法进行队伍成员更换)
+ * @return True|False
+ */
+Function exploreInstanceZones(reservepl, shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode)
+	//设置队伍模式
+	Dim checkTeamLockModeResult = getTeamLockMode()
+	TracePrint "exploreScene.teamLockMode current is ",checkTeamLockModeResult
+	Do Until checkTeamLockModeResult = fightLockMode
+		TracePrint "exploreScene.teamLockMode changed to "&fightLockMode
+		setTeamLockMode (fightLockMode)
+		checkTeamLockModeResult = getTeamLockMode()
+	Loop
+	
+	//开始战斗
+		//寻找怪物
+	Dim currentScene = True
+	Dim position = -1 
+	Do Until monsterCoordinateResult = False Or currentScene = False
+		Delay yysLib_utils.WAIT_LONG
+		
+	Rem findStart
+		currentScene = isChooseMonsterScene() //判断是否处于choose monster scene 若处于，说明还有怪物，则继续在当前场景寻找
+		
+		If currentScene = False Then 
+			//判断是否位于explore scene
+			If yysLib_explore_scene.isExploreChooseScene() Then 
+				TracePrint "no scene reward, explore end"
+				exploreInstanceZones = True
+				Exit Function
+			Else 
+				//位于其他场景
+				TracePrint "unknow scene"
+				waitIntoCurrentScene()
+			End If
+		End If
+		
+		//reward
+		Dim rewardCoordinateResult = findSceneReward()
+		If rewardCoordinateResult <> False Then 
+			Do Until rewardCoordinateResult = False And yysLib_explore_scene.isExploreChooseScene()
+				If rewardCoordinateResult <> False Then 
+					TracePrint "find reward in postion "&rewardCoordinateResult(0)&","&rewardCoordinateResult(1)
+					Tap rewardCoordinateResult(0), rewardCoordinateResult(1)
+					Delay yysLib_utils.WAIT_NORMAL
+				Else 
+					TracePrint "waiting for back to explore scene."
+					Tap yysLib_utils.SCREEN_WIDTH / 3, yysLib_utils.SCREEN_HEIGHT / 5
+				End If
+				Delay yysLib_utils.WAIT_NORMAL
+				rewardCoordinateResult = findSceneReward()
+			Loop
+			TracePrint "exploreInstanceZones is done"
+		End If
+		//boss
+		Dim boosCoordinateResult = findBoss()
+		If boosCoordinateResult <> False Then 
+			//找到场景boss，进入战斗
+			yysLib_fight.fightEnter boosCoordinateResult(0), boosCoordinateResult(1)
+			
+			Do Until yysLib_fight.isFightScene()
+    			TracePrint "waiting for fight scene."
+				Delay yysLib_utils.WAIT_NORMAL * 3
+				
+				//判断是否仍旧处于choose monster scene
+				If isChooseMonsterScene() Then 
+					//则退回选择monster步骤
+					TracePrint "enter boss fight error, change scene to choose monster scene"
+					Goto findStart
+				End If
+    		Loop
+			
+			yysLib_fight.fight(shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode)
+			waitIntoCurrentScene()
+		End If
+		//normal monster
+		If position  < 0 Then 
+			position = getChooseMonsterPostion()
+		End If
+		Dim monsterCoordinateResult = findMonsterInScene(position) //寻找monster
+		If monsterCoordinateResult <> False Then 
+			//找到怪物，则进入战斗
+			yysLib_fight.fightEnter(monsterCoordinateResult(0), monsterCoordinateResult(1))
+			
+    		Do Until yysLib_fight.isFightScene()
+    			TracePrint "waiting for fight scene."
+				Delay yysLib_utils.WAIT_NORMAL * 3
+				//判断是否仍旧处于choose monster scene
+				If isChooseMonsterScene() Then 
+					//则退回选择monster步骤
+					TracePrint "enter monster fight error, change scene to choose monster scene"
+					Goto findStart
+				End If
+    		Loop
+    		
+			yysLib_fight.fight(shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode) 
+			waitIntoCurrentScene()
+		End If
+	Loop
+End Function
+
+
+//Test
+//TracePrint waitIntoCurrentScene()
+//EndScript
+/**
+ * 等待回到 choose monster scene
+ * @return Ture | False
+ */
+Function waitIntoCurrentScene()
+    //等到回到 choose monster scene
+    Dim backChooseMonsterSceneResult = False
+    Do Until backChooseMonsterSceneResult
+        Delay yysLib_utils.WAIT_NORMAL
+        Tap yysLib_utils.SCREEN_WIDTH / 2, yysLib_utils.SCREEN_HEIGHT / 3
+        backChooseMonsterSceneResult = isChooseMonsterScene()
+        TracePrint "waitIntoCurrentScene.back to choose monster scene"
+    Loop
+    waitIntoCurrentScene = True
 End Function

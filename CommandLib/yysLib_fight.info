@@ -111,6 +111,11 @@
 		"Description" : null,
 		"TranslateTemplate" : null
 	},
+	"isSettingMemberScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
 	"levelMemberArea" : 
 	{
 		"Description" : null,

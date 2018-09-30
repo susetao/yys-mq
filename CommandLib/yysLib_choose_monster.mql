@@ -679,7 +679,7 @@ Function waitIntoCurrentScene()
     Dim backChooseMonsterSceneResult = False
     Do Until backChooseMonsterSceneResult
         Delay yysLib_utils.WAIT_NORMAL
-        Tap yysLib_utils.SCREEN_WIDTH / 2, yysLib_utils.SCREEN_HEIGHT / 5
+        Tap yysLib_utils.SCREEN_WIDTH / 2, yysLib_utils.SCREEN_HEIGHT * 0.8
         backChooseMonsterSceneResult = isChooseMonsterScene()
         TracePrint "waitIntoCurrentScene.back to choose monster scene"
     Loop

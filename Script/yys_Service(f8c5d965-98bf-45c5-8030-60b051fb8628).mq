@@ -18,7 +18,7 @@ Import "yysLib_jj.mql"
 
 //Test
 Do While True
-	Dim resut = exploreScene(1, 0, 0, 0, 0, 1, 1, 1, 1, 2)
+	Dim resut = exploreScene(4, 0, 0, 0, 0, 1, 1, 1, 1, 2)
 	If resut = False Then 
 		EndScript
 	End If

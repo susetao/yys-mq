@@ -183,8 +183,8 @@ End Function
  */
 Function findMonster
 	
-    Dim MONSTER = Array(0,0,"B99090",-6,-28,"9B93E2",20,-1,"8981D0",-9,20,"ACA3EE",-19,-11,"512720") //怪物特征点，5点 第一点的坐标为无效值
-	
+    Dim MONSTER = "-26|8|2B6488,-23|3|533131,-12|14|86544B,24|-3|306289,19|14|F9E3E4,-4|48|ADA4EF,18|42|542323,10|58|0A122B,27|26|9494D8" //怪物特征点，5点 第一点的坐标为无效值
+	Dim MONSTER_FIRST = "AA9DED"
 //    //判断是否位于选择怪物场景  //在story 下也有可能进行寻找monster
 //    If isChooseMonsterScene() = False Then 
 //        TracePrint "current scene is not choose monster scene"
@@ -194,7 +194,7 @@ Function findMonster
 	
     //进行逻辑
     Dim x,y
-    FindMultiColor(0,0,0,0,MONSTER(2),MONSTER(3)&"|"&MONSTER(4)&"|"&MONSTER(5)&","&MONSTER(6)&"|"&MONSTER(7)&"|"&MONSTER(8)&","&MONSTER(9)&"|"&MONSTER(10)&"|"&MONSTER(11)&","&MONSTER(12)&"|"&MONSTER(13)&"|"&MONSTER(14),0,0.9,x,y)
+    FindMultiColor(0,0,0,0,MONSTER_FIRST,MONSTER,0,0.9,x,y)
     If x > -1 And Y > -1 Then 
         TracePrint "find monster in "&x&","&y
         x = x + MONSTER_POSITION_OFFSET(0)

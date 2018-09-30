@@ -1,3 +1,5 @@
+Randomize
+
 /**
  * story场景相关API
  * @author Wszl
@@ -5,7 +7,14 @@
  */
 Import "yysLib_utils.mql"
 Import "yysLib_fight.mql"
+Import "yysLib_main.mql"
+Import "yysLib_choose_monster.mql"
 
+
+//Test
+//Dim result = serachStory()
+//enterStory result(0), result(1)
+//EndScript
 /**
  * 进入story
  * @return
@@ -16,31 +25,297 @@ Function enterStory(x, y)
 	TracePrint "enterStory.enter story"
 End Function
 
+
+//Test
+//TracePrint searchStory()
+//EndScript
 /**
  * 
  * 在 main scene 搜索story
  * @return Array(x, y)
  */
-Function serachStory()
-	Dim STORY_MARK = 
+Function searchStory()
+	Dim STORY_MARK_ENTER = "-2|-68|0A1212,-1|-25|0C1214,-18|-43|ECECFF,0|-42|E9E9FF,17|-42|EAEAFF,8|-37|18183F"
 	Dim result = Array(-1, -1)
 	
 	//检查当前界面是否在主界面 main scene
-	Dim checkMainSceneResult = //TODO
+	Dim checkMainSceneResult = 1//TODO
 	If checkMainSceneResult Then 
 		//在主界面搜索剧情进入点
 		Dim IntX,IntY
-		FindMultiColor 0,0,0,0,"6496CD","-36|34|304F71,36|35|344B69,0|90|585C5D,-19|41|ECECFF,0|42|E8E8FC,17|41|E8E8FC,-9|41|181C40,9|41|1B1F45,-1|64|0C1012",1,0.9,intX,intY
+		FindMultiColor 0,0,0,0,"323F41",STORY_MARK_ENTER,1,0.9,intX,intY
 		If intX > -1 Then
     		TracePrint "serachStory.find story in "&intX&","&intY
-		Else
+    		
+			result(0) = IntX
+			result(1) = IntY
+			searchStory = result
+		Else 
+			searchStory = False
     		TracePrint "serachStory.not find story"
 		End If
-		result(0) = IntX
-		result(1) = IntY
 	Else 
 		TracePrint "serachStory.current scene is not main scene"
-		serachStory = False
+		searchStory = False
 	End If
 	
+End Function
+
+
+//Test
+//TracePrint isStoryScene()
+//EndScript
+/**
+ * is story scene
+ * @return True| False
+ */
+Function isStoryScene()
+	Dim CHECK_STORY_SCENE_MARK = "32|32|A2C4D5,40|19|0E1627,40|24|3171A0,51|40|A4C6D6,62|39|182131,56|49|5486B2,41|40|0E1E27,34|49|A2C4D5,41|66|0A121A,115|63|14252D"
+	
+	Dim checkStorySceneResult = CmpColorEx(CHECK_STORY_SCENE_MARK, 0.9)
+	If checkStorySceneResult = 1 Then 
+		isStoryScene = True
+	Else 
+		isStoryScene = False
+	End If
+End Function
+
+Function isCGNormalScene()
+	Dim CHECK_CG_SCENE_MARK = "1036|54|86ACD4,1057|55|85AAD2,1149|46|86B7D8,1161|45|482636,1165|59|8EB7D8"
+	
+	Dim checkCGSceneResult = CmpColorEx(CHECK_CG_SCENE_MARK, 0.9)
+	If checkCGSceneResult = 1 Then 
+		isCGNormalScene = True
+	Else 
+		isCGNormalScene = False
+	End If
+End Function
+
+Function isCGSpeedScene()
+	Dim CHECK_CG_SPEED_SCENE_MARK = "1145|46|49293D,1144|70|422638,1156|45|98C1E2,1184|59|7BA5CC,1185|72|40232F"
+	
+	Dim checkCGSpeedSceneResult = CmpColorEx(CHECK_CG_SPEED_SCENE_MARK, 0.9)
+	If checkCGSpeedSceneResult = 1 Then 
+		isCGSpeedScene = True
+	Else 
+		isCGSpeedScene = False
+	End If
+End Function
+
+Function isCGScene()
+	If isCGNormalScene() Or isCGSpeedScene() Then 
+		isCGScene = True
+	Else 
+		isCGScene = False
+	End If
+Function 
+
+/**
+ * set cg view speed up
+ * @return Ture | False
+ */
+Function setCGSpeedUp
+	Dim SPEED_BUTTON = Array(1145,46)
+		
+	If isCGScene() Then 
+	 	If isCGNormalScene() Then 
+	 		yysLib_utils.tapCustom SPEED_BUTTON(0), SPEED_BUTTON(1)
+	 		TracePrint "setCGSpeed.changed speed to 1x"
+	 	Else 
+	 		TracePrint "setCGSpeed.current speed is 1x"
+	 	End If
+	Else 
+		TracePrint "setCGSpeed.current scene is not cg scene."
+		setCGSpeedUp = False
+	End If
+End Function
+
+
+//Test
+//TracePrint searchChat()
+//EndScript
+/**
+ * search chat
+ * @return Array(x, y)
+ */
+Function searchChat()
+	Dim STORY_MARK_ENTER = "0|-74|39527C,-37|-41|425C7F,36|-46|2B4F76,-18|-35|ECECFF,0|-37|E8E8FC,20|-34|E8E8FC,-9|-42|151834,10|-29|16193B,3|-60|0C1012"
+	Dim STORY_MARK_ENTER_FIRST = "0E1319"
+	Dim result = Array(-1, -1)
+	
+	Dim intX,intY
+	FindMultiColor 0,0,0,0,STORY_MARK_ENTER_FIRST,STORY_MARK_ENTER,4,0.9,intX,intY
+	If intX > -1 And intY > -1 Then
+		TracePrint intX
+		TracePrint intY
+
+		result(0) = IntX
+		result(1) = IntY
+		searchChat = result
+	Else 
+		searchChat = False
+	End If
+		
+End Function
+
+//Test
+//TracePrint searchQuestion()
+//EndScript
+/**
+ * search question
+ * @return Array(x, y)
+ */
+Function searchQuestion()
+	Dim QUESTION_BUTTON = "72|-1|2F4F71,35|-34|4A699E,27|-5|DDEFFF,43|-12|DDEFFF,36|11|DDEFFF,34|27|DDEFFF,34|-2|07516B,34|43|171C1F"
+	Dim QUESTION_BUTTON_FIRST = "324E6D"
+	Dim result = Array(-1, -1)
+	
+	Dim intX,intY
+	FindMultiColor 0,0,0,0,QUESTION_BUTTON_FIRST,QUESTION_BUTTON,4,0.9,intX,intY
+	If intX > -1 And intY > -1 Then
+		TracePrint intX
+		TracePrint intY
+
+		result(0) = IntX
+		result(1) = IntY
+		searchQuestion = result
+	Else 
+		searchQuestion = False
+	End If
+		
+End Function
+
+
+/**
+ * search soul view
+ * @return Array(x, y)
+ */
+Function searchSoulView()
+	Dim SOUL_VIEW_MARK = "0|61|02C7EB,111|9|1ED6ED,76|91|01AFE3,45|17|EEEBE6,69|55|F2F0ED,79|36|423C46"
+	Dim SOUL_VIEW_MARK_FIRST = "26C7E8"
+	Dim result = Array(-1, -1)
+	
+	Dim intX,intY
+	FindMultiColor 0,0,0,0,SOUL_VIEW_MARK_FIRST,SOUL_VIEW_MARK,4,0.9,intX,intY
+	If intX > -1 And intY > -1 Then
+		TracePrint intX
+		TracePrint intY
+
+		result(0) = IntX
+		result(1) = IntY
+		searchSoulView = result
+	Else 
+		searchSoulView = False
+	End If
+		
+End Function
+
+
+/**
+ * search jump chat
+ * @return Array(x, y)
+ */
+Function searchJumpChat()
+	Dim JUMP_CHAT_BUTTON = "14|0|B8C9CF,9|11|A7B7BD,22|3|93A2A9,58|4|A93D16,51|-2|D5E8ED,1|7|DF3F5D"
+	Dim JUMP_CHAT_BUTTON_FIRST = "E04765"
+	Dim result = Array(-1, -1)
+	
+	Dim intX,intY
+	FindMultiColor 0,0,0,0,JUMP_CHAT_BUTTON_FIRST,JUMP_CHAT_BUTTON,2,0.9,intX,intY
+	If intX > -1 And intY > -1 Then
+		TracePrint intX
+		TracePrint intY
+		
+		result(0) = IntX
+		result(1) = IntY
+		searchJumpChat = result
+	Else 
+		searchJumpChat = False
+	End If
+
+End Function
+
+
+//Test
+TracePrint exploreStory()
+EndScript
+/**
+ * explore story
+ * @return True| False
+ */
+Function exploreStory()
+	TracePrint "exploreStory.start"
+	
+	If isStoryScene() Then 
+		Dim searchJumpButtonResult = True
+	 	Dim searchChatButtonResult = True
+	 	Dim searchFightButtonResult = True
+	 	Dim searchSoulViewButtonResult = True
+	 	Dim searchQuestionButtonResult = True
+		Do Until searchQuestionButtonResult = False And searchSoulViewButtonResult = False And searchJumpButtonResult = False And searchChatButtonResult = False And searchFightButtonResult = False And isStoryScene() = False And yysLib_main.isMainScene()
+	 		searchJumpButtonResult = searchJumpChat()
+	 		searchChatButtonResult = searchChat()
+	 		searchFightButtonResult = yysLib_choose_monster.findMonster()
+	 		searchSoulViewButtonResult = searchSoulView()
+	 		searchQuestionButtonResult = searchQuestion()
+	 		If searchJumpButtonResult <> False Then 
+	 			//chat jump
+	 			TracePrint "exploreStory.searched jump chat button."
+	 			yysLib_utils.tapCustom(searchJumpButtonResult(0), searchJumpButtonResult(1))
+	 		ElseIf searchChatButtonResult <> False Then
+	 			//chat
+	 			TracePrint "exploreStory.searched question button."
+	 			yysLib_utils.tapCustom searchChatButtonResult(0), searchChatButtonResult(1)
+	 		ElseIf searchSoulViewButtonResult <> False Then
+	 			//soul view
+	 			TracePrint "exploreStory.searched soul view button."
+	 			yysLib_utils.tapCustom searchSoulViewButtonResult(0), searchSoulViewButtonResult(1)
+	 		ElseIf searchQuestionButtonResult <> False Then
+	 			//question
+	 			TracePrint "exploreStory.searched question button."
+	 			yysLib_utils.tapCustom searchQuestionButtonResult(0), searchQuestionButtonResult(1)
+	 		ElseIf searchFightButtonResult <> False Then
+	 			TracePrint "exploreStory.searched monster button."
+	 			//找到怪物，则进入战斗
+				yysLib_fight.fightEnter(searchFightButtonResult(0), searchFightButtonResult(1))
+				
+    			Do Until yysLib_fight.isSettingMemberScene()
+    				TracePrint "exploreStory.waiting for fight scene."
+					Delay yysLib_utils.WAIT_NORMAL * 3
+					//判断是否仍旧处于story scene
+					If isStoryScene() Then 
+						//则退回选择monster步骤
+						TracePrint "exploreStory.enter monster fight error, change scene to choose monster scene"
+						Delay yysLib_utils.WAIT_NORMAL
+					End If
+    			Loop
+	 			yysLib_fight.fight 2, 1, 0, 1, 2
+	 		Else 
+	 			TracePrint "exploreStory.not found any button."
+	 			If isCGScene() Then 
+	 				TracePrint "exploreStory.cg scene"
+	 				setCGSpeedUp 
+	 				Do Until isStoryScene() And isCGScene() = False
+	 					TracePrint "exploreStory.waiting for cg scene exit"
+	 					Delay yysLib_utils.WAIT_LONG
+	 				Loop
+	 			End If
+	 			yysLib_utils.tapCustom(yysLib_utils.SCREEN_WIDTH / 2, yysLib_utils.SCREEN_HEIGHT / 2)
+	 			Delay yysLib_utils.WAIT_LONG
+	 			yysLib_utils.swipteCustom(0, 0, 10, 10, 1)
+	 		End If
+	 		//确定进入等待
+	 		Delay yysLib_utils.WAIT_LONG
+//	 		Do Until (isStoryScene() And searchJumpChat() <> False) Or isStoryScene() = False
+//	 			TracePrint "exploreStory.wating for button effect."
+//	 			Delay yysLib_utils.WAIT_NORMAL
+//	 		Loop
+	 		
+	 	Loop
+	 	TracePrint "exploreStory.story explore complete."
+	 	exploreStory = True
+	Else
+		TracePrint "exploreStory.current is not story scene"
+		exploreStory = False
+	End If
 End Function

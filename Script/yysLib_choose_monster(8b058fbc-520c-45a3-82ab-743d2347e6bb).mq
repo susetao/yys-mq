@@ -185,12 +185,12 @@ Function findMonster
 	
     Dim MONSTER = Array(0,0,"B99090",-6,-28,"9B93E2",20,-1,"8981D0",-9,20,"ACA3EE",-19,-11,"512720") //怪物特征点，5点 第一点的坐标为无效值
 	
-    //判断是否位于选择怪物场景
-    If isChooseMonsterScene() = False Then 
-        TracePrint "current scene is not choose monster scene"
-        findMonster = False
-        Exit Function
-    End If
+//    //判断是否位于选择怪物场景  //在story 下也有可能进行寻找monster
+//    If isChooseMonsterScene() = False Then 
+//        TracePrint "current scene is not choose monster scene"
+//        findMonster = False
+//        Exit Function
+//    End If
 	
     //进行逻辑
     Dim x,y
@@ -410,10 +410,10 @@ Function findChooseMonsterSceneReward
 End Function
 
 //Test
-For 100
-	TracePrint isChooseMonsterScene()
-Next
-EndScript
+//For 100
+//	TracePrint isChooseMonsterScene()
+//Next
+//EndScript
 /**
  * 是否位于选择怪物场景
  * @return True|False
@@ -582,7 +582,8 @@ Function exploreInstanceZones(reservepl, shishenLevel, resevePosition, fightLock
 		//寻找怪物
 	Dim currentScene = True
 	Dim position = -1 
-	Do Until monsterCoordinateResult = False Or currentScene = False
+	Do Until monsterCoordinateResult = False And currentScene = False
+		TracePrint "monsterCoordinateResult",monsterCoordinateResult,", currentScene",currentScene
 		Delay yysLib_utils.WAIT_LONG
 		
 	Rem findStart
@@ -678,7 +679,7 @@ Function waitIntoCurrentScene()
     Dim backChooseMonsterSceneResult = False
     Do Until backChooseMonsterSceneResult
         Delay yysLib_utils.WAIT_NORMAL
-        Tap yysLib_utils.SCREEN_WIDTH / 2, yysLib_utils.SCREEN_HEIGHT / 3
+        Tap yysLib_utils.SCREEN_WIDTH / 2, yysLib_utils.SCREEN_HEIGHT / 5
         backChooseMonsterSceneResult = isChooseMonsterScene()
         TracePrint "waitIntoCurrentScene.back to choose monster scene"
     Loop

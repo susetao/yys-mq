@@ -1,0 +1,45 @@
+Randomize
+
+/**
+ * main scene 
+ * @date 2018-09-30
+ */
+ 
+ 
+ 
+//Test
+TracePrint isMainScene()
+EndScript
+/**
+ * is main scene
+ * @return Ture | False
+ */
+Function isMainScene()
+	If isOpenMainScene() Or isCloseMainScene() Then 
+		isMainScene = True
+	Else 
+		isMainScene = False
+	End If
+End Function
+
+Function isCloseMainScene()
+	Dim MAIN_SCENE_MARK = "1254|561|071830,1213|594|8888A5,1222|615|C8D0E0,1196|624|11227C,1195|652|C1C6D6,1181|672|366D94,1219|700|2E2680,1168|709|0E1B35"
+	
+	Dim checkMainSceneResult = CmpColorEx(MAIN_SCENE_MARK, 0.9)
+	If checkMainSceneResult = 1 Then 
+		isCloseMainScene = True
+	Else 
+		isCloseMainScene = False
+	End If
+End Function
+
+Function isOpenMainScene()
+	Dim MAIN_SCENE_RELEASED_MARK = "388|107|469BCE,567|35|ABE0ED,749|32|1D37EB,936|28|285CFB,1246|559|1C2546,1251|634|C3CBDB,5|604|0B1043,10|685|6B7CA2"
+	
+	Dim checkMainSceneResult = CmpColorEx(MAIN_SCENE_RELEASED_MARK, 0.9)
+	If checkMainSceneResult = 1 Then 
+		isOpenMainScene = True
+	Else 
+		isOpenMainScene = False
+	End If
+End Function

@@ -89,14 +89,14 @@
  End Function
  
  //Test
- Dim startX, startY, endX, endY
- startX = SCREEN_WIDTH / 2
- startY = Int(SCREEN_HEIGHT * 0.76)
- endX = SCREEN_WIDTH / 2 - 400
- endY = Int(SCREEN_HEIGHT * 0.76)
- //Call swipteCustom(startX, startY, endX, endY, 3000)
- Swipe startX, startY, endX, endY
- TracePrint startX&","&startY&"  "&endX&","&endY
+// Dim startX, startY, endX, endY
+// startX = SCREEN_WIDTH / 2
+// startY = Int(SCREEN_HEIGHT * 0.76)
+// endX = SCREEN_WIDTH / 2 - 400
+// endY = Int(SCREEN_HEIGHT * 0.76)
+// //Call swipteCustom(startX, startY, endX, endY, 3000)
+// Swipe startX, startY, endX, endY
+// TracePrint startX&","&startY&"  "&endX&","&endY
  
  /**
   * 自定义滑动
@@ -119,3 +119,214 @@
  	Tap x, y
  	TracePrint "tap :", x, y
  End Function
+ 
+ Function isChacter()
+ 	Dim CHAACTER_MARK = "349|55|EEEEE9,386|59|ECEBE6,377|65|793329,366|112|6C1A1D,359|98|DFC6CE,341|142|EDECE7,345|150|7E2E27,372|160|8E2125,380|194|DABBC5,344|187|DCBEC8"
+ 	
+ 	Dim checkChacterResult = CmpColorEx(CHAACTER_MARK, 0.9)
+ 	If checkChacterResult = 1 Then 
+ 		isChacter = True
+ 	Else 
+ 		isChacter = False
+ 	End If
+ End Function
+ 
+ 
+ //Test
+// TracePrint searchUnknowExitButton()
+// EndScript
+ /**
+  * 搜索未知界面的退出按钮
+  * @return False| Array(x, y)
+  */
+ Function searchUnknowExitButton()
+ 	Dim blackFontButton = searchExitStyleBlackFontlButton()
+ 	Dim redSakulaButton = searchExitStyleRedSakulaButton()
+ 	Dim redSakula2Button = searchExitStyleRedSakula2Button()
+ 	Dim blueDeltaButton = searchExitStyleBlueDeltaButton()
+ 	Dim redSakulaBlackBorderButton = searchExitStyleRedSakulaBorderButton()
+ 	
+ 	If blackFontButton <> False Then 
+ 		searchUnknowExitButton = blackFontButton
+ 	ElseIf redSakulaBlackBorderButton <> False Then
+ 		searchUnknowExitButton = redSakulaBlackBorderButton
+ 	ElseIf redSakulaButton <> False Then
+ 		searchUnknowExitButton = redSakulaButton
+ 	ElseIf redSakula2Button <> False Then
+ 		searchUnknowExitButton = redSakula2Button
+ 	ElseIf blueDeltaButton <> False Then
+ 		searchUnknowExitButton = blueDeltaButton
+ 	Else 
+ 		searchUnknowExitButton = False
+ 	End If
+
+ End Function
+ 
+ //Test
+//  For 100
+// 	TracePrint isNoEnougtFood()
+//  Next
+// EndScript
+ 
+ /**
+  * is no enough food
+  * @return Ture | False
+  */
+ Function isNoEnougtFood()
+ 	Dim NO_ENOUGH_MARK = "328|187|B9C1CA,584|214|0F1822,605|227|E0F3F8,659|215|E0F3F8,693|221|101923,480|349|B7C8D8,343|503|9E9AA2,343|401|908CAF,561|495|2A3B95,539|506|96919A"
+ 	
+ 	Dim checkNoEnoughFoodResult = CmpColorEx(NO_ENOUGH_MARK, 0.9)
+ 	If checkNoEnoughFoodResult = 1 Then 
+ 		isNoEnougtFood = True
+ 	Else 
+ 		isNoEnougtFood = False
+ 	End If
+ End Function
+ 
+ Function isExitConfirmScene()
+ 	Dim MARK = "340|261|2D6790,364|291|9BB4CC,430|383|243A95,603|328|3D464E,718|325|505C68,940|261|346C97,916|425|9BB4CC,845|406|5FB2F4,852|418|283D97,771|412|293945"
+ 	
+ 	Dim checkNoEnoughFoodResult = CmpColorEx(MARK, 0.9)
+ 	If checkNoEnoughFoodResult = 1 Then 
+ 		isExitConfirmScene = True
+ 	Else 
+ 		isExitConfirmScene = False
+ 	End If
+ End Function
+ 
+ Function confirmExit()
+ 	Dim button = searchConfirmStyleBlackFontlButton()
+ 	
+ 	If button <> False Then 
+ 		tapCustom(button(0), button(1))
+ 	End If
+ 	
+ End Function
+ 
+ //Test
+// TracePrint searchExitStyleBlackFontlButton()
+//  EndScript
+  /**
+   * search black font exit button
+   * @return False | Array(x, y)
+   */
+ Function searchExitStyleBlackFontlButton()
+ 	Dim EXIT_BUTTON_STYLE = "-11|-11|D0CBE8,13|-12|D3D3EC,-5|9|CCCDED,9|9|CBD2EC,11|2|40164A,0|-9|2E1849,-10|1|29144E,1|10|341B64,29|18|AE55BF" //红色樱花x
+ 	Dim EXIT_BUTTON_STYLE_FIRST = "D3D4E5"
+ 	
+ 	
+	Dim result = False
+ 	Dim intX,intY
+	FindMultiColor 0,0,0,0,EXIT_BUTTON_STYLE_FIRST,EXIT_BUTTON_STYLE,1,0.9,intX,intY
+	If intX > -1 And intY > -1 Then
+		TracePrint intX
+		TracePrint intY
+		result = Array(-1, -1)
+		result(0) = intX
+		result(1) = intY
+		searchExitStyleBlackFontlButton = result
+	Else 
+		searchExitStyleBlackFontlButton = False
+	End If
+ End Function
+ 
+  Function searchConfirmStyleBlackFontlButton()
+ 	Dim EXIT_BUTTON_STYLE = "0|6|2F84D8,5|1|253E99,57|16|26323C,78|28|293743,90|6|334E63,100|6|30485B,143|23|5FB2F4,144|24|5FB2F4,158|37|2B3C97" //普通确认
+ 	Dim EXIT_BUTTON_STYLE_FIRST = "2F84D8"
+ 	
+ 	
+	Dim result = False
+ 	Dim intX,intY
+	FindMultiColor 0,0,0,0,EXIT_BUTTON_STYLE_FIRST,EXIT_BUTTON_STYLE,1,0.9,intX,intY
+	If intX > -1 And intY > -1 Then
+		TracePrint intX
+		TracePrint intY
+		result = Array(-1, -1)
+		result(0) = intX
+		result(1) = intY
+		searchConfirmStyleBlackFontlButton = result
+	Else 
+		searchConfirmStyleBlackFontlButton = False
+	End If
+ End Function
+
+Function searchExitStyleRedSakulaBorderButton()
+ 	Dim EXIT_BUTTON_STYLE= "-8|18|D5D5E6,11|19|D5D5E6,-4|33|CDD5E6,10|36|CDD5E6,-18|25|373771,20|27|49296A,2|47|39316B,-28|29|202851,30|24|352C56" //红色 退出字样 按钮 见于 战败提示是否进入强化界面
+ 	Dim EXIT_BUTTON_STYLE_FIRST = "2E2E57"
+ 	
+ 	
+	Dim result = False
+ 	Dim intX,intY
+	FindMultiColor 0,0,0,0,EXIT_BUTTON_STYLE_FIRST,EXIT_BUTTON_STYLE,1,0.9,intX,intY
+	If intX > -1 And intY > -1 Then
+		TracePrint intX
+		TracePrint intY
+		result = Array(-1, -1)
+		result(0) = intX
+		result(1) = intY
+		searchExitStyleRedSakulaBorderButton = result
+	Else 
+		searchExitStyleRedSakulaBorderButton = False
+	End If
+ End Function
+
+ Function searchExitStyleRedSakulaButton()
+ 	Dim EXIT_BUTTON_STYLE= "4|49|46248A,164|0|40278A,163|47|492883,135|17|5169DD,62|14|2B3451,62|30|262C3C,71|25|222830,95|21|272D40,106|28|272E42" //红色 退出字样 按钮 见于 战败提示是否进入强化界面
+ 	Dim EXIT_BUTTON_STYLE_FIRST = "492883"
+ 	
+ 	
+	Dim result = False
+ 	Dim intX,intY
+	FindMultiColor 0,0,0,0,EXIT_BUTTON_STYLE_FIRST,EXIT_BUTTON_STYLE,1,0.9,intX,intY
+	If intX > -1 And intY > -1 Then
+		TracePrint intX
+		TracePrint intY
+		result = Array(-1, -1)
+		result(0) = intX
+		result(1) = intY
+		searchExitStyleRedSakulaButton = result
+	Else 
+		searchExitStyleRedSakulaButton = False
+	End If
+ End Function
+ 
+  Function searchExitStyleRedSakula2Button()
+ 	Dim EXIT_BUTTON_STYLE= "-11|-10|D3D1E6,12|-10|D0D0EA,-6|8|CDD5E6,9|11|CCD1ED,-21|-13|D8B8FC,28|19|CF89E5,0|4|9F9FE3" //红色 退出字样 按钮 见于 无体力
+ 	Dim EXIT_BUTTON_STYLE_FIRST = "D1D4E5"
+ 	
+ 	
+	Dim result = False
+ 	Dim intX,intY
+	FindMultiColor 0,0,0,0,EXIT_BUTTON_STYLE_FIRST,EXIT_BUTTON_STYLE,1,0.9,intX,intY
+	If intX > -1 And intY > -1 Then
+		TracePrint intX
+		TracePrint intY
+		result = Array(-1, -1)
+		result(0) = intX
+		result(1) = intY
+		searchExitStyleRedSakula2Button = result
+	Else 
+		searchExitStyleRedSakula2Button = False
+	End If
+ End Function
+ 
+  Function searchExitStyleBlueDeltaButton()
+ 	Dim EXIT_BUTTON_STYLE= "12|21|B13A18,22|1|7C3A32,13|-14|FDF5ED,-10|-24|3D0F1C,34|19|491A1A,-9|23|24131C,-4|-23|63122B,15|-13|FEF6E7,15|14|F9E9E0" //蓝色 返回按钮 见于 场景回退
+ 	Dim EXIT_BUTTON_STYLE_FIRST = "FDF5ED"
+ 	
+ 	
+	Dim result = False
+ 	Dim intX,intY
+	FindMultiColor 0,0,0,0,EXIT_BUTTON_STYLE_FIRST,EXIT_BUTTON_STYLE,1,0.9,intX,intY
+	If intX > -1 And intY > -1 Then
+		TracePrint intX
+		TracePrint intY
+		result = Array(-1, -1)
+		result(0) = intX
+		result(1) = intY
+		searchExitStyleBlueDeltaButton = result
+	Else 
+		searchExitStyleBlueDeltaButton = False
+	End If
+ End Function
+

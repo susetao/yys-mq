@@ -11,6 +11,7 @@ Dim SCREEN_HEIGHT = 720
 Import "yysLib_utils.mql"
 Import "yysLib_explore_scene.mql"
 Import "yysLib_fight.mql"
+Import "yysLib_main.mql"
 
 
 Dim MONSTER_POSITION_OFFSET = Array(10, 10) //寻找到怪物坐标的偏移，因为怪物判定点不是判定的怪物的正中心
@@ -628,7 +629,17 @@ Function exploreInstanceZones(reservepl, shishenLevel, resevePosition, fightLock
 			Do Until yysLib_fight.isFightScene()
     			TracePrint "waiting for fight scene."
 				Delay yysLib_utils.WAIT_NORMAL * 3
-				
+				//处理体力不足的情况
+				If yysLib_utils.isNoEnougtFood() Then 
+					TracePrint "exploreInstanceZones.not enough food. now exit to main scene"
+					//返回主界面
+//					Do Until yysLib_main.isMainScene()
+//						yysLib_main.backToMainScene() 
+//						TracePrint "exploreInstanceZones.back to main scene"
+//						Delay yysLib_utils.WAIT_LONG
+//					Loop
+					Exit Function
+				End If
 				//判断是否仍旧处于choose monster scene
 				If isChooseMonsterScene() Then 
 					//则退回选择monster步骤
@@ -638,7 +649,7 @@ Function exploreInstanceZones(reservepl, shishenLevel, resevePosition, fightLock
     		Loop
 			
 			yysLib_fight.fight(shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode)
-			waitIntoCurrentScene()
+//			waitIntoCurrentScene()
 		End If
 		//normal monster
 		If position  < 0 Then 
@@ -648,10 +659,21 @@ Function exploreInstanceZones(reservepl, shishenLevel, resevePosition, fightLock
 		If monsterCoordinateResult <> False Then 
 			//找到怪物，则进入战斗
 			yysLib_fight.fightEnter(monsterCoordinateResult(0), monsterCoordinateResult(1))
-			
+			//等待进入战斗场景
     		Do Until yysLib_fight.isFightScene()
     			TracePrint "waiting for fight scene."
 				Delay yysLib_utils.WAIT_NORMAL * 3
+				//处理体力不足的情况
+				If yysLib_utils.isNoEnougtFood() Then 
+					TracePrint "exploreInstanceZones.not enough food. now exit to main scene"
+					//返回主界面
+//					Do Until yysLib_main.isMainScene()
+//						yysLib_main.backToMainScene()
+//						TracePrint "exploreInstanceZones.back to main scene"
+//						Delay yysLib_utils.WAIT_LONG
+//					Loop
+					Exit Function
+				End If
 				//判断是否仍旧处于choose monster scene
 				If isChooseMonsterScene() Then 
 					//则退回选择monster步骤
@@ -661,7 +683,7 @@ Function exploreInstanceZones(reservepl, shishenLevel, resevePosition, fightLock
     		Loop
     		
 			yysLib_fight.fight(shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode) 
-			waitIntoCurrentScene()
+//			waitIntoCurrentScene()
 		End If
 	Loop
 End Function

@@ -464,8 +464,9 @@ End Function
  * ½øÈëchoose monster scene
  * @return True|False
  */
-Function enterChooseMonsterScene
-	Dim 
+Function enterChooseMonsterScene(x, y)
+	
+	yysLib_utils.tapCustom(x, y) 
 	
 End Function
 

@@ -1,0 +1,64 @@
+
+{
+	"Description" : null,
+	"enterStory" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"exploreStory" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isCGNormalScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isCGScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isCGSpeedScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isStoryScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"searchChat" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"searchJumpChat" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"searchQuestion" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"searchSoulView" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"searchStory" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"setCGSpeedUp" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	}
+}

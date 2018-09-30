@@ -1,6 +1,16 @@
 
 {
 	"Description" : null,
+	"confirmExit" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isChacter" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
 	"isDefaultSceenColorDepth" : 
 	{
 		"Description" : null,
@@ -17,6 +27,51 @@
 		"TranslateTemplate" : null
 	},
 	"isDefaultScreen" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isExitConfirmScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isNoEnougtFood" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"searchConfirmStyleBlackFontlButton" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"searchExitStyleBlackFontlButton" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"searchExitStyleBlueDeltaButton" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"searchExitStyleRedSakula2Button" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"searchExitStyleRedSakulaBorderButton" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"searchExitStyleRedSakulaButton" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"searchUnknowExitButton" : 
 	{
 		"Description" : null,
 		"TranslateTemplate" : null

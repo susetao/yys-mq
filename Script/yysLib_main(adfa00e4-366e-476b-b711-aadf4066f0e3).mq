@@ -5,11 +5,11 @@ Randomize
  * @date 2018-09-30
  */
  
- 
+Import "yysLib_utils.mql"
  
 //Test
-TracePrint isMainScene()
-EndScript
+//TracePrint isMainScene()
+//EndScript
 /**
  * is main scene
  * @return Ture | False
@@ -41,5 +41,82 @@ Function isOpenMainScene()
 		isOpenMainScene = True
 	Else 
 		isOpenMainScene = False
+	End If
+End Function
+
+
+/**
+ * search explore button
+ * @return False | Array(x, y)
+ */
+Function searchExplore()
+	Dim EXPLORE_BUTTON = "3|-13|080D17,-1|8|0A1724,27|37|2440D2,-22|10|9ADBF7,-12|-33|7FA1D0,27|-3|34395C,1|61|273143,-18|45|8197BA"
+	Dim EXPLORE_BUTTON_FIRST = "EFFFFF"
+	
+	Dim intX,intY
+	FindMultiColor 0,0,0,0,EXPLORE_BUTTON_FIRST,EXPLORE_BUTTON,1,0.9,intX,intY
+	If intX > -1 And intY > -1 Then
+		TracePrint intX
+		TracePrint intY
+		Dim result = Array(-1, -1)
+		result(0) = intX
+		result(1) = intY
+		searchExplore = result
+	Else 
+		searchExplore = False
+	End If
+
+End Function
+
+
+/**
+ * search story button
+ * @return False | Array(x, y)
+ */
+Function searchStory()
+	Dim STORY_BUTTON = "-1|27|E9E9FF,-18|28|EAEAFF,17|29|E9E9FF,0|81|5D6464,-2|6|091111,-11|10|091111,-8|22|191934,11|38|16162B,1|12|030909"
+	Dim STORY_BUTTON_FIRST = "091111"
+	
+	Dim intX,intY
+	FindMultiColor 0,0,0,0,STORY_BUTTON_FIRST,STORY_BUTTON,1,0.9,intX,intY
+	If intX > -1 And intY > -1 Then
+		TracePrint intX
+		TracePrint intY
+		Dim result = Array(-1, -1)
+		result(0) = intX
+		result(1) = intY
+		searchStory = result
+	Else 
+		searchStory = False
+	End If
+
+End Function
+
+
+//Test
+//TracePrint backToMainScene()
+Do Until isMainScene()
+	backToMainScene()
+	TracePrint "exploreInstanceZones.back to main scene"
+	Delay yysLib_utils.WAIT_LONG
+Loop
+EndScript
+/**
+ * back to main scene
+ * @return None
+ */ 
+Function backToMainScene()
+	If isMainScene() = False Then 
+		Delay yysLib_utils.WAIT_LONG
+		//search any exit button
+		Dim exitButton = yysLib_utils.searchUnknowExitButton()
+		If exitButton() <> False Then 
+			TracePrint "backToMainScene.tap exit button "&exitButton(0)&", "&exitButton(1)
+			yysLib_utils.tapCustom(exitButton(0), exitButton(1))
+		End If
+		//处理确认场景
+		Do Until yysLib_utils.isExitConfirmScene() = False Then 
+			yysLib_utils.confirmExit()
+		End If
 	End If
 End Function

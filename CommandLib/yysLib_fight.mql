@@ -42,13 +42,15 @@ End Function
  * @return True|False
  */
 Function isFightEnd
-    Dim FIGHT_END_MARK = Array(644,431, "4234D1", 537,426, "1781D6", 555,538, "CE8C40", 635,532, "191F2F", 755,583, "1A5692", 669,450, "9CB4C7", 729,416, "2974AD", 725,454, "1F2024", 757,519, "1990D2", 490,620, "CE8C40") //战斗完成的判定点&选择点 十点
+    Dim FIGHT_END_MARK = "535|415|1781D6,549|409|0A0F5A,606|443|0B0C30,604|451|40DCEE,621|421|4234D1,659|440|8CABC4,679|437|03030F,678|557|02030E,572|534|CE8C40,733|516|40DCEE"
+//    Dim FIGHT_END_MARK = "539|412|1781D6,547|411|112862,550|412|57C1F2,556|417|1D94DF,572|480|1D94DF,542|490|DDA840,538|529|CE8C40|571|533|CE8C40,585|520|CE8C40,596|498|DCAE7D,617|483|CE8C40,608|511|1D4ABA,628|519|1A2132,602|551|02030E,640|564|0C2462,675|534|2138B8|746|517|1990D2,725|510|3CD5ED,742|435|1F2024,721|435|B88F62,728|417|3286BC,689|458|8CABC4,680|457|151A28,643|479|6D513B,683|439|0D0D22"
     Dim FIGHT_END_FAILED_MARK = Array(305,134, "9ABDC7", 465,146, "594850", 731,168, "ABB9C0", 915,183, "96A5AD", 397,513, "D9DFDD", 651,484, "3434C4", 865,517, "BFD7FA", 638,412, "FFFFFF", 613,275, "82AFBC", 608,494, "2B2E36") //战斗失败mrak
 	
-    Dim cmpResult = CmpColorEx( FIGHT_END_MARK(0) & "|" & FIGHT_END_MARK(1) & "|" & FIGHT_END_MARK(2) & "," & FIGHT_END_MARK(3) & "|" & FIGHT_END_MARK(4) & "|" & FIGHT_END_MARK(5) & "," & FIGHT_END_MARK(6) & "|" & FIGHT_END_MARK(7) & "|" & FIGHT_END_MARK(8) & "," & FIGHT_END_MARK(9) & "|" & FIGHT_END_MARK(10) & "|" & FIGHT_END_MARK(11) & "," & FIGHT_END_MARK(12) & "|" & FIGHT_END_MARK(13) & "|" & FIGHT_END_MARK(14) & "," & FIGHT_END_MARK(15) & "|" & FIGHT_END_MARK(16) & "|" & FIGHT_END_MARK(17) & "," & FIGHT_END_MARK(18) & "|" & FIGHT_END_MARK(19) & "|" & FIGHT_END_MARK(20) & "," & FIGHT_END_MARK(21) & "|" & FIGHT_END_MARK(22) & "|" & FIGHT_END_MARK(23) & "," & FIGHT_END_MARK(24) & "|" & FIGHT_END_MARK(25) & "|" & FIGHT_END_MARK(26) & "," & FIGHT_END_MARK(27) & "|" & FIGHT_END_MARK(28) & "|" & FIGHT_END_MARK(29), 0.9)
+    Dim cmpResult = CmpColorEx( FIGHT_END_MARK, 1.0)
     If cmpResult = 1 Then
         //战斗成功
         TracePrint "fight end"
+        TracePrint "fffffffffffffffffffffffffffffffffffffffffffffffffff"
         isFightEnd = True
     Else 
         //战斗失败
@@ -56,6 +58,7 @@ Function isFightEnd
         If cmpResult = 1 Then 
             TracePrint "fight end"
             isFightEnd = True
+            TracePrint "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         Else 
             isFightEnd = False
         End If
@@ -1119,6 +1122,20 @@ End Function
 //Test
 //TracePrint fight(1, 1, 0, 1, 2)
 //EndScript
+
+//Test
+
+//处理战斗失败弹出按钮
+//	Dim existExitButton = yysLib_utils.searchFightFailedConfirmStyleBlackFontlButton()
+//		TracePrint existExitButton
+//	Do Until isFightEnd() = False And existExitButton = False And yysLib_utils.isExitFightFailedConfirmScene() = False 
+//		Delay yysLib_utils.WAIT_LONG
+//		TracePrint "isFightEnd.process exit button."
+//		yysLib_utils.tapCustom existExitButton(0), existExitButton(1)
+//		existExitButton = yysLib_utils.searchFightFailedConfirmStyleBlackFontlButton()
+//	Loop
+//EndScript
+
 /**
  * 战斗整合
  * @param resevePosition 保留位置  从右至左 1 - 5
@@ -1161,27 +1178,30 @@ Function fight(level, revsePosition, teamLockMode, fightMode, fightSpeed)
     //开始战斗成功，等待战斗结束
     Dim fightCompleteResult = False
     Do Until fightCompleteResult
+    	Delay yysLib_utils.WAIT_LONG
         fightCompleteResult = isFightEnd()
-        Delay yysLib_utils.WAIT_LONG
     Loop
     TracePrint "fight.fight complete"
-	
+    Delay yysLib_utils.WAIT_NORMAL
+	fightCompleteResult = isFightEnd()
+	Delay yysLib_utils.WAIT_NORMAL
 //    //战斗结束，领取奖励返回choose monster scene
-    Do Until fightCompleteResult = False And yysLib_utils.searchUnknowExitButton() = False
+    Do Until fightCompleteResult = False
         Delay yysLib_utils.WAIT_NORMAL
         Tap yysLib_utils.SCREEN_WIDTH / 2, yysLib_utils.SCREEN_HEIGHT * 0.8
         fightCompleteResult = isFightEnd()
         TracePrint "fight.wait to exit fight scene"
-        //处理战斗失败弹出按钮
-		Dim existExitButton = yysLib_utils.searchUnknowExitButton()
-		Do Until existExitButton = False Then 
-			Delay yysLib_utils.WAIT_LONG
-			TracePrint "isFightEnd.process exit button."
-			yysLib_utils.tapCustom existExitButton(0), existExitButton(1)
-			existExitButton = yysLib_utils.searchUnknowExitButton()
-		Loop
-		
     Loop
+    
+ 	//处理战斗失败弹出按钮
+	Dim existExitButton = yysLib_utils.searchFightFailedConfirmStyleBlackFontlButton()
+	Do Until existExitButton = False
+		Delay yysLib_utils.WAIT_LONG
+		TracePrint "isFightEnd.process exit button."
+		yysLib_utils.tapCustom(existExitButton(0), existExitButton(1))
+		existExitButton = yysLib_utils.searchFightFailedConfirmStyleBlackFontlButton()
+	Loop
+    
 End Function
 
 

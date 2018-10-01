@@ -161,7 +161,8 @@ Function findSceneReward()
     Dim SCENE_REWARD = Array(0,0,"17327A",1,-18,"162663",-14,-2,"1F4D9F",18,-3,"19529E",-13,7,"D3F4FF",23,0,"BEF6FF",24,-20,"BDF0FF",-17,-24,"0A1315",40,-10,"2A4E72",5,35,"121B1B") //场景奖励判断点&选择点 10点，第一点坐标值无效，其他坐标值为偏移值
     //遍历当前屏幕，寻找奖励
     Dim intX, intY
-    FindMultiColor(0,0,0,0,SCENE_REWARD(2),SCENE_REWARD(3)&"|"&SCENE_REWARD(4)&"|"&SCENE_REWARD(5)&","&SCENE_REWARD(6)&"|"&SCENE_REWARD(7)&"|"&SCENE_REWARD(8)&","&SCENE_REWARD(9)&"|"&SCENE_REWARD(10)&"|"&SCENE_REWARD(11)&","&SCENE_REWARD(12)&"|"&SCENE_REWARD(13)&"|"&SCENE_REWARD(14)&","&SCENE_REWARD(15)&"|"&SCENE_REWARD(16)&"|"&SCENE_REWARD(17)&","&SCENE_REWARD(18)&"|"&SCENE_REWARD(19)&"|"&SCENE_REWARD(20)&","&SCENE_REWARD(21)&"|"&SCENE_REWARD(22)&"|"&SCENE_REWARD(23)&","&SCENE_REWARD(24)&"|"&SCENE_REWARD(25)&"|"&SCENE_REWARD(26)&","&SCENE_REWARD(27)&"|"&SCENE_REWARD(28)&"|"&SCENE_REWARD(29),0,0.9,intX,intY)If intX > -1 And intY > -1 Then
+    FindMultiColor(0,0,0,0,SCENE_REWARD(2),SCENE_REWARD(3)&"|"&SCENE_REWARD(4)&"|"&SCENE_REWARD(5)&","&SCENE_REWARD(6)&"|"&SCENE_REWARD(7)&"|"&SCENE_REWARD(8)&","&SCENE_REWARD(9)&"|"&SCENE_REWARD(10)&"|"&SCENE_REWARD(11)&","&SCENE_REWARD(12)&"|"&SCENE_REWARD(13)&"|"&SCENE_REWARD(14)&","&SCENE_REWARD(15)&"|"&SCENE_REWARD(16)&"|"&SCENE_REWARD(17)&","&SCENE_REWARD(18)&"|"&SCENE_REWARD(19)&"|"&SCENE_REWARD(20)&","&SCENE_REWARD(21)&"|"&SCENE_REWARD(22)&"|"&SCENE_REWARD(23)&","&SCENE_REWARD(24)&"|"&SCENE_REWARD(25)&"|"&SCENE_REWARD(26)&","&SCENE_REWARD(27)&"|"&SCENE_REWARD(28)&"|"&SCENE_REWARD(29),0,0.9,intX,intY)
+    If intX > -1 And intY > -1 Then
     //寻找到奖励，则直接返回该坐标
     TracePrint "found reward in "&intX&","&intY
     findSceneReward = Array(intX, intY)
@@ -178,6 +179,7 @@ End Function
 
 //Test
 //TracePrint findMonster()
+//EndScript
 /**
  * 在当前屏幕寻找怪物普通
  * @return Array(x,y) 找到则返回怪物坐标，否则返回False
@@ -210,7 +212,8 @@ End Function
 
 
 //Test
-//TracePrint findMonsterInScene()
+//TracePrint findMonsterInScene(1)
+//EndScript
 /**
  * 在当前场景寻找普通怪物
  * @param position 当前所处屏幕位置  0 左边 1 中间  2 右边
@@ -250,6 +253,13 @@ Function findMonsterInScene(position)
         Dim findMonsterResult = findMonster()
         If findMonsterResult <> False Then 
             findMonsterInScene = findMonsterResult
+            Exit Function
+        End If
+        
+        //寻找Boss坐标
+        Dim findBossResult = findBoss()
+        If findBossResult <> False Then 
+            findMonsterInScene = findBossResult
             Exit Function
         End If
 		
@@ -421,13 +431,39 @@ End Function
  */
 Function isChooseMonsterScene
     Dim CHOOSE_MONSTER_SCENE = Array(38,66, "FDF5ED", 77,60, "6D341C", 37,571, "5A399B", 21,654, "795861", 1081,641, "AEBDC3", 971,573, "DFF2F7", 1104,574, "3A9AFF", 1196,577, "DEF1F6", 1124,41, "A3CDE5", 1242,628, "2A363E") //选择怪物场景判定点 10 点
-	
+	 
     //使用像素方式判断
     Dim cmpResult = CmpColorEx(CHOOSE_MONSTER_SCENE(0)&"|"&CHOOSE_MONSTER_SCENE(1)&"|"&CHOOSE_MONSTER_SCENE(2)&","&CHOOSE_MONSTER_SCENE(3)&"|"&CHOOSE_MONSTER_SCENE(4)&"|"&CHOOSE_MONSTER_SCENE(5)&","&CHOOSE_MONSTER_SCENE(6)&"|"&CHOOSE_MONSTER_SCENE(7)&"|"&CHOOSE_MONSTER_SCENE(8)&","&CHOOSE_MONSTER_SCENE(9)&"|"&CHOOSE_MONSTER_SCENE(10)&"|"&CHOOSE_MONSTER_SCENE(11)&","&CHOOSE_MONSTER_SCENE(12)&"|"&CHOOSE_MONSTER_SCENE(13)&"|"&CHOOSE_MONSTER_SCENE(14)&","&CHOOSE_MONSTER_SCENE(15)&"|"&CHOOSE_MONSTER_SCENE(16)&"|"&CHOOSE_MONSTER_SCENE(17)&","&CHOOSE_MONSTER_SCENE(18)&"|"&CHOOSE_MONSTER_SCENE(19)&"|"&CHOOSE_MONSTER_SCENE(20)&","&CHOOSE_MONSTER_SCENE(21)&"|"&CHOOSE_MONSTER_SCENE(22)&"|"&CHOOSE_MONSTER_SCENE(23)&","&CHOOSE_MONSTER_SCENE(24)&"|"&CHOOSE_MONSTER_SCENE(25)&"|"&CHOOSE_MONSTER_SCENE(26)&","&CHOOSE_MONSTER_SCENE(27)&"|"&CHOOSE_MONSTER_SCENE(28)&"|"&CHOOSE_MONSTER_SCENE(29), 0.9)
     If cmpResult = 1 Then 
         isChooseMonsterScene = True
     Else 
-        isChooseMonsterScene = False
+    	//确认小纸人模式
+    	If isChooseMonsterExtreAutomaticScene() Then 
+    		isChooseMonsterScene = True
+    	Else 
+        	isChooseMonsterScene = False
+    	End If
+    End If
+End Function
+
+//Test
+//For 100
+//	TracePrint isChooseMonsterExtreAutomaticScene()
+//Next
+//EndScript
+/**
+ * 是否位于选择怪物场景(附带小纸人系统)
+ * @return True|False
+ */
+Function isChooseMonsterExtreAutomaticScene
+    Dim MARK = "41|68|FCF4EC,32|86|29131D,52|51|FDF5ED,32|552|1C131C,34|583|552E8F,24|667|7E5C66,72|677|323F30,1230|637|C8CDD1"
+	 
+    //使用像素方式判断
+    Dim cmpResult = CmpColorEx(MARK, 0.9)
+    If cmpResult = 1 Then 
+        isChooseMonsterExtreAutomaticScene = True
+    Else 
+        isChooseMonsterExtreAutomaticScene = False
     End If
 End Function
 
@@ -533,7 +569,7 @@ End Function
 Function getTeamLockMode
 	
     Dim TEAM_LOCK_MODE = Array(1017,647, "D29BA6", 1016,650, "D0969F", 1031,635, "92CAD5", 1030,642, "1B242F", 1031,664, "9E5640") //队伍锁定判定标志点&选择点 5点
-//    Dim TEAM_UNLOCK_MODE = Array(969,628,"1E2F3D",969,671,"1E2F3D",1001,641,"E95E4B",1001,655,"FFFFFF",1022,657,"2C629A") //队伍未锁判定标志点&选择点 5点
+    Dim TEAM_LOCK_MODE_EXTERA_AUTOMTIC = "851|635|95C8D5,845|645|4A6781,857|645|48627B,866|649|D296A1,851|641|1F2532,852|656|151721,836|650|D096A1,867|650|C58E9B,846|645|465F77,851|664|A05540"
 	
     If isChooseMonsterScene() = False Then 
         TracePrint "current is not choose monster scene"
@@ -541,19 +577,17 @@ Function getTeamLockMode
         Exit Function
     End If
 	
-    Dim lockResult = CmpColorEx(TEAM_LOCK_MODE(0)&"|"&TEAM_LOCK_MODE(1)&"|"&TEAM_LOCK_MODE(2)&","&TEAM_LOCK_MODE(3)&"|"&TEAM_LOCK_MODE(4)&"|"&TEAM_LOCK_MODE(5)&","&TEAM_LOCK_MODE(6)&"|"&TEAM_LOCK_MODE(7)&"|"&TEAM_LOCK_MODE(8)&","&TEAM_LOCK_MODE(9)&"|"&TEAM_LOCK_MODE(10)&"|"&TEAM_LOCK_MODE(11)&","&TEAM_LOCK_MODE(12)&"|"&TEAM_LOCK_MODE(13)&"|"&TEAM_LOCK_MODE(14), 0.9)
-//    Dim unlockResult = CmpColorEx(TEAM_UNLOCK_MODE(0)&"|"&TEAM_UNLOCK_MODE(1)&"|"&TEAM_UNLOCK_MODE(2)&","&TEAM_UNLOCK_MODE(3)&"|"&TEAM_UNLOCK_MODE(4)&"|"&TEAM_UNLOCK_MODE(5)&","&TEAM_UNLOCK_MODE(6)&"|"&TEAM_UNLOCK_MODE(7)&"|"&TEAM_UNLOCK_MODE(8)&","&TEAM_UNLOCK_MODE(9)&"|"&TEAM_UNLOCK_MODE(10)&"|"&TEAM_UNLOCK_MODE(11)&","&TEAM_UNLOCK_MODE(12)&"|"&TEAM_UNLOCK_MODE(13)&"|"&TEAM_UNLOCK_MODE(14), 0.8)
-//    If lockResult = 0 And unlockResult = 1 Then 
-//        //未锁
-//        getTeamLockMode = 0
-//    ElseIf lockResult = 1 And unlockResult = 0 Then
-//        //已锁
-//        getTeamLockMode = 1
-//    Else 
-//        TracePrint "team lock status is error"
-//        getTeamLockMode = False
-//    End If
-	getTeamLockMode = lockResult
+	//是否处于小纸人模式
+	If isChooseMonsterExtreAutomaticScene() Then 
+		TracePrint "getTeamLockMode.current is automatic mode"
+		Dim extraLockResult = CmpColorEx(TEAM_LOCK_MODE_EXTERA_AUTOMTIC, 0.9)
+		getTeamLockMode = extraLockResult
+	Else 
+		Dim lockResult = CmpColorEx(TEAM_LOCK_MODE(0)&"|"&TEAM_LOCK_MODE(1)&"|"&TEAM_LOCK_MODE(2)&","&TEAM_LOCK_MODE(3)&"|"&TEAM_LOCK_MODE(4)&"|"&TEAM_LOCK_MODE(5)&","&TEAM_LOCK_MODE(6)&"|"&TEAM_LOCK_MODE(7)&"|"&TEAM_LOCK_MODE(8)&","&TEAM_LOCK_MODE(9)&"|"&TEAM_LOCK_MODE(10)&"|"&TEAM_LOCK_MODE(11)&","&TEAM_LOCK_MODE(12)&"|"&TEAM_LOCK_MODE(13)&"|"&TEAM_LOCK_MODE(14), 0.9)
+
+		getTeamLockMode = lockResult
+	End If
+    
 End Function
 
 //Test
@@ -583,7 +617,7 @@ Function exploreInstanceZones(reservepl, shishenLevel, resevePosition, fightLock
 		//寻找怪物
 	Dim currentScene = True
 	Dim position = -1 
-	Do Until monsterCoordinateResult = False And currentScene = False
+	Do Until monsterCoordinateResult = False Or currentScene = False
 		TracePrint "monsterCoordinateResult",monsterCoordinateResult,", currentScene",currentScene
 		Delay yysLib_utils.WAIT_LONG
 		
@@ -599,7 +633,7 @@ Function exploreInstanceZones(reservepl, shishenLevel, resevePosition, fightLock
 			Else 
 				//位于其他场景
 				TracePrint "unknow scene"
-				waitIntoCurrentScene()
+//				yysLib_utils.tapCustom(yysLib_utils.SCREEN_WIDTH / 2, yysLib_utils.SCREEN_HEIGHT / 2)
 			End If
 		End If
 		
@@ -613,7 +647,7 @@ Function exploreInstanceZones(reservepl, shishenLevel, resevePosition, fightLock
 					Delay yysLib_utils.WAIT_NORMAL
 				Else 
 					TracePrint "waiting for back to explore scene."
-					Tap yysLib_utils.SCREEN_WIDTH / 3, yysLib_utils.SCREEN_HEIGHT / 5
+					Tap yysLib_utils.SCREEN_WIDTH / 3, yysLib_utils.SCREEN_HEIGHT * 0.8
 				End If
 				Delay yysLib_utils.WAIT_NORMAL
 				rewardCoordinateResult = findSceneReward()

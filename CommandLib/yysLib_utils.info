@@ -1,7 +1,27 @@
 
 {
 	"Description" : null,
+	"cancleBindPhone" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"cancleDownloadAudio" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
 	"confirmExit" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"confirmFightFailedExit" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"isBindPhoneScene" : 
 	{
 		"Description" : null,
 		"TranslateTemplate" : null
@@ -31,12 +51,32 @@
 		"Description" : null,
 		"TranslateTemplate" : null
 	},
+	"isDownloadAudioScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
 	"isExitConfirmScene" : 
 	{
 		"Description" : null,
 		"TranslateTemplate" : null
 	},
+	"isExitFightFailedConfirmScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
 	"isNoEnougtFood" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"searchCancleBindPhoneButton" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"searchCancleDownLoadAudioButton" : 
 	{
 		"Description" : null,
 		"TranslateTemplate" : null
@@ -56,6 +96,21 @@
 		"Description" : null,
 		"TranslateTemplate" : null
 	},
+	"searchExitStyleBlueDeltaNewButton" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"searchExitStyleBrownCircleButton" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"searchExitStyleChacterRedSakulaButton" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
 	"searchExitStyleRedSakula2Button" : 
 	{
 		"Description" : null,
@@ -67,6 +122,11 @@
 		"TranslateTemplate" : null
 	},
 	"searchExitStyleRedSakulaButton" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"searchFightFailedConfirmStyleBlackFontlButton" : 
 	{
 		"Description" : null,
 		"TranslateTemplate" : null

@@ -237,7 +237,7 @@ End Function
 
 
 //Test
-TracePrint exploreStory()
+TracePrint exploreStory() 
 EndScript
 /**
  * explore story
@@ -246,18 +246,21 @@ EndScript
 Function exploreStory()
 	TracePrint "exploreStory.start"
 	
+	Rem mainStory
 	If isStoryScene() Then 
 		Dim searchJumpButtonResult = True
 	 	Dim searchChatButtonResult = True
 	 	Dim searchFightButtonResult = True
 	 	Dim searchSoulViewButtonResult = True
 	 	Dim searchQuestionButtonResult = True
-		Do Until searchQuestionButtonResult = False And searchSoulViewButtonResult = False And searchJumpButtonResult = False And searchChatButtonResult = False And searchFightButtonResult = False And isStoryScene() = False And yysLib_main.isMainScene()
+	 	Dim searchChacterReadSakulaExitButtonResult = True
+		Do Until searchChacterReadSakulaExitButtonResult = False And searchQuestionButtonResult = False And searchSoulViewButtonResult = False And searchJumpButtonResult = False And searchChatButtonResult = False And searchFightButtonResult = False And isStoryScene() = False And yysLib_main.isMainScene()
 	 		searchJumpButtonResult = searchJumpChat()
 	 		searchChatButtonResult = searchChat()
 	 		searchFightButtonResult = yysLib_choose_monster.findMonster()
 	 		searchSoulViewButtonResult = searchSoulView()
 	 		searchQuestionButtonResult = searchQuestion()
+	 		searchChacterReadSakulaExitButtonResult = yysLib_utils.searchExitStyleChacterRedSakulaButton()
 	 		If searchJumpButtonResult <> False Then 
 	 			//chat jump
 	 			TracePrint "exploreStory.searched jump chat button."
@@ -274,6 +277,10 @@ Function exploreStory()
 	 			//question
 	 			TracePrint "exploreStory.searched question button."
 	 			yysLib_utils.tapCustom searchQuestionButtonResult(0), searchQuestionButtonResult(1)
+	 		ElseIf searchChacterReadSakulaExitButtonResult <> False Then
+	 			//chacter
+	 			TracePrint "exploreStory.searched chacter exit button in",searchChacterReadSakulaExitButtonResult(0),",", searchChacterReadSakulaExitButtonResult(1)
+	 			yysLib_utils.tapCustom searchChacterReadSakulaExitButtonResult(0), searchChacterReadSakulaExitButtonResult(1)
 	 		ElseIf searchFightButtonResult <> False Then
 	 			TracePrint "exploreStory.searched monster button."
 	 			//找到怪物，则进入战斗
@@ -317,6 +324,12 @@ Function exploreStory()
 	ElseIf yysLib_fight.isSettingMemberScene() Then
 		TracePrint "exploreStory.current is direct fight scene."
 		yysLib_fight.fight 2, 1, 0, 1, 2
+		TracePrint "exploreStory.direct fight complete.goto story."
+		Do Until isStoryScene()
+			TracePrint "exploreStory.direct waitting for story scene."
+			Delay yysLib_utils.WAIT_LONG
+		Loop
+		Goto mainStory
 	Else
 		TracePrint "exploreStory.current is not story scene"
 		exploreStory = False

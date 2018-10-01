@@ -8,8 +8,8 @@ Randomize
 Import "yysLib_utils.mql"
  
 //Test
-TracePrint isMainScene()
-EndScript
+//TracePrint isMainScene()
+//EndScript
 /**
  * is main scene
  * @return Ture | False
@@ -33,8 +33,11 @@ Function isCloseMainScene()
 	End If
 End Function
 
+//Test
+TracePrint isOpenMainScene()
+EndScript
 Function isOpenMainScene()
-	Dim MAIN_SCENE_RELEASED_MARK = "388|107|469BCE,567|35|ABE0ED,749|32|1D37EB,936|28|285CFB,1246|559|1C2546,1251|634|C3CBDB,5|604|0B1043,10|685|6B7CA2"
+	Dim MAIN_SCENE_RELEASED_MARK = "484|30|64C0E2,667|43|93B5CB,680|33|1D37EB,852|28|3593FF,1249|555|0C1C35,1255|587|649FC7,1242|622|C3C3D4,1253|678|78AAD3,1260|697|211F72,1258|716|0F1B37"
 	
 	Dim checkMainSceneResult = CmpColorEx(MAIN_SCENE_RELEASED_MARK, 0.9)
 	If checkMainSceneResult = 1 Then 
@@ -92,9 +95,18 @@ Function searchStory()
 
 End Function
 
+
+//Test
+//TracePrint backToMainScene()
+//Do Until isMainScene()
+//	backToMainScene()
+//	TracePrint "exploreInstanceZones.back to main scene"
+//	Delay yysLib_utils.WAIT_LONG
+//Loop
+//EndScript
 /**
  * back to main scene
- * @return True
+ * @return None
  */ 
 Function backToMainScene()
 	If isMainScene() = False Then 
@@ -107,7 +119,22 @@ Function backToMainScene()
 		End If
 		//处理确认场景
 		Do Until yysLib_utils.isExitConfirmScene() = False Then 
+			TracePrint "backToMainScene.process confirm scene"
 			yysLib_utils.confirmExit()
-		End If
+			Delay yysLib_utils.WAIT_NORMAL
+		Loop
+		
+		//处理绑定手机号码场景
+		Do Until yysLib_utils.isBindPhoneScene() = False Then 
+			TracePrint "backToMainScene.process bind phone scene"
+			yysLib_utils.cancleBindPhone() 
+			Delay yysLib_utils.WAIT_NORMAL
+		Loop
+		//处理下载语音包场景
+		Do Until yysLib_utils.isDownloadAudioScene() = False Then 
+			TracePrint "backToMainScene.process download audio data scene"
+			yysLib_utils.cancleDownloadAudio()
+			Delay yysLib_utils.WAIT_NORMAL
+		Loop
 	End If
 End Function

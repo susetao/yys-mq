@@ -228,7 +228,7 @@ End Function
 
 
 //Test
-Dim t = Array(1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1)
+Dim t = Array(0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1)
 main(t, 4, 0, 0, 0, 0, 1, 1, 1, 1, 2)
 EndScript
 /**
@@ -242,12 +242,12 @@ Function main(futures, chapter, mode, team, type, reservepl, shishenLevel, resev
 	
 	//perform order
 	For Each future In futures
-		If yysLib_main.isMainScene() = False Then 
+		Do Until yysLib_main.isMainScene()  
 			TracePrint "main.current scene is not main scene"
 			//执行异常处理程序
 			Delay yysLib_utils.WAIT_LONG
 			yysLib_main.backToMainScene()
-		End If
+		Loop
 		If future = 0 Then 
 			//story
 			TracePrint "main.perform story sub program"

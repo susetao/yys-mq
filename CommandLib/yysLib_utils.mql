@@ -120,6 +120,13 @@
  	TracePrint "tap :", x, y
  End Function
  
+//Test
+//TracePrint isChacter()
+//EndScript
+ /**
+  * 是否为角色界面
+  * @returen Ture | False
+  */
  Function isChacter()
  	Dim CHAACTER_MARK = "349|55|EEEEE9,386|59|ECEBE6,377|65|793329,366|112|6C1A1D,359|98|DFC6CE,341|142|EDECE7,345|150|7E2E27,372|160|8E2125,380|194|DABBC5,344|187|DCBEC8"
  	
@@ -145,17 +152,22 @@
  	Dim redSakula2Button = searchExitStyleRedSakula2Button()
  	Dim blueDeltaButton = searchExitStyleBlueDeltaButton()
  	Dim redSakulaBlackBorderButton = searchExitStyleRedSakulaBorderButton()
- 	
+ 	Dim brownCircleButton = searchExitStyleBrownCircleButton()
+ 	Dim blueDeltaNewButton = searchExitStyleBlueDeltaNewButton()
  	If blackFontButton <> False Then 
  		searchUnknowExitButton = blackFontButton
+ 	ElseIf blueDeltaButton <> False Then
+ 		searchUnknowExitButton = blueDeltaButton
+ 	ElseIf brownCircleButton <> False Then
+ 		searchUnknowExitButton = brownCircleButton
  	ElseIf redSakulaBlackBorderButton <> False Then
  		searchUnknowExitButton = redSakulaBlackBorderButton
  	ElseIf redSakulaButton <> False Then
  		searchUnknowExitButton = redSakulaButton
  	ElseIf redSakula2Button <> False Then
  		searchUnknowExitButton = redSakula2Button
- 	ElseIf blueDeltaButton <> False Then
- 		searchUnknowExitButton = blueDeltaButton
+ 	ElseIf blueDeltaNewButton <> False Then
+ 		searchUnknowExitButton = blueDeltaNewButton
  	Else 
  		searchUnknowExitButton = False
  	End If
@@ -183,6 +195,9 @@
  	End If
  End Function
  
+//Test
+//TracePrint isExitConfirmScene()
+//EndScript
  Function isExitConfirmScene()
  	Dim MARK = "340|261|2D6790,364|291|9BB4CC,430|383|243A95,603|328|3D464E,718|325|505C68,940|261|346C97,916|425|9BB4CC,845|406|5FB2F4,852|418|283D97,771|412|293945"
  	
@@ -194,14 +209,107 @@
  	End If
  End Function
  
+ //Test
+//TracePrint isExitFightFailedConfirmScene()
+//EndScript
+  Function isExitFightFailedConfirmScene()
+ 	Dim MARK = "401|223|496272,879|223|49617A,670|272|9BB4CC,722|427|5FB2F4,576|435|5169DD,642|496|354668,642|320|30373C,516|188|2D2428,728|172|454B4D,546|430|262C3C"
+ 	
+ 	Dim checkNoEnoughFoodResult = CmpColorEx(MARK, 0.9)
+ 	If checkNoEnoughFoodResult = 1 Then 
+ 		isExitFightFailedConfirmScene = True
+ 	Else 
+ 		isExitFightFailedConfirmScene = False
+ 	End If
+ End Function
+
+//Test
+//TracePrint isBindPhoneScene()
+//EndScript
+/**
+ * 检测绑定手机提示窗口场景
+ * @return True | False
+ */
+Function isBindPhoneScene()
+ 	Dim MARK = "429|213|203747,852|213|23374C,729|213|364769,552|446|5FB2F4,716|446|5FB2F4,627|449|9BB4CC,643|506|364768,651|246|262B2F"
+ 	
+ 	Dim checkResult = CmpColorEx(MARK, 0.9)
+ 	If checkResult = 1 Then 
+ 		isBindPhoneScene = True
+ 	Else 
+ 		isBindPhoneScene = False
+ 	End If
+End Function
+
+//Test
+//TracePrint isDownloadAudioScene()
+//EndScript
+/**
+ * 检测下载语音包场景
+ * @return True | False
+ */
+Function isDownloadAudioScene()
+ 	Dim MARK = "401|222|3E5767,732|224|3B4C6D,879|224|1A3047,786|300|2E3439,682|368|9BB4CC,475|421|5169DD,689|423|5FB2F4,513|435|232832,779|441|202529,632|426|9BB4CC"
+ 	
+ 	Dim checkResult = CmpColorEx(MARK, 0.9)
+ 	If checkResult = 1 Then 
+ 		isDownloadAudioScene = True
+ 	Else 
+ 		isDownloadAudioScene = False
+ 	End If
+End Function
+ 
  Function confirmExit()
  	Dim button = searchConfirmStyleBlackFontlButton()
  	
  	If button <> False Then 
- 		tapCustom(button(0), button(1))
+ 		tapCustom button(0), button(1)
+ 	Else 
+ 		TracePrint "confirmExit.current scene is not confirm exit scene."
  	End If
  	
  End Function
+ 
+ /**
+ * 执行战斗失败确认退出
+ * @return 
+ */
+ Function confirmFightFailedExit()
+ 	Dim button = searchFightFailedConfirmStyleBlackFontlButton()
+ 	
+ 	If button <> False Then 
+ 		tapCustom button(0), button(1)
+ 	Else 
+ 		TracePrint "confirmExit.current scene is not fight failed confirm exit scene."
+ 	End If
+ 	
+ End Function
+  
+ /**
+ * 取消绑定手机
+ * @return True | False
+ */
+ Function cancleBindPhone()
+ 	Dim button = searchCancleBindPhoneButton()
+ 	
+ 	If button <> False Then 
+ 		tapCustom(button(0), button(1))
+ 	End If
+ 
+End Function
+ 
+ /**
+ * 取消下载语音包
+ * @return True | False
+ */
+ Function cancleDownloadAudio()
+ 	Dim button = searchCancleDownLoadAudioButton()
+ 	
+ 	If button <> False Then 
+ 		tapCustom(button(0), button(1))
+ 	End If
+ 
+End Function
  
  //Test
 // TracePrint searchExitStyleBlackFontlButton()
@@ -219,8 +327,6 @@
  	Dim intX,intY
 	FindMultiColor 0,0,0,0,EXIT_BUTTON_STYLE_FIRST,EXIT_BUTTON_STYLE,1,0.9,intX,intY
 	If intX > -1 And intY > -1 Then
-		TracePrint intX
-		TracePrint intY
 		result = Array(-1, -1)
 		result(0) = intX
 		result(1) = intY
@@ -239,8 +345,6 @@
  	Dim intX,intY
 	FindMultiColor 0,0,0,0,EXIT_BUTTON_STYLE_FIRST,EXIT_BUTTON_STYLE,1,0.9,intX,intY
 	If intX > -1 And intY > -1 Then
-		TracePrint intX
-		TracePrint intY
 		result = Array(-1, -1)
 		result(0) = intX
 		result(1) = intY
@@ -250,6 +354,13 @@
 	End If
  End Function
 
+//Test
+//TracePrint searchExitStyleRedSakulaButton()
+//EndScript
+/**
+ * 搜索红色樱花外带边框退出按钮 见于御魂等
+ * @return False | Array(x, y)
+ */
 Function searchExitStyleRedSakulaBorderButton()
  	Dim EXIT_BUTTON_STYLE= "-8|18|D5D5E6,11|19|D5D5E6,-4|33|CDD5E6,10|36|CDD5E6,-18|25|373771,20|27|49296A,2|47|39316B,-28|29|202851,30|24|352C56" //红色 退出字样 按钮 见于 战败提示是否进入强化界面
  	Dim EXIT_BUTTON_STYLE_FIRST = "2E2E57"
@@ -259,8 +370,6 @@ Function searchExitStyleRedSakulaBorderButton()
  	Dim intX,intY
 	FindMultiColor 0,0,0,0,EXIT_BUTTON_STYLE_FIRST,EXIT_BUTTON_STYLE,1,0.9,intX,intY
 	If intX > -1 And intY > -1 Then
-		TracePrint intX
-		TracePrint intY
 		result = Array(-1, -1)
 		result(0) = intX
 		result(1) = intY
@@ -270,6 +379,13 @@ Function searchExitStyleRedSakulaBorderButton()
 	End If
  End Function
 
+//Test
+//TracePrint searchExitStyleRedSakulaButton()
+//EndScript
+/**
+ * 搜索红色樱花退出按钮 
+ * @return False | Array(x, y)
+ */
  Function searchExitStyleRedSakulaButton()
  	Dim EXIT_BUTTON_STYLE= "4|49|46248A,164|0|40278A,163|47|492883,135|17|5169DD,62|14|2B3451,62|30|262C3C,71|25|222830,95|21|272D40,106|28|272E42" //红色 退出字样 按钮 见于 战败提示是否进入强化界面
  	Dim EXIT_BUTTON_STYLE_FIRST = "492883"
@@ -279,8 +395,6 @@ Function searchExitStyleRedSakulaBorderButton()
  	Dim intX,intY
 	FindMultiColor 0,0,0,0,EXIT_BUTTON_STYLE_FIRST,EXIT_BUTTON_STYLE,1,0.9,intX,intY
 	If intX > -1 And intY > -1 Then
-		TracePrint intX
-		TracePrint intY
 		result = Array(-1, -1)
 		result(0) = intX
 		result(1) = intY
@@ -290,6 +404,13 @@ Function searchExitStyleRedSakulaBorderButton()
 	End If
  End Function
  
+//Test
+//TracePrint searchExitStyleRedSakula2Button()
+//EndScript
+/**
+ * 搜索红色樱花退出按钮
+ * @return False | Array(x, y)
+ */
   Function searchExitStyleRedSakula2Button()
  	Dim EXIT_BUTTON_STYLE= "-11|-10|D3D1E6,12|-10|D0D0EA,-6|8|CDD5E6,9|11|CCD1ED,-21|-13|D8B8FC,28|19|CF89E5,0|4|9F9FE3" //红色 退出字样 按钮 见于 无体力
  	Dim EXIT_BUTTON_STYLE_FIRST = "D1D4E5"
@@ -299,8 +420,6 @@ Function searchExitStyleRedSakulaBorderButton()
  	Dim intX,intY
 	FindMultiColor 0,0,0,0,EXIT_BUTTON_STYLE_FIRST,EXIT_BUTTON_STYLE,1,0.9,intX,intY
 	If intX > -1 And intY > -1 Then
-		TracePrint intX
-		TracePrint intY
 		result = Array(-1, -1)
 		result(0) = intX
 		result(1) = intY
@@ -311,7 +430,7 @@ Function searchExitStyleRedSakulaBorderButton()
  End Function
  
   Function searchExitStyleBlueDeltaButton()
- 	Dim EXIT_BUTTON_STYLE= "12|21|B13A18,22|1|7C3A32,13|-14|FDF5ED,-10|-24|3D0F1C,34|19|491A1A,-9|23|24131C,-4|-23|63122B,15|-13|FEF6E7,15|14|F9E9E0" //蓝色 返回按钮 见于 场景回退
+ 	Dim EXIT_BUTTON_STYLE= "-11|-19|3F0F20,35|-24|4A2223,-8|22|24131C,34|22|34161F,36|8|835858,16|-1|D37C5B,16|20|A5452D,11|-19|E09C8B,11|-24|EDCBBA" //蓝色 返回按钮 见于 场景回退
  	Dim EXIT_BUTTON_STYLE_FIRST = "FDF5ED"
  	
  	
@@ -319,8 +438,6 @@ Function searchExitStyleRedSakulaBorderButton()
  	Dim intX,intY
 	FindMultiColor 0,0,0,0,EXIT_BUTTON_STYLE_FIRST,EXIT_BUTTON_STYLE,1,0.9,intX,intY
 	If intX > -1 And intY > -1 Then
-		TracePrint intX
-		TracePrint intY
 		result = Array(-1, -1)
 		result(0) = intX
 		result(1) = intY
@@ -330,3 +447,138 @@ Function searchExitStyleRedSakulaBorderButton()
 	End If
  End Function
 
+
+/**
+ * 棕色返回按钮
+ * @return False | Array(x, y)
+ */
+Function searchExitStyleBrownCircleButton()
+ 	Dim EXIT_BUTTON_STYLE= "21|8|A2C4D5,3|21|A2C4D5,-7|18|507B95,8|-6|3B7AA9,26|19|34679A,32|12|161F2F,-13|10|101921,9|34|101F27,10|10|0E1E27" //棕色 返回按钮 见于 场景回退
+ 	Dim EXIT_BUTTON_STYLE_FIRST = "A2C4D5"
+ 	
+ 	
+	Dim result = False
+ 	Dim intX,intY
+	FindMultiColor 0,0,0,0,EXIT_BUTTON_STYLE_FIRST,EXIT_BUTTON_STYLE,1,0.9,intX,intY
+	If intX > -1 And intY > -1 Then
+		result = Array(-1, -1)
+		result(0) = intX
+		result(1) = intY
+		searchExitStyleBrownCircleButton = result
+	Else 
+		searchExitStyleBrownCircleButton = False
+	End If
+End Function
+
+
+/**
+ * 蓝色返回按钮,有新字
+ * @return False | Array(x, y)
+ */
+Function searchExitStyleBlueDeltaNewButton()
+ 	Dim EXIT_BUTTON_STYLE= "13|-24|DDA89E,15|-21|D07B6A,19|-13|FDF5ED,21|14|F9E9E0,18|21|A5452D,16|24|EFA190,22|17|F7E6D6,42|-27|3CD65D,46|4|6D2B1A" //蓝色有新字 返回按钮 见于 场景回退
+ 	Dim EXIT_BUTTON_STYLE_FIRST = "FDF5ED"
+ 	
+ 	
+	Dim result = False
+ 	Dim intX,intY
+	FindMultiColor 0,0,0,0,EXIT_BUTTON_STYLE_FIRST,EXIT_BUTTON_STYLE,1,0.9,intX,intY
+	If intX > -1 And intY > -1 Then
+		result = Array(-1, -1)
+		result(0) = intX
+		result(1) = intY
+		searchExitStyleBlueDeltaNewButton = result
+	Else 
+		searchExitStyleBlueDeltaNewButton = False
+	End If
+End Function
+
+/**
+ * 黄色取消按钮 见于绑定手机
+ * @return False | Array(x, y)
+ */
+Function searchCancleBindPhoneButton()
+ 	Dim EXIT_BUTTON_STYLE= "3|3|253E99,36|17|30495C,59|33|22282D,87|36|212629,122|4|2C3D98,108|37|5FB2F4,56|16|5FB2F4,56|20|2E4353,84|26|5AA7E4" //黄色取消按钮 见于绑定手机
+ 	Dim EXIT_BUTTON_STYLE_FIRST = "4573CD"
+ 	
+ 	
+	Dim result = False
+ 	Dim intX,intY
+	FindMultiColor 0,0,0,0,EXIT_BUTTON_STYLE_FIRST,EXIT_BUTTON_STYLE,1,0.9,intX,intY
+	If intX > -1 And intY > -1 Then
+		result = Array(-1, -1)
+		result(0) = intX
+		result(1) = intY
+		searchCancleBindPhoneButton = result
+	Else 
+		searchCancleBindPhoneButton = False
+	End If
+End Function
+
+/**
+ * 红色取消按钮 见于下载语音扩展包
+ * @return False | Array(x, y)
+ */
+Function searchCancleDownLoadAudioButton()
+ 	Dim EXIT_BUTTON_STYLE= "5|1|452788,34|17|5169DD,60|16|242A37,81|32|202427,95|15|2E375A,90|34|282F45,111|35|222830,147|39|5169DD,168|47|492883" // 红色取消按钮 见于下载语音扩展包
+ 	Dim EXIT_BUTTON_STYLE_FIRST = "1D3FC7"
+ 	
+	Dim result = False
+ 	Dim intX,intY
+	FindMultiColor 0,0,0,0,EXIT_BUTTON_STYLE_FIRST,EXIT_BUTTON_STYLE,1,0.9,intX,intY
+	If intX > -1 And intY > -1 Then
+		result = Array(-1, -1)
+		result(0) = intX
+		result(1) = intY
+		searchCancleDownLoadAudioButton = result
+	Else 
+		searchCancleDownLoadAudioButton = False
+	End If
+End Function
+
+/**
+ * 战斗失败取消按钮 
+ * @return False | Array(x, y)
+ */
+ Function searchFightFailedConfirmStyleBlackFontlButton()
+ 	Dim EXIT_BUTTON_STYLE = "4|6|462588,31|38|5169DD,66|32|2A324C,77|30|262C3D,86|29|5169DD,100|26|252B3A,111|33|262D3F,110|18|2E385C,144|36|5169DD" //战斗失败取消按钮 
+ 	Dim EXIT_BUTTON_STYLE_FIRST = "293AC2"
+ 	
+ 	
+	Dim result = False
+ 	Dim intX,intY
+	FindMultiColor 0,0,0,0,EXIT_BUTTON_STYLE_FIRST,EXIT_BUTTON_STYLE,1,0.9,intX,intY
+	If intX > -1 And intY > -1 Then
+		result = Array(-1, -1)
+		result(0) = intX
+		result(1) = intY
+		searchFightFailedConfirmStyleBlackFontlButton = result
+	Else 
+		searchFightFailedConfirmStyleBlackFontlButton = False
+	End If
+ End Function
+ 
+//Test
+//TracePrint searchExitStyleChacterRedSakulaButton()
+//EndScript
+/**
+ * 搜索红色樱花退出按钮 见于角色
+ * @return False | Array(x, y)
+ */
+  Function searchExitStyleChacterRedSakulaButton()
+ 	Dim EXIT_BUTTON_STYLE= "32|52|CBAEB7,-7|86|EDECE7,34|137|DABBC5,809|26|BDACFE,821|39|D4D4E5,809|51|877FBB,5|105|AE2930,19|32|7B2B2C,836|39|431748" //红色 退出字样 按钮 见于 无体力
+ 	Dim EXIT_BUTTON_STYLE_FIRST = "EEEEE9"
+ 	
+ 	
+	Dim result = False
+ 	Dim intX,intY
+	FindMultiColor 0,0,0,0,EXIT_BUTTON_STYLE_FIRST,EXIT_BUTTON_STYLE,1,0.9,intX,intY
+	If intX > -1 And intY > -1 Then
+		result = Array(-1, -1)
+		result(0) = intX
+		result(1) = intY
+		searchExitStyleChacterRedSakulaButton = result
+	Else 
+		searchExitStyleChacterRedSakulaButton = False
+	End If
+ End Function

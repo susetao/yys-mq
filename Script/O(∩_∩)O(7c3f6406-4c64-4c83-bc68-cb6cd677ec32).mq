@@ -25,6 +25,7 @@ Dim fightSpeed = ReadUIConfig("fight_speed_value", 2)
 Dim fightMode = ReadUIConfig("fight_mode_value", 1)
 Dim fightLockMode = ReadUIConfig("fight_lock_mode_value", 1)
 
+TracePrint "param:chapter=",chapter,"mode=",mode,"team=",team,"type=",type,"fightSpeed=",fightSpeed,"fightMode=",fightMode,"fightLockMode=",fightLockMode
 // check device
 Dim sr = GetScreenRotation()
 Dim dw = GetScreenX()
@@ -47,4 +48,5 @@ End If
 Dim fun = Array(1, 0)
 Dim t = Array(fun)
 //TracePrint t(0, 0)
-yysLib_service.main(t, CInt(chapter), CInt(mode), CInt(team), CInt(type), 0, 1, 1, CInt(fightLockMode), CInt(fightSpeed), CInt(fightMode))
+//yysLib_service.main(t, CInt(chapter), CInt(mode), CInt(team), CInt(type), 0, 1, 1, CInt(fightLockMode), CInt(fightSpeed), CInt(fightMode))
+yysLib_service.main(t, CInt(chapter), 0, 0, 0, 0, 1, 1, 1, 1, 1)

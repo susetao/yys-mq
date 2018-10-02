@@ -640,7 +640,7 @@ Function exploreInstanceZones(reservepl, shishenLevel, resevePosition, fightLock
 		//reward
 		Dim rewardCoordinateResult = findSceneReward()
 		If rewardCoordinateResult <> False Then 
-			Do Until rewardCoordinateResult = False And yysLib_explore_scene.isExploreScene()
+			Do Until rewardCoordinateResult = False And (yysLib_explore_scene.isExploreScene() Or yysLib_explore_scene.isExploreChooseScene())
 				If rewardCoordinateResult <> False Then 
 					TracePrint "find reward in postion "&rewardCoordinateResult(0)&","&rewardCoordinateResult(1)
 					Tap rewardCoordinateResult(0), rewardCoordinateResult(1)

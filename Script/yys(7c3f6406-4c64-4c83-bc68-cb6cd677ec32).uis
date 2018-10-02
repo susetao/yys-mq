@@ -1,0 +1,13 @@
+//futures, chapter, mode, team, type, reservepl, shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode
+// @param chapter 章节 1 - 最大章节数
+// * @param mode 0 探索 1 挑战
+// * @param team 0 单人 1 组队
+// * @pearam type 0 普通 1 困难 当mode为1时则可忽略该参数
+// * @param reservepl 保留的体力，0为不保留
+// * @param shishenLevel 升级狗粮品级
+// * @param resevePosition 保留式神位置
+// * @param fightSpeed 1 1x 2 2x 战斗速度
+// * @param fightMode 0 手动 1 自动 战斗模式(手动模式需要进行战斗处理, 比较复杂, 应出现在高级版中)
+// * @param fightLockMode 0 未锁定 1 锁定 (锁定队伍模式, 无法进行队伍成员更换)fi
+
+//If 

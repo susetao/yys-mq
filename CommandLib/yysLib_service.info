@@ -1,0 +1,29 @@
+
+{
+	"Description" : null,
+	"exploreEnchantment" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"exploreScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"exploreStory" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"exploreYuHun" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"main" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	}
+}

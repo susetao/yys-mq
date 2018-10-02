@@ -142,6 +142,8 @@ Function exploreScene(chapter, mode, team, type, reservepl, shishenLevel, reseve
 			
 	Do Until yysLib_explore_scene.exitExploreChooseScene() Or  yysLib_main.isMainScene()
 		TracePrint "exit explore choose scene faild."
+		yysLib_main.backToMainScene 
+		Delay yysLib_utils.WAIT_LONG
 	Loop
 	
 	Delay yysLib_utils.WAIT_NORMAL
@@ -228,37 +230,60 @@ End Function
 
 
 //Test
-Dim t = Array(0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1)
-main(t, 4, 0, 0, 0, 0, 1, 1, 1, 1, 2)
-EndScript
+//Dim i = Array(1, 3)
+//Dim t = Array(i)
+//main(t, 4, 0, 0, 0, 0, 1, 1, 1, 1, 2)
+//EndScript
 /**
  * main
+ * details Array(Array(0|1, repeatNum),...)   repeatNum = 0 无限 否则为执行次数
  * @param Array 存储执行功能顺序 exploreStory=0 exploreScene=1
  * @return True
  */
 Function main(futures, chapter, mode, team, type, reservepl, shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode)
 
-	
-	
 	//perform order
-	For Each future In futures
+	For Each fun In futures
+		TracePrint fun
+		Dim order = fun(0)
+		Dim repeat = fun(1)
 		Do Until yysLib_main.isMainScene()  
 			TracePrint "main.current scene is not main scene"
 			//执行异常处理程序
 			Delay yysLib_utils.WAIT_LONG
 			yysLib_main.backToMainScene()
 		Loop
-		If future = 0 Then 
+		If order = 0 Then 
 			//story
 			TracePrint "main.perform story sub program"
-			exploreStory 
-		ElseIf future = 1 Then
+			If repeat = 0 Then 
+				//无限
+				For i = 1 To repeat Step 0
+					exploreStory 
+				Next
+			Else 
+				//有限
+				For i = 1 To repeat Step 1
+					exploreStory 
+				Next
+			End If
+		ElseIf order = 1 Then
 			//explore monster
 			TracePrint "main.perform explore monster program"
-			exploreScene(chapter, mode, team, type, reservepl, shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode)
+			If repeat = 0 Then 
+				//无限
+				For i = 1 To repeat Step 0
+					exploreScene(chapter, mode, team, type, reservepl, shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode)
+				Next
+			Else 
+				//有限
+				For i = 1 To repeat Step 1
+					exploreScene(chapter, mode, team, type, reservepl, shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode)
+				Next
+			End If
 		Else 
 			//unsupport future
-			TracePrint "main.unsupport ",future
+			TracePrint "main.unsupport ",order
 		End If
 	Next
 	

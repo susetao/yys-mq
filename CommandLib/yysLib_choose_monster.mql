@@ -640,7 +640,7 @@ Function exploreInstanceZones(reservepl, shishenLevel, resevePosition, fightLock
 		//reward
 		Dim rewardCoordinateResult = findSceneReward()
 		If rewardCoordinateResult <> False Then 
-			Do Until rewardCoordinateResult = False And yysLib_explore_scene.isExploreChooseScene()
+			Do Until rewardCoordinateResult = False And yysLib_explore_scene.isExploreScene()
 				If rewardCoordinateResult <> False Then 
 					TracePrint "find reward in postion "&rewardCoordinateResult(0)&","&rewardCoordinateResult(1)
 					Tap rewardCoordinateResult(0), rewardCoordinateResult(1)
@@ -683,7 +683,7 @@ Function exploreInstanceZones(reservepl, shishenLevel, resevePosition, fightLock
     		Loop
 			
 			yysLib_fight.fight(shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode)
-//			waitIntoCurrentScene()
+			waitIntoCurrentScene()
 		End If
 		//normal monster
 		If position  < 0 Then 
@@ -717,7 +717,7 @@ Function exploreInstanceZones(reservepl, shishenLevel, resevePosition, fightLock
     		Loop
     		
 			yysLib_fight.fight(shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode) 
-//			waitIntoCurrentScene()
+			waitIntoCurrentScene()
 		End If
 	Loop
 End Function

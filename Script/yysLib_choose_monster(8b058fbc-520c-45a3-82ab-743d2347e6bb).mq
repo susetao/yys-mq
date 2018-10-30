@@ -712,7 +712,7 @@ Function exploreInstanceZones(reservepl, shishenLevel, resevePosition, fightLock
 				If isChooseMonsterScene() Then 
 					//则退回选择monster步骤
 					TracePrint "enter monster fight error, change scene to choose monster scene"
-					Goto findStart
+//					Goto findStart
 				End If
     		Loop
     		

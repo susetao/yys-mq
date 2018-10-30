@@ -230,10 +230,10 @@ End Function
 
 
 //Test
-//Dim i = Array(1, 3)
-//Dim t = Array(i)
-//main(t, 4, 0, 0, 0, 0, 1, 1, 1, 1, 1)
-//EndScript
+Dim i = Array(1, 3)
+Dim t = Array(i)
+main(t, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1)
+EndScript
 
 /**
  * main

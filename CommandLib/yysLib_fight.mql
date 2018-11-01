@@ -43,28 +43,37 @@ End Function
  */
 Function isFightEnd
     Dim FIGHT_END_MARK = "535|415|1781D6,549|409|0A0F5A,606|443|0B0C30,604|451|40DCEE,621|421|4234D1,659|440|8CABC4,679|437|03030F,678|557|02030E,572|534|CE8C40,733|516|40DCEE"
-//    Dim FIGHT_END_MARK = "539|412|1781D6,547|411|112862,550|412|57C1F2,556|417|1D94DF,572|480|1D94DF,542|490|DDA840,538|529|CE8C40|571|533|CE8C40,585|520|CE8C40,596|498|DCAE7D,617|483|CE8C40,608|511|1D4ABA,628|519|1A2132,602|551|02030E,640|564|0C2462,675|534|2138B8|746|517|1990D2,725|510|3CD5ED,742|435|1F2024,721|435|B88F62,728|417|3286BC,689|458|8CABC4,680|457|151A28,643|479|6D513B,683|439|0D0D22"
-    Dim FIGHT_END_FAILED_MARK = Array(305,134, "9ABDC7", 465,146, "594850", 731,168, "ABB9C0", 915,183, "96A5AD", 397,513, "D9DFDD", 651,484, "3434C4", 865,517, "BFD7FA", 638,412, "FFFFFF", 613,275, "82AFBC", 608,494, "2B2E36") //战斗失败mrak
-	
+    	
     Dim cmpResult = CmpColorEx( FIGHT_END_MARK, 1.0)
     If cmpResult = 1 Then
         //战斗成功
         TracePrint "fight end"
-        TracePrint "fffffffffffffffffffffffffffffffffffffffffffffffffff"
         isFightEnd = True
     Else 
-        //战斗失败
-        cmpResult = CmpColorEx(FIGHT_END_FAILED_MARK(0) & "|" & FIGHT_END_FAILED_MARK(1) & "|" & FIGHT_END_FAILED_MARK(2) & "," & FIGHT_END_FAILED_MARK(3) & "|" & FIGHT_END_FAILED_MARK(4) & "|" & FIGHT_END_FAILED_MARK(5) & "," & FIGHT_END_FAILED_MARK(6) & "|" & FIGHT_END_FAILED_MARK(7) & "|" & FIGHT_END_FAILED_MARK(8) & "," & FIGHT_END_FAILED_MARK(9) & "|" & FIGHT_END_FAILED_MARK(10) & "|" & FIGHT_END_FAILED_MARK(11) & "," & FIGHT_END_FAILED_MARK(12) & "|" & FIGHT_END_FAILED_MARK(13) & "|" & FIGHT_END_FAILED_MARK(14) & "," & FIGHT_END_FAILED_MARK(15) & "|" & FIGHT_END_FAILED_MARK(16) & "|" & FIGHT_END_FAILED_MARK(17) & "," & FIGHT_END_FAILED_MARK(18) & "|" & FIGHT_END_FAILED_MARK(19) & "|" & FIGHT_END_FAILED_MARK(20) & "," & FIGHT_END_FAILED_MARK(21) & "|" & FIGHT_END_FAILED_MARK(22) & "|" & FIGHT_END_FAILED_MARK(23) & "," & FIGHT_END_FAILED_MARK(24) & "|" & FIGHT_END_FAILED_MARK(25) & "|" & FIGHT_END_FAILED_MARK(26) & "," & FIGHT_END_FAILED_MARK(27) & "|" & FIGHT_END_FAILED_MARK(28) & "|" & FIGHT_END_FAILED_MARK(29), 0.9)
-        If cmpResult = 1 Then 
-            TracePrint "fight end"
-            isFightEnd = True
-            TracePrint "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        Else 
-            isFightEnd = False
-        End If
+        isFightEnd = False
     End If
 End Function
 
+
+//Test
+//TracePrint isFightDefatedEnd()
+//EndScript
+/**
+ * 判断战斗是否以失败结束
+ * @return True | False
+ */
+Function isFightDefatedEnd()
+	Dim FIGHT_END_FAILED_MARK = Array(305,134, "9ABDC7", 465,146, "594850", 731,168, "ABB9C0", 915,183, "96A5AD", 397,513, "D9DFDD", 651,484, "3434C4", 865,517, "BFD7FA", 638,412, "FFFFFF", 613,275, "82AFBC", 608,494, "2B2E36") //战斗失败mrak
+
+	//战斗失败
+    Dim cmpResult = CmpColorEx(FIGHT_END_FAILED_MARK(0) & "|" & FIGHT_END_FAILED_MARK(1) & "|" & FIGHT_END_FAILED_MARK(2) & "," & FIGHT_END_FAILED_MARK(3) & "|" & FIGHT_END_FAILED_MARK(4) & "|" & FIGHT_END_FAILED_MARK(5) & "," & FIGHT_END_FAILED_MARK(6) & "|" & FIGHT_END_FAILED_MARK(7) & "|" & FIGHT_END_FAILED_MARK(8) & "," & FIGHT_END_FAILED_MARK(9) & "|" & FIGHT_END_FAILED_MARK(10) & "|" & FIGHT_END_FAILED_MARK(11) & "," & FIGHT_END_FAILED_MARK(12) & "|" & FIGHT_END_FAILED_MARK(13) & "|" & FIGHT_END_FAILED_MARK(14) & "," & FIGHT_END_FAILED_MARK(15) & "|" & FIGHT_END_FAILED_MARK(16) & "|" & FIGHT_END_FAILED_MARK(17) & "," & FIGHT_END_FAILED_MARK(18) & "|" & FIGHT_END_FAILED_MARK(19) & "|" & FIGHT_END_FAILED_MARK(20) & "," & FIGHT_END_FAILED_MARK(21) & "|" & FIGHT_END_FAILED_MARK(22) & "|" & FIGHT_END_FAILED_MARK(23) & "," & FIGHT_END_FAILED_MARK(24) & "|" & FIGHT_END_FAILED_MARK(25) & "|" & FIGHT_END_FAILED_MARK(26) & "," & FIGHT_END_FAILED_MARK(27) & "|" & FIGHT_END_FAILED_MARK(28) & "|" & FIGHT_END_FAILED_MARK(29), 0.9)
+    If cmpResult = 1 Then 
+        TracePrint "fight defated end"
+        isFightDefatedEnd = True
+    Else 
+        isFightDefatedEnd = False
+    End If
+End Function
 
 //Test
 //TracePrint isSettingMemberScene()
@@ -130,25 +139,7 @@ Function setFightMode(mode)
 End Function
 
 //Test
-Dim a =  5
-TracePrint test(a)
 
-Do Until False
-	TracePrint "ss"
-	Delay 1000
-Loop
-
-Function test(a)
-	Dim s = Thread.Start(testa, a)
-	
-End Function
-
-Function testa(a)
-	Do Until False
-		TracePrint a
-		Delay 1000
-	Loop
-End Function
 //EndScript
 /**
  * 多线程下设置战斗方式 自动或者手动
@@ -1243,6 +1234,20 @@ Function fight(level, revsePosition, teamLockMode, fightMode, fightSpeed)
     	TracePrint "fight.wating for fight end"
     	Delay yysLib_utils.WAIT_LONG
         fightCompleteResult = isFightEnd()
+        //process defated 
+        If isFightDefatedEnd() Then 
+        	//处理战斗失败弹出按钮
+			Dim existExitButton = yysLib_utils.searchFightFailedConfirmStyleBlackFontlButton()
+			Do Until existExitButton = False
+				Delay yysLib_utils.WAIT_LONG
+				TracePrint "fight.process exit button."
+				yysLib_utils.tapCustom(existExitButton(0), existExitButton(1))
+				existExitButton = yysLib_utils.searchFightFailedConfirmStyleBlackFontlButton()
+				
+			Loop
+			fightCompleteResult = Not isFightDefatedEnd()
+			TracePrint "fight.fight defated , jump out."
+        End If
     Loop
     TracePrint "fight.fight complete"
     Delay yysLib_utils.WAIT_NORMAL
@@ -1256,16 +1261,6 @@ Function fight(level, revsePosition, teamLockMode, fightMode, fightSpeed)
         TracePrint "fight.wait to exit fight scene"
     Loop
     
- 	//处理战斗失败弹出按钮
-	Dim existExitButton = yysLib_utils.searchFightFailedConfirmStyleBlackFontlButton()
-	Do Until existExitButton = False
-		Delay yysLib_utils.WAIT_LONG
-		TracePrint "isFightEnd.process exit button."
-		yysLib_utils.tapCustom(existExitButton(0), existExitButton(1))
-		existExitButton = yysLib_utils.searchFightFailedConfirmStyleBlackFontlButton()
-		
-	Loop
-	
 	TracePrint "thread fight mode monitor exit"
     Thread.Stop (thraedModeMonitorId)
     TracePrint "thread fight speed monitor exit"

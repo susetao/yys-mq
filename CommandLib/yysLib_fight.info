@@ -111,6 +111,11 @@
 		"Description" : null,
 		"TranslateTemplate" : null
 	},
+	"isFightDefatedEnd" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
 	"isFightEnd" : 
 	{
 		"Description" : null,

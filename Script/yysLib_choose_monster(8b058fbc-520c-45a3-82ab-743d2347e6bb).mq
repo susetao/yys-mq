@@ -675,7 +675,8 @@ Function exploreInstanceZones(reservepl, shishenLevel, resevePosition, fightLock
 					Exit Function
 				End If
 				//判断是否仍旧处于choose monster scene
-				If isChooseMonsterScene() Then 
+				Delay yysLib_utils.WAIT_NORMAL * 3 
+				If isChooseMonsterScene() And yysLib_fight.isFightScene() = False And yysLib_fight.isFightEnd() = False And yysLib_fight.isFightDefatedEnd() = False Then 
 					//则退回选择monster步骤
 					TracePrint "enter boss fight error, change scene to choose monster scene"
 					Goto findStart
@@ -709,7 +710,8 @@ Function exploreInstanceZones(reservepl, shishenLevel, resevePosition, fightLock
 					Exit Function
 				End If
 				//判断是否仍旧处于choose monster scene
-				If isChooseMonsterScene() Then 
+				Delay yysLib_utils.WAIT_NORMAL * 3 
+				If isChooseMonsterScene() And yysLib_fight.isFightScene() = False And yysLib_fight.isFightEnd() = False And yysLib_fight.isFightDefatedEnd() = False Then 
 					//则退回选择monster步骤
 					TracePrint "enter monster fight error, change scene to choose monster scene"
 					Goto findStart

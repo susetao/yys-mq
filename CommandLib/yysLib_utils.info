@@ -56,6 +56,11 @@
 		"Description" : null,
 		"TranslateTemplate" : null
 	},
+	"isExitConfirmFightScene" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
 	"isExitConfirmScene" : 
 	{
 		"Description" : null,
@@ -77,6 +82,11 @@
 		"TranslateTemplate" : null
 	},
 	"searchCancleDownLoadAudioButton" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
+	"searchConfirmExitFightSceneButton" : 
 	{
 		"Description" : null,
 		"TranslateTemplate" : null

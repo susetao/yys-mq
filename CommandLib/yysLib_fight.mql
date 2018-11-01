@@ -129,6 +129,45 @@ Function setFightMode(mode)
     End If
 End Function
 
+//Test
+Dim a =  5
+TracePrint test(a)
+
+Do Until False
+	TracePrint "ss"
+	Delay 1000
+Loop
+
+Function test(a)
+	Dim s = Thread.Start(testa, a)
+	
+End Function
+
+Function testa(a)
+	Do Until False
+		TracePrint a
+		Delay 1000
+	Loop
+End Function
+//EndScript
+/**
+ * 多线程下设置战斗方式 自动或者手动
+ * @param mode 0 手动 1 自动
+ * @return True|False
+ * @thread
+ */
+Function TsetFightMode(mode)
+	mode = 1
+	Do Until getFightMode() = mode
+		If isFightScene() Then 
+			setFightMode (mode)
+		Else
+			TracePrint "current not fight scene"
+		End If
+		Delay yysLib_utils.WAIT_LONG
+	Loop
+End Function
+
 
 //Test
 //TracePrint getFightMode()
@@ -175,6 +214,23 @@ Function setFightSpeed(speed)
     End If
 End Function
 
+/**
+ * 多线程下设置战斗速度 1x 2x
+ * @param mode 0 2x 1 1x
+ * @return True|False
+ * @thread
+ */
+Function TsetFightSpeed(speed)
+	speed = 0
+	Do Until getFightSpeed() = speed
+		If isFightScene()
+			setFightSpeed (speed)
+		Else
+			TracePrint "current not fight scene"
+		End If
+		Delay yysLib_utils.WAIT_LONG
+	Loop
+End Function
 
 //Test
 //TracePrint getFightSpeed()
@@ -1120,10 +1176,16 @@ End Function
 
 
 //Test
-//TracePrint fight(1, 1, 0, 1, 2)
+//TracePrint fight(1, 1, 1, 1, 2)
 //EndScript
 
 //Test
+//Function test(ss)
+//	Do Until False
+//		TracePrint ss
+//		Delay 1000
+//	Loop
+//End Function
 
 //处理战斗失败弹出按钮
 //	Dim existExitButton = yysLib_utils.searchFightFailedConfirmStyleBlackFontlButton()
@@ -1164,20 +1226,21 @@ Function fight(level, revsePosition, teamLockMode, fightMode, fightSpeed)
             Delay yysLib_utils.WAIT_NORMAL
         Loop
     End If 
-	
-    //战斗模式选择
-//	Delay yysLib_utils.WAIT_LONG
+
+    //战斗模式选择, use thread
 	TracePrint "fight.fightMode is:"&fightMode
-    setFightMode(fightMode)
-    //战斗速度设置
-//    Delay yysLib_utils.WAIT_LONG
+    TracePrint "fight mode monitor start."
+	Dim thraedModeMonitorId = Thread.Start(TsetFightMode)
+    //战斗速度设置, use thread
     TracePrint "fight.fightSpeed is:"&fightSpeed
-    setFightSpeed(fightSpeed)
+    TracePrint "fight speed monitor start."
+	Dim threadSpeedMonitorId = Thread.Start(TsetFightSpeed)
 
     TracePrint "fight.fighting"
     //开始战斗成功，等待战斗结束
     Dim fightCompleteResult = False
     Do Until fightCompleteResult
+    	TracePrint "fight.wating for fight end"
     	Delay yysLib_utils.WAIT_LONG
         fightCompleteResult = isFightEnd()
     Loop
@@ -1200,7 +1263,13 @@ Function fight(level, revsePosition, teamLockMode, fightMode, fightSpeed)
 		TracePrint "isFightEnd.process exit button."
 		yysLib_utils.tapCustom(existExitButton(0), existExitButton(1))
 		existExitButton = yysLib_utils.searchFightFailedConfirmStyleBlackFontlButton()
+		
 	Loop
+	
+	TracePrint "thread fight mode monitor exit"
+    Thread.Stop (thraedModeMonitorId)
+    TracePrint "thread fight speed monitor exit"
+    Thread.Stop(threadSpeedMonitorId)
     
 End Function
 

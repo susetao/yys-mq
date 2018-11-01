@@ -136,5 +136,9 @@ Function backToMainScene()
 			yysLib_utils.cancleDownloadAudio()
 			Delay yysLib_utils.WAIT_NORMAL
 		Loop
+		
+//		TracePrint "now , tap random pos to back main scene."
+		
+//		yysLib_utils.tapRadomCustom(yysLib_utils.SCREEN_WIDTH / 2, yysLib_utils.SCREEN_HEIGHT / 2, 200, 200)
 	End If
 End Function

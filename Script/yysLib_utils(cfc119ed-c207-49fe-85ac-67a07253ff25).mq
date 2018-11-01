@@ -116,9 +116,12 @@
  End Function
  
  Function tapRadomCustom(x, y, maxX, maxY)
- 	Tap x, y
- 	TracePrint "tap :", x, y
+ 	Dim radX = x + Int(((maxX-0+1) * Rnd()) + 1)
+ 	Dim radY = y + Int(((maxY-0+1) * Rnd()) + 1)
+ 	Tap radX, radY 
+ 	TracePrint "tap :", radX, radY
  End Function
+ 
  
 //Test
 //TracePrint isChacter()
@@ -154,6 +157,7 @@
  	Dim redSakulaBlackBorderButton = searchExitStyleRedSakulaBorderButton()
  	Dim brownCircleButton = searchExitStyleBrownCircleButton()
  	Dim blueDeltaNewButton = searchExitStyleBlueDeltaNewButton()
+ 	Dim exitFightSceneConfirmButton = searchConfirmExitFightSceneButton()
  	If blackFontButton <> False Then 
  		searchUnknowExitButton = blackFontButton
  	ElseIf blueDeltaButton <> False Then
@@ -168,6 +172,8 @@
  		searchUnknowExitButton = redSakula2Button
  	ElseIf blueDeltaNewButton <> False Then
  		searchUnknowExitButton = blueDeltaNewButton
+ 	ElseIf exitFightSceneConfirmButton <> False Then
+ 		searchUnknowExitButton = exitFightSceneConfirmButton
  	Else 
  		searchUnknowExitButton = False
  	End If
@@ -206,6 +212,20 @@
  		isExitConfirmScene = True
  	Else 
  		isExitConfirmScene = False
+ 	End If
+ End Function
+ 
+ //Test
+//TracePrint isExitConfirmFightScene()
+//EndScript
+ Function isExitConfirmFightScene()
+ 	Dim MARK = "441|222|324263,541|307|889EB3,540|402|5169DD,561|435|283046,696|421|5FB2F4,842|221|334465,769|432|202427,826|496|25354E,756|421|5FB2F4,768|433|2E4353"
+ 	
+ 	Dim checkNoEnoughFoodResult = CmpColorEx(MARK, 0.9)
+ 	If checkNoEnoughFoodResult = 1 Then 
+ 		isExitConfirmFightScene = True
+ 	Else 
+ 		isExitConfirmFightScene = False
  	End If
  End Function
  
@@ -351,6 +371,28 @@ End Function
 		searchConfirmStyleBlackFontlButton = result
 	Else 
 		searchConfirmStyleBlackFontlButton = False
+	End If
+ End Function
+ 
+ 
+//Test
+//TracePrint searchConfirmExitFightSceneButton()
+//EndScript
+Function searchConfirmExitFightSceneButton()
+ 	Dim EXIT_BUTTON_STYLE = "-1|4|253E99,11|12|5FB2F4,39|21|2D4252,40|23|5FB2F4,45|29|253039,52|36|5FB2F4,63|37|5FB2F4,84|36|202427,92|30|5FB2F4" //ÆÕÍ¨È·ÈÏ
+ 	Dim EXIT_BUTTON_STYLE_FIRST = "307FD5"
+ 	
+ 	
+	Dim result = False
+ 	Dim intX,intY
+	FindMultiColor 0,0,0,0,EXIT_BUTTON_STYLE_FIRST,EXIT_BUTTON_STYLE,1,0.8,intX,intY
+	If intX > -1 And intY > -1 Then
+		result = Array(-1, -1)
+		result(0) = intX
+		result(1) = intY
+		searchConfirmExitFightSceneButton = result
+	Else 
+		searchConfirmExitFightSceneButton = False
 	End If
  End Function
 

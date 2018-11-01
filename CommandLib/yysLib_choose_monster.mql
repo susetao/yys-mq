@@ -712,7 +712,7 @@ Function exploreInstanceZones(reservepl, shishenLevel, resevePosition, fightLock
 				If isChooseMonsterScene() Then 
 					//则退回选择monster步骤
 					TracePrint "enter monster fight error, change scene to choose monster scene"
-//					Goto findStart
+					Goto findStart
 				End If
     		Loop
     		
@@ -732,11 +732,9 @@ End Function
  */
 Function waitIntoCurrentScene()
     //等到回到 choose monster scene
-    Dim backChooseMonsterSceneResult = False
-    Do Until backChooseMonsterSceneResult
+    Do Until isChooseMonsterScene() And yysLib_fight.isFightEnd() = False
         Delay yysLib_utils.WAIT_NORMAL
-        Tap yysLib_utils.SCREEN_WIDTH / 2, yysLib_utils.SCREEN_HEIGHT * 0.8
-        backChooseMonsterSceneResult = isChooseMonsterScene()
+        yysLib_utils.tapRadomCustom(yysLib_utils.SCREEN_WIDTH / 2, yysLib_utils.SCREEN_HEIGHT * 0.8, 200, 100)
         TracePrint "waitIntoCurrentScene.back to choose monster scene"
     Loop
     waitIntoCurrentScene = True

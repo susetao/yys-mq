@@ -681,6 +681,7 @@ Function exploreInstanceZones(reservepl, shishenLevel, resevePosition, fightLock
 					TracePrint "enter boss fight error, change scene to choose monster scene"
 					Goto findStart
 				End If
+				
     		Loop
 			
 			yysLib_fight.fight(shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode)

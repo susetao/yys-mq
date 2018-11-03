@@ -1254,7 +1254,7 @@ Function fight(level, revsePosition, teamLockMode, fightMode, fightSpeed)
 	fightCompleteResult = isFightEnd()
 	Delay yysLib_utils.WAIT_NORMAL
 //    //战斗结束，领取奖励返回choose monster scene
-    Do Until fightCompleteResult = False
+    Do Until fightCompleteResult = False And isFightDefatedEnd() = False
         Delay yysLib_utils.WAIT_NORMAL
         Tap yysLib_utils.SCREEN_WIDTH / 2, yysLib_utils.SCREEN_HEIGHT * 0.8
         fightCompleteResult = isFightEnd()

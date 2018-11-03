@@ -236,7 +236,7 @@ End Function
 //Delay 1000
 //	TracePrint 2
 //Loop
-Dim i = Array(1, 3)
+Dim i = Array(1, 0)
 Dim t = Array(i)
 main(t, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1)
 EndScript

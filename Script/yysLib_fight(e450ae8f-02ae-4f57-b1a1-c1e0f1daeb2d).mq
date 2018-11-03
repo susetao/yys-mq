@@ -1230,6 +1230,7 @@ Function fight(level, revsePosition, teamLockMode, fightMode, fightSpeed)
     TracePrint "fight.fighting"
     //开始战斗成功，等待战斗结束
     Dim fightCompleteResult = False
+    Dim fightResult = False
     Do Until fightCompleteResult
     	TracePrint "fight.wating for fight end"
     	Delay yysLib_utils.WAIT_LONG
@@ -1245,8 +1246,13 @@ Function fight(level, revsePosition, teamLockMode, fightMode, fightSpeed)
 				existExitButton = yysLib_utils.searchFightFailedConfirmStyleBlackFontlButton()
 				
 			Loop
-			fightCompleteResult = Not isFightDefatedEnd()
-			TracePrint "fight.fight defated , jump out."
+			If isFightDefatedEnd() Then 
+				fightResult = False
+				TracePrint "fight.fight defated , jump out."
+				Exit Do
+			Else 
+				fightResult = True
+			End If
         End If
     Loop
     TracePrint "fight.fight complete"
@@ -1265,6 +1271,8 @@ Function fight(level, revsePosition, teamLockMode, fightMode, fightSpeed)
     Thread.Stop (thraedModeMonitorId)
     TracePrint "thread fight speed monitor exit"
     Thread.Stop(threadSpeedMonitorId)
+    
+    fight = fightResult
     
 End Function
 

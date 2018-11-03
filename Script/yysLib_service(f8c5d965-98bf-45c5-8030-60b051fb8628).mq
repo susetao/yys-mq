@@ -213,7 +213,7 @@ Function exploreStory()
 			TracePrint "exploreStory.wait enter story scene."
 			//处理进入之前的对话
 			Dim searchChatJumpButton = yysLib_story.searchJumpChat()
-			Do Until searchChatJumpButton = False
+			Do Until searchChatJumpButton = False Or yysLib_story.isStoryScene() Or yysLib_main.isMainScene() = False
 				yysLib_utils.tapCustom searchChatJumpButton(0), searchChatJumpButton(1)
 				Delay yysLib_utils.WAIT_NORMAL
 				TracePrint "exploreStory.jump chat"

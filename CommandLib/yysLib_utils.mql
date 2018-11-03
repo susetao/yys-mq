@@ -601,9 +601,9 @@ End Function
  End Function
  
 //Test
-Dim button =  searchExitStyleChacterRedSakulaButton()
-TracePrint button(0), button(1)
-EndScript
+//Dim button =  searchExitStyleChacterRedSakulaButton()
+//TracePrint button(0), button(1)
+//EndScript
 /**
  * 搜索红色樱花退出按钮 见于角色
  * @return False | Array(x, y)

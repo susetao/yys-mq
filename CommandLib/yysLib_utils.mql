@@ -624,3 +624,21 @@ End Function
 		searchExitStyleChacterRedSakulaButton = False
 	End If
  End Function
+ 
+ /**
+  * 等待当前画面改变
+  * @return 
+  **/
+ Function waitCurrentSceneChange(waitTimes)
+ 	Dim CHECK_POINT_X = SCREEN_WIDTH / 2
+ 	Dim CHECK_POINT_Y = SCREEN_HEIGHT / 2
+ 	
+ 	Dim color = GetPixelColor(CHECK_POINT_X, CHECK_POINT_Y)
+ 	
+ 	Do Until CmpColor(CHECK_POINT_X, CHECK_POINT_Y, color, 1.0) Or waitTimes = 0
+ 		waitTimes = waitTimes - 1
+ 		Delay WAIT_LONG
+ 		TracePrint "waitCurrentSceneChange.scene not change."
+ 		color = GetPixelColor(CHECK_POINT_X, CHECK_POINT_Y)
+ 	Loop
+ End Function

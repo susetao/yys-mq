@@ -160,5 +160,10 @@
 	{
 		"Description" : null,
 		"TranslateTemplate" : null
+	},
+	"waitCurrentSceneChange" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
 	}
 }

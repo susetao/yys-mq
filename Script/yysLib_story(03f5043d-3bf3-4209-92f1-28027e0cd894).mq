@@ -313,6 +313,7 @@ Function exploreStory()
 	 		End If
 	 		//确定进入等待
 	 		Delay yysLib_utils.WAIT_LONG
+	 		yysLib_utils.waitCurrentSceneChange(5)
 //	 		Do Until (isStoryScene() And searchJumpChat() <> False) Or isStoryScene() = False
 //	 			TracePrint "exploreStory.wating for button effect."
 //	 			Delay yysLib_utils.WAIT_NORMAL

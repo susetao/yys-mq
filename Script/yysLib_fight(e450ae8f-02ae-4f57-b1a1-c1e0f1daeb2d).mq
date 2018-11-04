@@ -1269,11 +1269,6 @@ Function fight(level, revsePosition, teamLockMode, fightMode, fightSpeed)
         End If
     Loop
     
-	TracePrint "thread fight mode monitor exit"
-    Thread.Stop (thraedModeMonitorId)
-    TracePrint "thread fight speed monitor exit"
-    Thread.Stop(threadSpeedMonitorId)
-    
     fight = fightResult
     
 End Function

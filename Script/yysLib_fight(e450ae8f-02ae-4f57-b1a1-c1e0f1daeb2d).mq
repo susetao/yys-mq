@@ -87,7 +87,11 @@ Function isSettingMemberScene
 	
     //使用像素方式判断
     Dim cmpResult = CmpColorEx(FIGHT_SETTING_MEMBER_SCENE, 0.9)
-    isSettingMemberScene = cmpResult
+    If cmpResult = 1 Then 
+    	isSettingMemberScene = True
+    Else 
+    	isSettingMemberScene = False
+    End If
 End Function
 
 /**
@@ -1199,7 +1203,7 @@ End Function
  * @return True|False
  */
 Function fight(level, revsePosition, teamLockMode, fightMode, fightSpeed)
-	fightStart()
+	
     // 队伍模式检查
     If teamLockMode = 1 Then 
         TracePrint "fight.team lock mode, can not change team member."
@@ -1217,7 +1221,13 @@ Function fight(level, revsePosition, teamLockMode, fightMode, fightSpeed)
             TracePrint "fight.wait fight start."
             Delay yysLib_utils.WAIT_NORMAL
         Loop
-    End If 
+    End If
+    
+    Do Until isSettingMemberScene() = False
+    	TracePrint "fight.setting member."
+    	Delay yysLib_utils.WAIT_LONG
+    	fightStart()
+    Loop
 
     //战斗模式选择, use thread
 	TracePrint "fight.fightMode is:"&fightMode

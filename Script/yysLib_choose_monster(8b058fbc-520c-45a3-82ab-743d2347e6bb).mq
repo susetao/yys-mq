@@ -667,7 +667,7 @@ Function exploreInstanceZones(reservepl, shishenLevel, resevePosition, fightLock
 			//找到场景boss，进入战斗
 			yysLib_fight.fightEnter boosCoordinateResult(0), boosCoordinateResult(1)
 			
-			Do Until yysLib_fight.isFightScene()
+			Do Until yysLib_fight.isFightScene() Or yysLib_fight.isSettingMemberScene()
     			TracePrint "waiting for fight scene."
 				Delay yysLib_utils.WAIT_NORMAL * 3
 				//处理体力不足的情况

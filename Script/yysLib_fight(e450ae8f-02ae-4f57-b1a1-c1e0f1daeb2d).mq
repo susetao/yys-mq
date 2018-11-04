@@ -1221,12 +1221,10 @@ Function fight(level, revsePosition, teamLockMode, fightMode, fightSpeed)
 
     //战斗模式选择, use thread
 	TracePrint "fight.fightMode is:"&fightMode
-    TracePrint "fight mode monitor start."
-	Dim thraedModeMonitorId = Thread.Start(TsetFightMode)
+	setFightMode(fightMode)
     //战斗速度设置, use thread
     TracePrint "fight.fightSpeed is:"&fightSpeed
-    TracePrint "fight speed monitor start."
-	Dim threadSpeedMonitorId = Thread.Start(TsetFightSpeed)
+    setFightSpeed(fightSpeed)
 
     TracePrint "fight.fighting"
     //开始战斗成功，等待战斗结束

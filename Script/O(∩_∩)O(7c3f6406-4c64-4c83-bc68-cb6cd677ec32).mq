@@ -49,4 +49,6 @@ Dim fun = Array(1, 0)
 Dim t = Array(fun)
 //TracePrint t(0, 0)
 //yysLib_service.main(t, CInt(chapter), CInt(mode), CInt(team), CInt(type), 0, 1, 1, CInt(fightLockMode), CInt(fightSpeed), CInt(fightMode))
-yysLib_service.main(t, CInt(chapter), 0, 0, 0, 0, 1, 1, 1, 1, 1)
+yysLib_service.main t, CInt(chapter), 0, 0, 0, 0, 1, 1, 1, 1, 1
+
+

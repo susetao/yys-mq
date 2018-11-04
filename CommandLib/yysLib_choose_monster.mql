@@ -531,6 +531,7 @@ End Function
  */
 Function setTeamLockMode(mode)
     Dim TEAM_BUTTON = Array(1008,647) //队伍状态设置选择点 1点
+    Dim TEAM_BUTTON_PREARE = Array(852,651) //小纸人模式下队伍状态设置点
 	
     If isChooseMonsterScene() = False Then 
         TracePrint "current is not choose monster scene"
@@ -545,7 +546,13 @@ Function setTeamLockMode(mode)
         setTeamLockMode = True
     Else 
         TracePrint "team lock state is wrong"
-        Tap TEAM_BUTTON(0), TEAM_BUTTON(1)
+        //判断是否处于小纸人模式
+        If isChooseMonsterExtreAutomaticScene() Then 
+        	Tap TEAM_BUTTON_PREARE(0), TEAM_BUTTON_PREARE(1)
+        Else
+        	Tap TEAM_BUTTON(0), TEAM_BUTTON(1)
+        End If
+        
         Dim confirmResult = getTeamLockMode()
         If confirmResult <> False And confirmResult = mode Then 
             TracePrint "team lock state is change to right"
@@ -591,8 +598,8 @@ Function getTeamLockMode
 End Function
 
 //Test
-//TracePrint exploreInstanceZones( 0, 1, 1, 1, 1, 2)
-//EndScript
+TracePrint exploreInstanceZones( 0, 1, 1, 1, 1, 2)
+EndScript
 /**
  * main
  * @param reservepl 保留的体力，0为不保留

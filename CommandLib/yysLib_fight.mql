@@ -1199,6 +1199,7 @@ End Function
  * @return True|False
  */
 Function fight(level, revsePosition, teamLockMode, fightMode, fightSpeed)
+	fightStart()
     // 队伍模式检查
     If teamLockMode = 1 Then 
         TracePrint "fight.team lock mode, can not change team member."
@@ -1229,12 +1230,25 @@ Function fight(level, revsePosition, teamLockMode, fightMode, fightSpeed)
 
     TracePrint "fight.fighting"
     //开始战斗成功，等待战斗结束
-    Dim fightCompleteResult = False
-    Dim fightResult = False
-    Do Until fightCompleteResult
+    Do Until isFightEnd() Or isFightDefatedEnd()
     	TracePrint "fight.wating for fight end"
     	Delay yysLib_utils.WAIT_LONG
+    Loop
+    
+    TracePrint "fight.fight complete"
+    Delay yysLib_utils.WAIT_NORMAL
+    
+    
+    Dim fightResult = False
+	Dim fightCompleteResult = isFightEnd()
+	Delay yysLib_utils.WAIT_NORMAL
+//    //战斗结束，领取奖励返回choose monster scene
+    Do Until fightCompleteResult = False Or isFightDefatedEnd() = False
+        Delay yysLib_utils.WAIT_NORMAL
+        Tap yysLib_utils.SCREEN_WIDTH / 2, yysLib_utils.SCREEN_HEIGHT * 0.8
         fightCompleteResult = isFightEnd()
+        TracePrint "fight.wait to exit fight scene"
+        
         //process defated 
         If isFightDefatedEnd() Then 
         	//处理战斗失败弹出按钮
@@ -1244,27 +1258,15 @@ Function fight(level, revsePosition, teamLockMode, fightMode, fightSpeed)
 				TracePrint "fight.process exit button."
 				yysLib_utils.tapCustom(existExitButton(0), existExitButton(1))
 				existExitButton = yysLib_utils.searchFightFailedConfirmStyleBlackFontlButton()
-				
 			Loop
-			If isFightDefatedEnd() Then 
+			//
+			If isFightDefatedEnd() And yysLib_utils.searchFightFailedConfirmStyleBlackFontlButton() = False Then 
 				fightResult = False
-				TracePrint "fight.fight defated , jump out."
-				Exit Do
+				TracePrint "fight.fight defated."
 			Else 
 				fightResult = True
 			End If
         End If
-    Loop
-    TracePrint "fight.fight complete"
-    Delay yysLib_utils.WAIT_NORMAL
-	fightCompleteResult = isFightEnd()
-	Delay yysLib_utils.WAIT_NORMAL
-//    //战斗结束，领取奖励返回choose monster scene
-    Do Until fightCompleteResult = False And isFightDefatedEnd() = False
-        Delay yysLib_utils.WAIT_NORMAL
-        Tap yysLib_utils.SCREEN_WIDTH / 2, yysLib_utils.SCREEN_HEIGHT * 0.8
-        fightCompleteResult = isFightEnd()
-        TracePrint "fight.wait to exit fight scene"
     Loop
     
 	TracePrint "thread fight mode monitor exit"

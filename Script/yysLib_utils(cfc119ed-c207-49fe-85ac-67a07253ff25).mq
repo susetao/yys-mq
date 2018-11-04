@@ -578,6 +578,11 @@ Function searchCancleDownLoadAudioButton()
 	End If
 End Function
 
+//Test
+//Dim point = searchFightFailedConfirmStyleBlackFontlButton()
+//TracePrint point(0), point(1)
+//tapCustom(point(0), point(1))
+//EndScript
 /**
  * 战斗失败取消按钮 
  * @return False | Array(x, y)

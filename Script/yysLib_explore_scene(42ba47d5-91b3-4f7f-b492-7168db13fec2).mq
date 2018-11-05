@@ -269,7 +269,19 @@ End Function
  * @return 获取不到则返回 -1
  */
 Function getChapterNum
-	getChapterNum = 19 //TODO
+	Dim ITEM_HEIGHT = 103
+	Dim SPACE_HEIGHT = 15
+//	Dim ITEM_BOTTOM_MARK = 
+//	Dim ITEM_MARK = 
+	//不足一屏
+	Dim intX,intY
+	FindMultiColor 0,0,0,0,"2B3344","-1|65|39415A,-2|66|2C344D,6|69|191D29,-96|67|1E5D7E,101|65|286182,99|-32|245E7F,-101|-30|225F80,-85|23|242C3D,82|33|242C3D",2,0.9,intX,intY
+	If intX > -1 And intY > -1 Then
+		TracePrint intX
+		TracePrint intY
+	End If
+
+	//多屏
 End Function
 
 //Test

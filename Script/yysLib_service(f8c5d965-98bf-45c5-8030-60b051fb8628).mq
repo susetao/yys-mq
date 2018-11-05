@@ -298,6 +298,27 @@ Function main(futures, chapter, mode, team, type, reservepl, shishenLevel, resev
 					exploreScene(chapter, mode, team, type, reservepl, shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode)
 				Next
 			End If
+		ElseIf order = 2 Then
+			//auto 
+			TracePrint "main.perform auot program"
+			If repeat = 0 Then 
+				For i = 1 To repeat Step 0
+					//先检查是否在主界面
+					Do Until yysLib_main.isMainScene()
+						Delay yysLib_utils.WAIT_LONG
+						yysLib_main.backToMainScene()
+					Loop
+					//检查story
+					If yysLib_story.searchStory() = False
+						exploreStory 
+					End If
+					//explore
+					exploreScene(chapter, mode, team, type, reservepl, shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode)
+					
+				Next
+			Else 
+				TracePrint 1
+			End If
 		Else 
 			//unsupport future
 			TracePrint "main.unsupport ",order

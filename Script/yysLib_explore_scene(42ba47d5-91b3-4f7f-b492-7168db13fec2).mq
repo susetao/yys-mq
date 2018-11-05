@@ -264,24 +264,96 @@ Function chooseChapter(chapter)
 	TracePrint "chooseChapter.chooseChapter end"
 End Function
 
+//Test
+TracePrint getChapterNum()
+EndScript
 /**
  * 获得用户已通关的最大的章节数
- * @return 获取不到则返回 -1
+ * @return 获取不到则返回 False
  */
 Function getChapterNum
 	Dim ITEM_HEIGHT = 103
 	Dim SPACE_HEIGHT = 15
-//	Dim ITEM_BOTTOM_MARK = 
-//	Dim ITEM_MARK = 
+	Dim ITEM_TOTAL_HEIGHT = ITEM_HEIGHT + SPACE_HEIGHT
+	Dim ITEM_BOTTOM_MARK = 1
+	Dim ITEM_MARK = "-1|65|39415A,-2|66|2C344D,6|69|191D29,-96|67|1E5D7E,101|65|286182,99|-32|245E7F,-101|-30|225F80,-85|23|242C3D,82|33|242C3D"
+	Dim ITEM_MARK_ASSIST = "2B3344"
+	Dim RESIDUAL = 20
+	Dim LAST_CHAPTER_MARK_1 = Array(1141,563)
+	Dim LAST_CHAPTER_MARK_2 = Array(1148,568)
+	Dim LAST_CHAPTER_MARK_3 = Array(1154,573)
+	Dim LAST_CHAPTER_MARK_4 = Array(1159,577)
+	Dim LAST_CHAPTER_MARK_5 = Array(1141,577)
+	Dim LAST_CHAPTER_MARK_6 = Array(1155,561)
 	//不足一屏
-	Dim intX,intY
-	FindMultiColor 0,0,0,0,"2B3344","-1|65|39415A,-2|66|2C344D,6|69|191D29,-96|67|1E5D7E,101|65|286182,99|-32|245E7F,-101|-30|225F80,-85|23|242C3D,82|33|242C3D",2,0.9,intX,intY
-	If intX > -1 And intY > -1 Then
-		TracePrint intX
-		TracePrint intY
+	//寻找顶端坐标
+	Dim topIntX,topIntY
+	FindMultiColor 0,0,0,0, ITEM_MARK_ASSIST,ITEM_MARK ,0,0.9,topIntX,topIntY
+	If topIntX < 0 Or topIntY < 0 Then
+		getChapterNum = False
+		Exit Function
 	End If
-
+	//寻找最低端坐标
+	Dim bottomIntX,bottomIntY
+	FindMultiColor 0,0,0,0, ITEM_MARK_ASSIST,ITEM_MARK ,8,0.9,bottomIntX,bottomIntY
+	If bottomIntX < 0 Or bottomIntY < 0 Then
+		getChapterNum = False
+		Exit Function
+	End If
+	TracePrint "top y:",topIntY,"bottom y:",bottomIntY
+	Dim divisionResult = (bottomIntY - topIntY) / ITEM_TOTAL_HEIGHT
+	divisionResult = CInt(divisionResult)
+//	divisionResult = 5 //debug
+	TracePrint "divison: ",divisionResult
+	//计算
+	If divisionResult = 1 Then 
+		//同一个, 且仅为chapter 1
+		getChapterNum = 1
+		Exit Function
+	ElseIf divisionResult < 4
+		getChapterNum = RESIDUAL
+	Else 
 	//多屏
+		Dim chapter = 4
+		Dim lastChapterMark_1 = GetPixelColor(LAST_CHAPTER_MARK_1(0), LAST_CHAPTER_MARK_1(1))
+		Dim lastChapterMark_2 = GetPixelColor(LAST_CHAPTER_MARK_2(0), LAST_CHAPTER_MARK_2(1))
+		Dim lastChapterMark_3 = GetPixelColor(LAST_CHAPTER_MARK_3(0), LAST_CHAPTER_MARK_3(1))
+		Dim lastChapterMark_4 = GetPixelColor(LAST_CHAPTER_MARK_4(0), LAST_CHAPTER_MARK_4(1))
+		Dim lastChapterMark_5 = GetPixelColor(LAST_CHAPTER_MARK_5(0), LAST_CHAPTER_MARK_5(1))
+		Dim lastChapterMark_6 = GetPixelColor(LAST_CHAPTER_MARK_6(0), LAST_CHAPTER_MARK_6(1))
+		
+		Dim lm_1 = -1
+		Dim lm_2 = -1
+		Dim lm_3 = -1
+		Dim lm_4 = -1
+		Dim lm_5 = -1
+		Dim lm_6 = -1
+		Do Until lm_1 = 0 And lm_2 = 0 And lm_3 = 0 And lm_4 = 0 And lm_5 = 0 And lm_6 = 0
+//			TracePrint lm_1, lm_2, lm_3, lm_4, lm_5, lm_6
+//			TracePrint lastChapterMark_1, lastChapterMark_2, lastChapterMark_3, lastChapterMark_4,lastChapterMark_5, lastChapterMark_6
+			yysLib_utils.swipteCustom(bottomIntX, bottomIntY, bottomIntX, bottomIntY - ITEM_TOTAL_HEIGHT, 2000)
+			Delay yysLib_utils.WAIT_LONG
+			
+			lm_1 = CmpColor(LAST_CHAPTER_MARK_1(0), LAST_CHAPTER_MARK_1(1), lastChapterMark_1, 0.9)
+			lm_2 = CmpColor(LAST_CHAPTER_MARK_2(0), LAST_CHAPTER_MARK_2(1), lastChapterMark_2, 0.9)
+			lm_3 = CmpColor(LAST_CHAPTER_MARK_3(0), LAST_CHAPTER_MARK_3(1), lastChapterMark_3, 0.9)
+			lm_4 = CmpColor(LAST_CHAPTER_MARK_4(0), LAST_CHAPTER_MARK_4(1), lastChapterMark_4, 0.9)
+			lm_5 = CmpColor(LAST_CHAPTER_MARK_5(0), LAST_CHAPTER_MARK_5(1), lastChapterMark_5, 0.9)
+			lm_6 = CmpColor(LAST_CHAPTER_MARK_6(0), LAST_CHAPTER_MARK_6(1), lastChapterMark_6, 0.9)
+			
+			lastChapterMark_1 = GetPixelColor(LAST_CHAPTER_MARK_1(0), LAST_CHAPTER_MARK_1(1))
+			lastChapterMark_2 = GetPixelColor(LAST_CHAPTER_MARK_2(0), LAST_CHAPTER_MARK_2(1))
+			lastChapterMark_3 = GetPixelColor(LAST_CHAPTER_MARK_3(0), LAST_CHAPTER_MARK_3(1))
+			lastChapterMark_4 = GetPixelColor(LAST_CHAPTER_MARK_4(0), LAST_CHAPTER_MARK_4(1))
+			lastChapterMark_5 = GetPixelColor(LAST_CHAPTER_MARK_5(0), LAST_CHAPTER_MARK_5(1))
+			lastChapterMark_6 = GetPixelColor(LAST_CHAPTER_MARK_6(0), LAST_CHAPTER_MARK_6(1))
+			
+//			TracePrint lm_1, lm_2, lm_3, lm_4, lm_5, lm_6
+//			
+//			TracePrint lastChapterMark_1, lastChapterMark_2, lastChapterMark_3, lastChapterMark_4,lastChapterMark_5, lastChapterMark_6
+		Loop
+	End If
+	
 End Function
 
 //Test
@@ -483,8 +555,8 @@ Function enterChooseMonsterScene(x, y)
 End Function
 
 //Test TODO
-TracePrint exitExploreChooseScene()
-EndScript
+//TracePrint exitExploreChooseScene()
+//EndScript
 /**
  * 退出副本选择界面
  * @return True|False

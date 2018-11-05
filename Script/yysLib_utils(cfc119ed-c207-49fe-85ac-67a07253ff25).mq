@@ -102,6 +102,7 @@
   * 自定义滑动
   */
  Function swipteCustom(startX, startY, endX, endY, time)
+ 	TracePrint "swipteCustom.start ", startX, startY, "end", endX, endY, " time ", time
  	TouchDown startX, startY, 0
  	Delay time / 2
  	TouchMove endX, endY, 0, time

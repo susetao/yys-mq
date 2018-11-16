@@ -165,5 +165,10 @@
 	{
 		"Description" : null,
 		"TranslateTemplate" : null
+	},
+	"waitFoodRecover" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
 	}
 }

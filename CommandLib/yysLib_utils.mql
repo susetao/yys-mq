@@ -102,6 +102,7 @@
   * 自定义滑动
   */
  Function swipteCustom(startX, startY, endX, endY, time)
+ 	TracePrint "swipteCustom.start ", startX, startY, "end", endX, endY, " time ", time
  	TouchDown startX, startY, 0
  	Delay time / 2
  	TouchMove endX, endY, 0, time
@@ -578,6 +579,11 @@ Function searchCancleDownLoadAudioButton()
 	End If
 End Function
 
+//Test
+//Dim point = searchFightFailedConfirmStyleBlackFontlButton()
+//TracePrint point(0), point(1)
+//tapCustom(point(0), point(1))
+//EndScript
 /**
  * 战斗失败取消按钮 
  * @return False | Array(x, y)
@@ -642,4 +648,13 @@ End Function
  		TracePrint "waitCurrentSceneChange.scene not change."
  		color = GetPixelColor(CHECK_POINT_X, CHECK_POINT_Y)
  	Loop
+ End Function
+ 
+ /**
+  * 等待体力恢复
+  * @return
+  **/
+ Function waitFoodRecover()
+ 	Dim RECOVER_ONE_FOOD_REQUIRE_TIME = 1000 * 60 * 5
+ 	Delay RECOVER_ONE_FOOD_REQUIRE_TIME
  End Function

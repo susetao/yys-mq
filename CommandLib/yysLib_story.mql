@@ -296,7 +296,20 @@ Function exploreStory()
 						Delay yysLib_utils.WAIT_NORMAL
 					End If
     			Loop
-	 			yysLib_fight.fight 2, 1, 0, 1, 2
+	 			Dim fightResult = yysLib_fight.fight(2, 1, 1, 1, 2)
+	 			TracePrint "exploreStory.fightResult=",fightResult
+	 			If fightResult Then 
+	 				TracePrint "exploreStory.fight success."
+	 			Else 
+	 				TracePrint "exploreStory.fight failed."
+	 				Delay yysLib_utils.WAIT_LONG
+	 				Do Until yysLib_main.isMainScene()
+	 					yysLib_main.backToMainScene 
+	 					TracePrint "exploreStory.back to main"
+	 					Delay yysLib_utils.WAIT_NORMAL
+	 				Loop
+	 				Exit Function
+	 			End If
 	 		Else 
 	 			TracePrint "exploreStory.not found any button."
 	 			If isCGScene() Then 

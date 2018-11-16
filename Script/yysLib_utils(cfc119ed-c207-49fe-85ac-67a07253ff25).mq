@@ -649,3 +649,12 @@ End Function
  		color = GetPixelColor(CHECK_POINT_X, CHECK_POINT_Y)
  	Loop
  End Function
+ 
+ /**
+  * µÈ´ýÌåÁ¦»Ö¸´
+  * @return
+  **/
+ Function waitFoodRecover()
+ 	Dim RECOVER_ONE_FOOD_REQUIRE_TIME = 1000 * 60 * 5
+ 	Delay RECOVER_ONE_FOOD_REQUIRE_TIME
+ End Function

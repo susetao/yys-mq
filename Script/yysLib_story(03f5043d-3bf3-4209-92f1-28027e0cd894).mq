@@ -254,13 +254,15 @@ Function exploreStory()
 	 	Dim searchSoulViewButtonResult = True
 	 	Dim searchQuestionButtonResult = True
 	 	Dim searchChacterReadSakulaExitButtonResult = True
-		Do Until searchChacterReadSakulaExitButtonResult = False And searchQuestionButtonResult = False And searchSoulViewButtonResult = False And searchJumpButtonResult = False And searchChatButtonResult = False And searchFightButtonResult = False And isStoryScene() = False And yysLib_main.isMainScene()
+	 	Dim searchAudioDownloadButtonResult = True
+		Do Until searchAudioDownloadButtonResult = False And searchChacterReadSakulaExitButtonResult = False And searchQuestionButtonResult = False And searchSoulViewButtonResult = False And searchJumpButtonResult = False And searchChatButtonResult = False And searchFightButtonResult = False And isStoryScene() = False And yysLib_main.isMainScene()
 	 		searchJumpButtonResult = searchJumpChat()
 	 		searchChatButtonResult = searchChat()
 	 		searchFightButtonResult = yysLib_choose_monster.findMonster()
 	 		searchSoulViewButtonResult = searchSoulView()
 	 		searchQuestionButtonResult = searchQuestion()
 	 		searchChacterReadSakulaExitButtonResult = yysLib_utils.searchExitStyleChacterRedSakulaButton()
+	 		searchAudioDownloadButtonResult = yysLib_utils.isDownloadAudioScene()
 	 		If searchJumpButtonResult <> False Then 
 	 			//chat jump
 	 			TracePrint "exploreStory.searched jump chat button."
@@ -281,6 +283,10 @@ Function exploreStory()
 	 			//chacter
 	 			TracePrint "exploreStory.searched chacter exit button in",searchChacterReadSakulaExitButtonResult(0),",", searchChacterReadSakulaExitButtonResult(1)
 	 			yysLib_utils.tapCustom searchChacterReadSakulaExitButtonResult(0), searchChacterReadSakulaExitButtonResult(1)
+	 		ElseIf searchAudioDownloadButtonResult <> False Then
+	 			//download audio 
+	 			TracePrint "exploreStory.searched download autio button."
+	 			yysLib_utils.cancleDownloadAudio()
 	 		ElseIf searchFightButtonResult <> False Then
 	 			TracePrint "exploreStory.searched monster button."
 	 			//找到怪物，则进入战斗

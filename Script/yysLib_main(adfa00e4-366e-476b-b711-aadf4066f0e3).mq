@@ -109,6 +109,7 @@ End Function
  * @return None
  */ 
 Function backToMainScene()
+	TracePrint "main.backTOMainScene()"
 	If isMainScene() = False Then 
 		Delay yysLib_utils.WAIT_LONG
 		//search any exit button

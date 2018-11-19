@@ -656,5 +656,6 @@ End Function
   **/
  Function waitFoodRecover()
  	Dim RECOVER_ONE_FOOD_REQUIRE_TIME = 1000 * 60 * 5
- 	Delay RECOVER_ONE_FOOD_REQUIRE_TIME
+ 	Dim MAX_FOOD = 100
+ 	Delay RECOVER_ONE_FOOD_REQUIRE_TIME * MAX_FOOD
  End Function

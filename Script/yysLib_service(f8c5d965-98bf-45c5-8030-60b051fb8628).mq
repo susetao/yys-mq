@@ -220,6 +220,12 @@ Function exploreStory()
 				Delay yysLib_utils.WAIT_NORMAL
 				TracePrint "exploreStory.jump chat"
 			Loop
+			//¥¶¿Ìdownload audio button
+			Dim audioButotn = yysLib_utils.isDownloadAudioScene()
+			If audioButotn Then 
+				TracePrint "exploreStory.cancel download audio."
+				yysLib_utils.cancleDownloadAudio()
+			End If
 		Loop
 		TracePrint "exploreStory.story start."
 		yysLib_story.exploreStory 

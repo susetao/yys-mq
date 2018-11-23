@@ -263,8 +263,8 @@ Function isBindPhoneScene()
 End Function
 
 //Test
-//TracePrint isDownloadAudioScene()
-//EndScript
+TracePrint isDownloadAudioScene()
+EndScript
 /**
  * ¼ì²âÏÂÔØÓïÒô°ü³¡¾°
  * @return True | False

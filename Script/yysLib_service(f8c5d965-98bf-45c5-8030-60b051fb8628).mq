@@ -248,7 +248,7 @@ End Function
 //Loop
 Dim i = Array(2, 0)
 Dim t = Array(i)
-main(t, 3, 0, 0, 0, 0, 1, 1, 1, 1, 1)
+main(t, 3, 0, 0, 0, 0, 1, 1, 1, 1, 1, "xxxx")
 EndScript
 //
 /**
@@ -267,8 +267,11 @@ EndScript
  * @param fightLockMode 0 未锁定 1 锁定 (锁定队伍模式, 无法进行队伍成员更换)
  * @return True
  */
-Function main(futures, chapter, mode, team, type, reservepl, shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode)
-
+Function main(futures, chapter, mode, team, type, reservepl, shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode, key)
+	If yysLib_utils.login(key) = False Then 
+		TracePrint "exit fun"
+		Exit Function
+	End If
 	//perform order
 	For Each fun In futures
 		TracePrint fun

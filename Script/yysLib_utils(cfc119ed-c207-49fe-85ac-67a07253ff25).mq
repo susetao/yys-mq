@@ -659,3 +659,25 @@ End Function
  	Dim MAX_FOOD = 100
  	Delay RECOVER_ONE_FOOD_REQUIRE_TIME * MAX_FOOD
  End Function
+ 
+ Function login(key)
+ 	Dim server = "key-server.herokuapp.com/login?key="&key
+ 	Dim login_result = Url.Get("bbs.anjian.com")
+	TracePrint login_result
+	If login_result = Null Then 
+		TracePrint "login failed"
+		login = False
+		Exit Function
+	End If
+	
+	Dim result_table = Encode.JsonToTable(login_result)
+	If result_table["code"] = 0 Then 
+		TracePrint "login success"
+		login = True
+		Exit Function
+	End If
+	
+	TracePrint "login failed. "
+	login = False
+
+ End Function

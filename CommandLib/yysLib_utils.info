@@ -76,6 +76,11 @@
 		"Description" : null,
 		"TranslateTemplate" : null
 	},
+	"login" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
 	"searchCancleBindPhoneButton" : 
 	{
 		"Description" : null,

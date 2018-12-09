@@ -195,6 +195,9 @@ Function exploreEnchantment(level, again, mode)
 	
 End Function
 
+//Test
+//TracePrint exploreStory()
+//EndScript
 /**
  * explore story
  * @return True
@@ -220,6 +223,11 @@ Function exploreStory()
 				Delay yysLib_utils.WAIT_NORMAL
 				TracePrint "exploreStory.jump chat"
 			Loop
+			//处理下载语音包场景
+			If yysLib_utils.isDownloadAudioScene() Then
+				TracePrint "backToMainScene.process download audio data scene"
+				yysLib_utils.cancleDownloadAudio()
+			End If
 		Loop
 		TracePrint "exploreStory.story start."
 		yysLib_story.exploreStory 
@@ -242,7 +250,7 @@ Dim i = Array(2, 0)
 Dim t = Array(i)
 main(t, 3, 0, 0, 0, 0, 1, 1, 1, 1, 1)
 EndScript
-
+//
 /**
  * main
  * details Array(Array(0|1, repeatNum),...)   repeatNum = 0 无限 否则为执行次数

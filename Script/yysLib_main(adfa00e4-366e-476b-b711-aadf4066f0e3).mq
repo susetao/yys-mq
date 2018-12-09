@@ -34,8 +34,8 @@ Function isCloseMainScene()
 End Function
 
 //Test
-TracePrint isOpenMainScene()
-EndScript
+//TracePrint isOpenMainScene()
+//EndScript
 Function isOpenMainScene()
 	Dim MAIN_SCENE_RELEASED_MARK = "484|30|64C0E2,667|43|93B5CB,680|33|1D37EB,852|28|3593FF,1249|555|0C1C35,1255|587|649FC7,1242|622|C3C3D4,1253|678|78AAD3,1260|697|211F72,1258|716|0F1B37"
 	

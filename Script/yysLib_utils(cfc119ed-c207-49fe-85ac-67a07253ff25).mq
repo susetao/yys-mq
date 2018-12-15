@@ -263,8 +263,8 @@ Function isBindPhoneScene()
 End Function
 
 //Test
-TracePrint isDownloadAudioScene()
-EndScript
+//TracePrint isDownloadAudioScene()
+//EndScript
 /**
  * ºÏ≤‚œ¬‘ÿ”Ô“Ù∞¸≥°æ∞
  * @return True | False
@@ -660,10 +660,16 @@ End Function
  	Delay RECOVER_ONE_FOOD_REQUIRE_TIME * MAX_FOOD
  End Function
  
+ //Test
+  login ("2333")
+ EndScript
+ 
+ Import "ShanHai.lua"
+ 
  Function login(key)
- 	Dim server = "key-server.herokuapp.com/login?key="&key
- 	Dim login_result = Url.Get("bbs.anjian.com")
-	TracePrint login_result
+ 	Dim server = "key-sever.herokuapp.com/login/"&key
+ 	Dim login_result = ShanHai.GetHttp(server)
+//	TracePrint login_result
 	If login_result = Null Then 
 		TracePrint "login failed"
 		login = False

@@ -24,6 +24,18 @@ Dim type = ReadUIConfig("type_value", 0)
 Dim fightSpeed = ReadUIConfig("fight_speed_value", 2)
 Dim fightMode = ReadUIConfig("fight_mode_value", 1)
 Dim fightLockMode = ReadUIConfig("fight_lock_mode_value", 1)
+Dim key = ReadUIConfig("key_value", "xxx")
+Dim islog = ReadUIConfig("islog", 0)
+
+If key = "xxx" Or key = Null Then 
+	ShowMessage "«ÎÃÓ–¥√‹‘ø"
+	EndScript
+End If
+
+If islog = 1 Then 
+	ShowMessage "log in:" & GetTempDir()
+	Log.Open()
+End If
 
 TracePrint "param:chapter=",chapter,"mode=",mode,"team=",team,"type=",type,"fightSpeed=",fightSpeed,"fightMode=",fightMode,"fightLockMode=",fightLockMode
 // check device
@@ -45,10 +57,10 @@ End If
 
 
 //Function main(futures, chapter, mode, team, type, reservepl, shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode)
-Dim fun = Array(1, 0)
+Dim fun = Array(3, 0)
 Dim t = Array(fun)
 //TracePrint t(0, 0)
 //yysLib_service.main(t, CInt(chapter), CInt(mode), CInt(team), CInt(type), 0, 1, 1, CInt(fightLockMode), CInt(fightSpeed), CInt(fightMode))
-yysLib_service.main t, CInt(chapter), 0, 0, 0, 0, 1, 1, 1, 1, 1
+yysLib_service.main(t, CInt(chapter), 0, 0, 0, 0, 1, 1, 1, 1, 1, key)
 
 

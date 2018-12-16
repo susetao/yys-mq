@@ -661,13 +661,16 @@ End Function
  End Function
  
  //Test
-  login ("2333")
- EndScript
+//  login ("2333")
+// EndScript
  
  Import "ShanHai.lua"
  
  Function login(key)
- 	Dim server = "key-sever.herokuapp.com/login/"&key
+ 	Dim ver = 0.0.1
+ 	Dim mac = ShanHai.GetMAC()
+ 	Dim devi =  GetDeviceID()
+ 	Dim server = "key-sever.herokuapp.com/login/"&key&"?version="&ver&"&mac="&mac&"&device="&devi
  	Dim login_result = ShanHai.GetHttp(server)
 //	TracePrint login_result
 	If login_result = Null Then 

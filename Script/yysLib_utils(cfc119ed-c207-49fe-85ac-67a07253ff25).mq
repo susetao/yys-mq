@@ -666,7 +666,7 @@ End Function
  Import "ShanHai.lua"
  
  Function login(key)
- 	Dim ver = 0.0.1
+ 	Dim ver = "0.0.1"
  	Dim mac = ShanHai.GetMAC()
  	Dim devi =  GetDeviceID()
  	Dim server = "key-sever.herokuapp.com/login/"&key&"?version="&ver&"&mac="&mac&"&device="&devi

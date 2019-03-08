@@ -248,7 +248,7 @@ End Function
 //Loop
 Dim i = Array(2, 0)
 Dim t = Array(i)
-main(t, 3, 0, 0, 0, 0, 1, 1, 1, 1, 1, "xxxx")
+main(t, 2, 0, 0, 0, 0, 1, 1, 1, 1, 1, "test-wszl-b78aaefccea03")
 EndScript
 //
 /**

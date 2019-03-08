@@ -35,8 +35,8 @@ Function fightStart
 End Function
 
 //Test
-//TracePrint isFightEnd()
-//EndScript
+TracePrint isFightEnd()
+EndScript
 /**
  * 判断战斗是否结束
  * @return True|False
@@ -44,7 +44,7 @@ End Function
 Function isFightEnd
     Dim FIGHT_END_MARK = "535|415|1781D6,549|409|0A0F5A,606|443|0B0C30,604|451|40DCEE,621|421|4234D1,659|440|8CABC4,679|437|03030F,678|557|02030E,572|534|CE8C40,733|516|40DCEE"
     	
-    Dim cmpResult = CmpColorEx( FIGHT_END_MARK, 1.0)
+    Dim cmpResult = CmpColorEx( FIGHT_END_MARK, 0.9)
     If cmpResult = 1 Then
         //战斗成功
         TracePrint "fight end"
@@ -1171,8 +1171,8 @@ End Function
 
 
 //Test
-TracePrint fight(1, 1, 1, 1, 2)
-EndScript
+//TracePrint fight(1, 1, 1, 1, 2)
+//EndScript
 
 //Test
 //Function test(ss)

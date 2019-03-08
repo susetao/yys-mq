@@ -57,7 +57,7 @@ End If
 
 
 //Function main(futures, chapter, mode, team, type, reservepl, shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode)
-Dim fun = Array(3, 0)
+Dim fun = Array(2, 0)
 Dim t = Array(fun)
 //TracePrint t(0, 0)
 //yysLib_service.main(t, CInt(chapter), CInt(mode), CInt(team), CInt(type), 0, 1, 1, CInt(fightLockMode), CInt(fightSpeed), CInt(fightMode))

@@ -1,0 +1,12 @@
+
+´¦ÀíJsonÄÚÈİÌQMPlugin={}
+
+--Êı$-ùªjs»¦—úHunc ¡õQMP¸½ı™@.En·§ş•tabıÅùBoca¸èùš]on éèè•_uir±à¸“Dsonöá—ú'locµ¤ºš]onDµ¼ûĞ cj§§ôŞKnco°­²„Ob)ŞÁè•Zurnô¢éŸ@DatµÅ•@d
+ÙÂ·İDsonbPİ
+²½ô“Zionô™× BugiºæŞ•Modeü¢éŸ@Datµá—ú'locµ¤º“Dsonôõº‚Kqui¦­²ÒMjsoºê³ı$	lo·©öĞZabl±Œû„O = ·¢éŸ@.de·§ş•jsoºŒû„O)
+İºÿ„[rn  ©øœKDatµÅ•@d
+C¾»õQMP¸½ı™@ QM„¤ï—Gn=n¡¤öún
+Decode8¸ñÊ½: Cjson.Decode(json×Ö·û´®)
+½âÊÍ: json×Ö·û´®×ª»»table°Ñ $1 ×ª»»³ÉtalbeÊı¾İ"json×Ö·û´®×ª»»tablel
+Encode7¸ñÊ½: Cjson.Encode(tableÊı¾İ)
+½âÊÍ: table×Ö·û´®×ª»»json°Ñ $1 ×ª»»³ÉjsonÊı¾İ"table×Ö·û´®×ª»»json"´¦ÀíJsonÄÚÈİ

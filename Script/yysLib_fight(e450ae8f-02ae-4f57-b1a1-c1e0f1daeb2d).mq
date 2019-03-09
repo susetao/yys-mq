@@ -175,7 +175,7 @@ Function getFightMode
     Dim FIGHT_MODE_AUTO = "37|655|DBEDF2,34|662|6E3245,37|671|D5E7ED,49|670|E0F3F8,49|667|E0F3F8"
 	
     //获取战斗方式
-    Dim autoModeResult = CmpColorEx(FIGHT_MODE_AUTO, 0.9)
+    Dim autoModeResult = CmpColorEx(FIGHT_MODE_AUTO, yysLib_utils.SIMILARITY + 0.1)
     getFightMode = autoModeResult
 	
 End Function

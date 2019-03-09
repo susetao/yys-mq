@@ -16,6 +16,8 @@
  Dim SCREEN_COLOR_DEPTH = 32 //默认屏幕颜色深度
  Dim SCREEN_ROTATION = 0 //默认屏幕旋转角度
  
+ Dim SIMILARITY = 0.9
+ 
  /**
   * 判断是否为默认屏幕尺寸
   * @return True|Falsse

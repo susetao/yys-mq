@@ -345,7 +345,7 @@ Function exploreStory()
 		TracePrint "exploreStory.current is direct fight scene."
 		yysLib_fight.fight 2, 1, 0, 1, 2
 		TracePrint "exploreStory.direct fight complete.goto story."
-		Do Until isStoryScene()
+		Do Until isStoryScene() or yysLib_main.isMainScene()
 			TracePrint "exploreStory.direct waitting for story scene."
 			Delay yysLib_utils.WAIT_LONG
 		Loop

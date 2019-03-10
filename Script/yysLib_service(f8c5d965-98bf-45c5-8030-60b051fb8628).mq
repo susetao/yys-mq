@@ -210,9 +210,9 @@ Function exploreStory()
 	
 	//ËÑË÷ story button
 	Dim searchStoryButtonResult = yysLib_main.searchStory()
+	Rem enterStoryStart:
 	If searchStoryButtonResult <> False Then 
 		TracePrint "exploreStory.searched story button."
-		Rem enterStoryStart:
 		yysLib_story.enterStory searchStoryButtonResult(0), searchStoryButtonResult(1)
 		Do Until yysLib_story.isStoryScene() Or yysLib_fight.isSettingMemberScene() = 1
 			Delay yysLib_utils.WAIT_LONG

@@ -172,11 +172,16 @@ End Function
  * @return 0 手动 1 自动 
  */
 Function getFightMode
-    Dim FIGHT_MODE_AUTO = "37|655|DBEDF2,34|662|6E3245,37|671|D5E7ED,49|670|E0F3F8,49|667|E0F3F8"
-	
+//    Dim FIGHT_MODE_AUTO = "37|655|DBEDF2,34|662|6E3245,37|671|D5E7ED,49|670|E0F3F8,49|667|E0F3F8"
+	Dim FIGHT_MODE_MANUAL = "C8DAE0","-4|0|383F4E,-8|-1|5D6375,21|-3|C9DBE0,27|5|42575E,40|10|D0E3E8,21|-11|444E5D,11|10|D9EBF0,13|-14|DEF1F6,6|-12|C0D2D8"
     //获取战斗方式
-    Dim autoModeResult = CmpColorEx(FIGHT_MODE_AUTO, yysLib_utils.SIMILARITY + 0.1)
-    getFightMode = autoModeResult
+    Dim autoModeResult = CmpColorEx(FIGHT_MODE_MANUAL, yysLib_utils.SIMILARITY + 0.1)
+    If autoModeResult = 0 Then 
+    	getFightMode = 1
+    Else 
+    	getFightMode = 0
+    End If
+    
 	
 End Function
 

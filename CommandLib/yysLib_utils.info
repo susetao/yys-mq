@@ -81,6 +81,11 @@
 		"Description" : null,
 		"TranslateTemplate" : null
 	},
+	"preciseCMP" : 
+	{
+		"Description" : null,
+		"TranslateTemplate" : null
+	},
 	"searchCancleBindPhoneButton" : 
 	{
 		"Description" : null,

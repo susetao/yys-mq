@@ -691,3 +691,17 @@ End Function
 	login = False
 
  End Function
+ 
+ Function preciseCMP(points, similarity, times)
+ 		
+ 	Dim result = 0	
+ 	While times = 0
+    	result = result + CmpColorEx(points, similarity)
+    	times = times - 1
+    Wend
+    If times = times Then 
+    	preciseCMP = True
+   	Else 
+   		preciseCMP = False
+    End If
+ End Function

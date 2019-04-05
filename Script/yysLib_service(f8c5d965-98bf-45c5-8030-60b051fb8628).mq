@@ -271,11 +271,6 @@ EndScript
  * @return True
  */
 Function main(futures, chapter, mode, team, type, reservepl, shishenLevel, resevePosition, fightLockMode, fightSpeed, fightMode, key)
-	If yysLib_utils.login(key) = False Then 
-		TracePrint "exit fun"
-		ShowMessage "√‹‘øŒﬁ–ß"
-		Exit Function
-	End If
 	//perform order
 	For Each fun In futures
 		TracePrint fun

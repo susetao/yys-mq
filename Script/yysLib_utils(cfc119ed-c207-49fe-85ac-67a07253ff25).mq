@@ -668,27 +668,7 @@ End Function
  Import "ShanHai.lua"
  
  Function login(key)
- 	Dim ver = "0.0.1"
- 	Dim mac = ShanHai.GetMAC()
- 	Dim devi =  GetDeviceID()
- 	Dim server = "key-sever.herokuapp.com/login/"&key&"?version="&ver&"&mac="&mac&"&device="&devi
- 	Dim login_result = ShanHai.GetHttp(server)
-//	TracePrint login_result
-	If login_result = Null Then 
-		TracePrint "login failed"
-		login = False
-		Exit Function
-	End If
-	
-	Dim result_table = Encode.JsonToTable(login_result)
-	If result_table["code"] = 0 Then 
-		TracePrint "login success"
-		login = True
-		Exit Function
-	End If
-	
-	TracePrint "login failed. "
-	login = False
+ 	login = True
 
  End Function
  

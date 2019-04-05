@@ -57,6 +57,6 @@
 
 若本项目确实让你的肝不再继续恶化, 是不是要替我买个茶叶蛋呢? O(∩_∩)O
 <div>
-<img src="https://blog.xdove.org/images/wechatpay.jpg" alt="Wechat" height="280px" width="280px" display="block" />
+<img src="https://blog.xdove.org/images/wechatpay.jpg" alt="Wechat" height="280px" width="200px" display="block" />
 <img src="https://blog.xdove.org/images/alipay.jpg" alt="Alipay" height="280px" width="200px" display="block" /> 
 </div>
